@@ -1,9 +1,7 @@
 spring:
-  jackson:
-    time-zone: America/Sao_Paulo
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/jave?useTimezone=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/jave?useTimezone=true&serverTimezone=America/Sao_Paulo
     username: root
     password: 12345678
   jpa:
