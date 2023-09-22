@@ -25,6 +25,12 @@ public class VersionService {
 	@Autowired
 	private VersionMapper versionMapper;
 	
+	public VersionVO findById(Integer id) {
+		Version entity = versionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
+		
+		return versionMapper.toVersionVO(entity);
+	}
+	
 	public List<VersionVO> findCustom(String name, String effectivePeriodMonth, String effectivePeriodYear) {
 		
 		List<Version> entityList = versionCustomRepository.findCustom(name, effectivePeriodMonth, effectivePeriodYear);
@@ -40,7 +46,7 @@ public class VersionService {
 		return versionMapper.toVersionVO(persisted);
 	}
 	
-	public VersionVO update(VersionVO vo, Integer id) {
+	public VersionVO updateById(VersionVO vo, Integer id) {
 		if (vo == null) throw new RequiredObjectIsNullException();
 		
 		Version entity = versionRepository.findById(vo.getKey()).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));

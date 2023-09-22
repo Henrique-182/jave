@@ -29,6 +29,23 @@ public class VersionController {
 	@Autowired
 	private VersionService versionService; 
 	
+	@GetMapping("/{id}")
+	@Operation(
+		summary = "Finds a Version",
+		description = "Finds a Version by Id",
+		tags = {"Version"},
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = VersionVO.class))),
+			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+			@ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+			@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content)
+		}
+	)
+	public VersionVO findById(@PathVariable("id") Integer id) {
+		return versionService.findById(id);
+	}
+	
 	@GetMapping
 	@Operation(
 		summary = "Finds a Version",
@@ -86,7 +103,7 @@ public class VersionController {
 			@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content)
 		}
 	)
-	public VersionVO update(@RequestBody VersionVO vo, @PathVariable("id") Integer id) {
-		return versionService.update(vo, id);
+	public VersionVO updateById(@RequestBody VersionVO vo, @PathVariable("id") Integer id) {
+		return versionService.updateById(vo, id);
 	}
 }

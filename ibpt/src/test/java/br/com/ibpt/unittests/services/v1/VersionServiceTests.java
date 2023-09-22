@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,36 @@ public class VersionServiceTests {
 	void setUp() {
 		input = new VersionMock();
 		MockitoAnnotations.openMocks(this);
+	}
+	
+	@Test
+	void testFindById() {
+		Integer id = 1;
+
+		Version mockEntity = input.mockEntity(1);
+		VersionVO mockVO = input.mockVO(1);
+		
+		when(versionRepository.findById(any(Integer.class))).thenReturn(Optional.of(mockEntity));
+		when(versionMapper.toVersionVO(any(Version.class))).thenReturn(mockVO);
+		
+		VersionVO result = versionService.findById(id);
+		
+		assertNotNull(result);
+		assertEquals(1, result.getKey());
+		assertEquals("Name1", result.getName());
+		assertEquals(new Date(1), result.getEffectivePeriodUntil());
+	}
+	
+	@Test
+	void testFindByIdWithResourceNotFoundException() {
+		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+			versionService.findById(null);
+		});
+		
+		String expectedMessage = "No records found for this id!";
+		String actualMessage = exception.getMessage();
+		
+		assertEquals(expectedMessage, actualMessage);
 	}
 	
 	@Test
@@ -107,7 +138,26 @@ public class VersionServiceTests {
 	
 	@Test
 	void testUpdate() {
+		Integer id = 2;
 		
+		Version mockEntity = input.mockEntity(2);
+		Version persisted = mockEntity;
+		
+		VersionVO mockVO = input.mockVO(2);
+		mockVO.setName(id + "Name");
+		mockVO.setEffectivePeriodUntil(new Date(id + id));
+		
+		when(versionRepository.findById(any(Integer.class))).thenReturn(Optional.of(mockEntity));
+		when(versionMapper.toVersion(any(VersionVO.class))).thenReturn(mockEntity);
+		when(versionRepository.save(any(Version.class))).thenReturn(persisted);
+		when(versionMapper.toVersionVO(any(Version.class))).thenReturn(mockVO);
+		
+		VersionVO result = versionService.updateById(mockVO, id);
+		
+		assertNotNull(result);
+		assertEquals(2, result.getKey());
+		assertEquals("2Name", result.getName());
+		assertEquals(new Date(4), result.getEffectivePeriodUntil());
 	}
 	
 	@Test
@@ -115,7 +165,7 @@ public class VersionServiceTests {
 		VersionVO mockVO = input.mockVO();
 		
 		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-			versionService.update(mockVO, null);
+			versionService.updateById(mockVO, null);
 		});
 		
 		String expectedMessage = "No records found for this id!";
@@ -127,7 +177,7 @@ public class VersionServiceTests {
 	@Test
 	void testUpdateByIdWithRequiredObjectIsNullException() {
 		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
-			versionService.update(null, 2);
+			versionService.updateById(null, 2);
 		});
 		
 		String expectedMessage = "It is not possible to persist a null object";
