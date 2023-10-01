@@ -49,7 +49,7 @@ public class VersionService {
 	public VersionVO updateById(VersionVO vo, Integer id) {
 		if (vo == null) throw new RequiredObjectIsNullException();
 		
-		Version entity = versionRepository.findById(vo.getKey()).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
+		Version entity = versionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
 		entity.setName(vo.getName());
 		entity.setEffectivePeriodUntil(vo.getEffectivePeriodUntil());
 		
