@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -161,6 +162,37 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 	
 	@Test
 	@Order(4)
+	public void testFindCustom() throws JsonMappingException, JsonProcessingException {
+		String name = "Name2";
+		
+		specification = new RequestSpecBuilder()
+				.setBasePath("/v1/versao")
+				.setPort(TestConfigs.SERVER_PORT)
+				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
+		
+		var content =
+				given().spec(specification)
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.queryParam("nome", name)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		var result = objectMapper.readValue(content, ArrayList.class).toString();
+		
+		assertNotNull(result);
+		
+		assertTrue(result.contains("name=" + name));
+	}
+	
+	@Test
+	@Order(5)
 	public void testFindByIdWithResourceNotFoundException() throws JsonMappingException, JsonProcessingException {
 		Integer id = 10;
 		
@@ -188,7 +220,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	@Order(5)
+	@Order(6)
 	public void testUpdateById() throws JsonMappingException, JsonProcessingException {
 		Integer id = 1;
 		VersionVO mockVO = input.mockVO();
