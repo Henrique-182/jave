@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.controllers;
+package br.com.ibpt.integrationtests.controllers.v1;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.ibpt.config.TestConfigs;
 import br.com.ibpt.integrationtests.mocks.v1.VersionMock;
 import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
-import br.com.ibpt.integrationtests.vo.VersionVO;
+import br.com.ibpt.integrationtests.vo.v1.VersionVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;

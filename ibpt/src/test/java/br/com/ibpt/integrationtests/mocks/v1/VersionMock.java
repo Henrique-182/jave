@@ -2,7 +2,7 @@ package br.com.ibpt.integrationtests.mocks.v1;
 
 import java.util.Date;
 
-import br.com.ibpt.integrationtests.vo.VersionVO;
+import br.com.ibpt.integrationtests.vo.v1.VersionVO;
 
 public class VersionMock {
 

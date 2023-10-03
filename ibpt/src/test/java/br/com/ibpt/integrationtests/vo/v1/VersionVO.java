@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.vo;
+package br.com.ibpt.integrationtests.vo.v1;
 
 import java.io.Serializable;
 import java.util.Date;
