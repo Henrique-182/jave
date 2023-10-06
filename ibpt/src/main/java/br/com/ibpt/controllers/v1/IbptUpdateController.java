@@ -26,14 +26,15 @@ public class IbptUpdateController {
 		@RequestParam(value = "versaoNome", required = false) String versionName,
 		@RequestParam(value = "empresaCnpj", required = false) String companyCnpj,
 		@RequestParam(value = "empresaNome", required = false) String companyBusinessName,
-		@RequestParam(value = "empresaRazao", required = false) String companyTradeName
+		@RequestParam(value = "empresaRazao", required = false) String companyTradeName,
+		@RequestParam(value = "estaAtualizado", required = false) Boolean isUpdated
 	) {
-		return ibptUpdateService.findCustom(versionName, companyCnpj, companyBusinessName, companyTradeName);
+		return ibptUpdateService.findCustom(versionName, companyCnpj, companyBusinessName, companyTradeName, isUpdated);
 	}
 	
 	@PutMapping
 	public void updateById(@RequestBody UpdateVO vo) {
-		ibptUpdateService.updateById(vo.getId());
+		ibptUpdateService.updateById(vo.getId(), vo.getValue());
 	}
 	
 }

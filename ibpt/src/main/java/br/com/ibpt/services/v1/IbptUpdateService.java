@@ -25,9 +25,10 @@ public class IbptUpdateService {
 		String versionName, 
 		String companyCnpj, 
 		String companyBusinessName, 
-		String companyTradeName
+		String companyTradeName,
+		Boolean isUpdated
 	) {
-		var resultList = ibptUpdateCustomRepository.findCustom(versionName, companyCnpj, companyBusinessName, companyTradeName);
+		var resultList = ibptUpdateCustomRepository.findCustom(versionName, companyCnpj, companyBusinessName, companyTradeName, isUpdated);
 		
 		List<IbptUpdateVO> voList = new ArrayList<>();
 		
@@ -47,7 +48,7 @@ public class IbptUpdateService {
 		return voList;
 	}
 	
-	public void updateById(Integer id) {
+	public void updateById(Integer id, Boolean value) {
 		List<IbptUpdate> entityList = new ArrayList<>();
 		List<Integer> idList = new ArrayList<>();
 		
@@ -56,15 +57,12 @@ public class IbptUpdateService {
 		
 		entityList.addAll(ibptUpdateRepository.findByCompanyAndFkVersion(entity.getFkCompany(), entity.getFkVersion()));
 		 
-		for (IbptUpdate e : entityList) {
-			System.out.println(e.getId());
-			idList.add(e.getId());
-		}
+		for (IbptUpdate e : entityList) idList.add(e.getId());
 		
-		ibptUpdateRepository.updateAll(idList);
+		ibptUpdateRepository.updateAll(idList, value);
 	}
 	
-	public void callProcNewIbptUpdate() {
-		ibptUpdateRepository.PROC_NEW_IBPT_UPDATE();
+	public void callProcNewIbptUpdate(Integer idVersion) {
+		ibptUpdateRepository.PROC_NEW_IBPT_UPDATE(idVersion);
 	}
 }

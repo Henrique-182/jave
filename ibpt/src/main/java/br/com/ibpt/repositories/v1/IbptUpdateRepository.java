@@ -15,7 +15,7 @@ import br.com.ibpt.model.v1.IbptUpdate;
 public interface IbptUpdateRepository extends JpaRepository<IbptUpdate, Integer> {
 
 	@Procedure
-	void PROC_NEW_IBPT_UPDATE();
+	void PROC_NEW_IBPT_UPDATE(Integer P_ID_VERSION);
 	
 	@Query(
 		   "    SELECT IBUP "
@@ -30,8 +30,8 @@ public interface IbptUpdateRepository extends JpaRepository<IbptUpdate, Integer>
 	@Transactional
 	@Query(
 		   "    UPDATE IbptUpdate IBUP "
-	     + "       SET IBUP.isUpdated = true "
+	     + "       SET IBUP.isUpdated = :value "
 	     + "	 WHERE IBUP.id IN :idList "
 	      )
-	public void updateAll(List<Integer> idList);
+	public void updateAll(List<Integer> idList, Boolean value);
 }

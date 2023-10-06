@@ -19,7 +19,8 @@ public class IbptUpdateCustomRepository {
 		String versionName,
 		String companyCnpj,
 		String companyBusinessName, 
-		String companyTradeName
+		String companyTradeName,
+		Boolean isUpdated
 	) {
 		String query = "SELECT IBUP.id "
 				+ "          , VERS.name "
@@ -51,6 +52,11 @@ public class IbptUpdateCustomRepository {
 			query += condition + "COMP.tradeName LIKE :companyTradeName ";
 			condition = "AND ";
 		}
+		
+		if (isUpdated != null) {
+			query += condition + "IBUP.isUpdated = :isUpdated ";
+			condition = "AND";
+		}
 				 
 		var q = em.createQuery(query, Object[].class);
 		
@@ -68,6 +74,10 @@ public class IbptUpdateCustomRepository {
 		
 		if (companyTradeName != null) {
 			q.setParameter("companyTradeName", "%" + companyTradeName + "%");
+		}
+		
+		if (isUpdated != null) {
+			q.setParameter("isUpdated", isUpdated);
 		}
 		
 		return q.getResultList();
