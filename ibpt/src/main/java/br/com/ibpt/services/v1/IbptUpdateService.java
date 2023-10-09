@@ -39,7 +39,7 @@ public class IbptUpdateService {
 		for (Object[] result : resultList) {
 			IbptUpdateVO vo = new IbptUpdateVO();
 			
-			vo.setId((Integer) result[0]);
+			vo.setKey((Integer) result[0]);
 			vo.setVersionName((String) result[1]);
 			vo.setCompanyCnpj((String) result[2]);
 			vo.setCompanyTradeName((String) result[3]);

@@ -7,7 +7,7 @@ public class IbptUpdateVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer id;
+	private Integer key;
 	private String versionName;
 	private String companyCnpj;
 	private String companyTradeName;
@@ -18,7 +18,7 @@ public class IbptUpdateVO implements Serializable {
 	
 	public IbptUpdateVO(Integer id, String versionName, String companyCnpj, String companyTradeName,
 			String companyBusinessName, Boolean isUpdated) {
-		this.id = id;
+		this.key = id;
 		this.versionName = versionName;
 		this.companyCnpj = companyCnpj;
 		this.companyTradeName = companyTradeName;
@@ -26,12 +26,12 @@ public class IbptUpdateVO implements Serializable {
 		this.isUpdated = isUpdated;
 	}
 
-	public Integer getId() {
-		return id;
+	public Integer getKey() {
+		return key;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setKey(Integer key) {
+		this.key = key;
 	}
 
 	public String getVersionName() {
@@ -76,7 +76,7 @@ public class IbptUpdateVO implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(companyBusinessName, companyCnpj, companyTradeName, id, isUpdated, versionName);
+		return Objects.hash(companyBusinessName, companyCnpj, companyTradeName, key, isUpdated, versionName);
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class IbptUpdateVO implements Serializable {
 		IbptUpdateVO other = (IbptUpdateVO) obj;
 		return Objects.equals(companyBusinessName, other.companyBusinessName)
 				&& Objects.equals(companyCnpj, other.companyCnpj)
-				&& Objects.equals(companyTradeName, other.companyTradeName) && Objects.equals(id, other.id)
+				&& Objects.equals(companyTradeName, other.companyTradeName) && Objects.equals(key, other.key)
 				&& Objects.equals(isUpdated, other.isUpdated) && Objects.equals(versionName, other.versionName);
 	}
 	
