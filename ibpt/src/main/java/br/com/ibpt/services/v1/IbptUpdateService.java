@@ -11,6 +11,7 @@ import br.com.ibpt.exceptions.ResourceNotFoundException;
 import br.com.ibpt.model.v1.IbptUpdate;
 import br.com.ibpt.repositories.v1.IbptUpdateCustomRepository;
 import br.com.ibpt.repositories.v1.IbptUpdateRepository;
+import br.com.ibpt.repositories.v1.VersionRepository;
 
 @Service
 public class IbptUpdateService {
@@ -20,6 +21,9 @@ public class IbptUpdateService {
 	
 	@Autowired
 	private IbptUpdateCustomRepository ibptUpdateCustomRepository;
+	
+	@Autowired
+	private VersionRepository versionRepository;
 	
 	public List<IbptUpdateVO> findCustom(
 		String versionName, 
@@ -60,6 +64,14 @@ public class IbptUpdateService {
 		for (IbptUpdate e : entityList) idList.add(e.getId());
 		
 		ibptUpdateRepository.updateAll(idList, value);
+	}
+	
+	public void callProcNewIbptUpdate() {
+		List<Integer> idVersionList = versionRepository.findAllId();
+		
+		for (Integer id : idVersionList) {
+			ibptUpdateRepository.PROC_NEW_IBPT_UPDATE(id);
+		}
 	}
 	
 	public void callProcNewIbptUpdate(Integer idVersion) {
