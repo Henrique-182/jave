@@ -11,7 +11,7 @@ import br.com.ibpt.model.v1.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
 
 	@Query("SELECT USER "
-		 + "  FROM Users USER "
+		 + "  FROM User USER "
 		 + " WHERE USER.userName = :userName "
 		  )
 	User findByUserName(@Param("userName") String userName);
