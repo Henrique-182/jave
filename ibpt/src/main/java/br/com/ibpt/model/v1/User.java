@@ -1,6 +1,7 @@
 package br.com.ibpt.model.v1;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -60,6 +61,12 @@ public class User implements UserDetails, Serializable {
 	private List<Permission> permissions;
 
 	public User() {}
+	
+	public List<String> getRoles() {
+		List<String> roles = new ArrayList<>();
+		for (Permission permission : permissions) roles.add(permission.getDescription());
+		return roles;
+	}
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
