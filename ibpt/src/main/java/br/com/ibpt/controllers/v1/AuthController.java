@@ -12,16 +12,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ibpt.data.vo.v1.AccountCredentialsVO;
+import br.com.ibpt.data.vo.v1.TokenVO;
 import br.com.ibpt.services.v1.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Auth", description = "Endpoint for Managing Authentication")
 public class AuthController {
 
 	@Autowired
 	private AuthService authService;
 	
 	@SuppressWarnings("rawtypes")
+	@Operation(
+		summary = "Authenticates a user",
+		description = "Authenticates a user and returns a token",
+		tags = {"Auth"},
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = TokenVO.class))),
+			@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
+			@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content)
+		}
+	)
 	@PostMapping("/signin")
 	public ResponseEntity signin(@RequestBody AccountCredentialsVO data) {
 		if (checkIfParamsIsNotNull(data)) {
@@ -38,6 +55,16 @@ public class AuthController {
 	}
 	
 	@SuppressWarnings("rawtypes")
+	@Operation(
+		summary = "Refresh token",
+		description = "Refresh token for authenticated user and returns a token",
+		tags = {"Auth"},
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = TokenVO.class))),
+			@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
+			@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content)
+		}
+	)
 	@PutMapping("/refresh/{userName}")
 	public ResponseEntity refreshToken(
 		@PathVariable("userName") String userName,
