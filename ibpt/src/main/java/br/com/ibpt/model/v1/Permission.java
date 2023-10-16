@@ -28,6 +28,10 @@ public class Permission implements GrantedAuthority, Serializable {
 
 	public Permission() {}
 	
+	public Permission(Integer id) {
+		this.id = id;
+	}
+	
 	@Override
 	public String getAuthority() {
 		return this.description;

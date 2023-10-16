@@ -8,6 +8,7 @@ public class AccountCredentialsVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String userName;
+	private String fullname;
 	private String password;
 	
 	public AccountCredentialsVO(String userName, String password) {
@@ -22,6 +23,14 @@ public class AccountCredentialsVO implements Serializable {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+	
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
 
 	public String getPassword() {
 		return password;
@@ -33,7 +42,7 @@ public class AccountCredentialsVO implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(password, userName);
+		return Objects.hash(fullname, password, userName);
 	}
 
 	@Override
@@ -45,7 +54,8 @@ public class AccountCredentialsVO implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		AccountCredentialsVO other = (AccountCredentialsVO) obj;
-		return Objects.equals(password, other.password) && Objects.equals(userName, other.userName);
+		return Objects.equals(fullname, other.fullname) && Objects.equals(password, other.password)
+				&& Objects.equals(userName, other.userName);
 	}
-	
+
 }
