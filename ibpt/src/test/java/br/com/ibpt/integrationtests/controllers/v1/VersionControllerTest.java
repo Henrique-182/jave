@@ -23,6 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.ibpt.config.TestConfigs;
 import br.com.ibpt.integrationtests.mocks.v1.VersionMock;
 import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
+import br.com.ibpt.integrationtests.vo.v1.AccountCredentialsVO;
+import br.com.ibpt.integrationtests.vo.v1.TokenVO;
 import br.com.ibpt.integrationtests.vo.v1.VersionVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -36,25 +38,49 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 
 	private static RequestSpecification specification;
 	private static ObjectMapper objectMapper;
+	private static VersionMock versionMock;
 	
-	private static VersionMock input;
+	private static String accessToken = "Bearer ";
+	private static Integer idMax = 0;
 	
 	@BeforeAll
 	public static void setup() {
 		objectMapper = new ObjectMapper();
 		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 		
-		input = new VersionMock();
+		versionMock = new VersionMock();
+	}
+	
+	@Test
+	@Order(0)
+	public void authorization() {
+		AccountCredentialsVO user = new AccountCredentialsVO("Henrique", "he@01");
+		
+		accessToken = accessToken + 
+				given()
+				.basePath("/auth/signin")
+				.port(TestConfigs.SERVER_PORT)
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.body(user)
+				.when()
+					.post()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+						.as(TokenVO.class)
+					.getAccessToken();
 	}
 	
 	@Test
 	@Order(1)
-	public void testCreateFirstVersion() throws JsonMappingException, JsonProcessingException {
-		VersionVO mockVO = input.mockVO(1);
+	public void testCreateVersion() throws JsonMappingException, JsonProcessingException {
+		VersionVO mockVO = versionMock.mockVO(1);
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("/v1/versao/novo")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -80,57 +106,20 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(createdVersion.getKey() > 0);
 		
-		assertEquals(1, createdVersion.getKey());
 		assertEquals("Name1", createdVersion.getName());
 		assertEquals(new Date(1), createdVersion.getEffectivePeriodUntil());
+		
+		idMax = createdVersion.getKey();
 	}
 	
 	@Test
 	@Order(2)
-	public void testCreateMoreVersion() throws JsonMappingException, JsonProcessingException {
-		VersionVO mockVO = input.mockVO(2);
-		
-		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/versao/novo")
-				.setPort(TestConfigs.SERVER_PORT)
-				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
-				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-				.build();
-		
-		var content = 
-				given().spec(specification)
-				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.body(mockVO)
-				.when()
-				.post()
-				.then()
-				.statusCode(200)
-				.extract()
-				.body()
-				.asString();
-		
-		VersionVO createdVersion = objectMapper.readValue(content, VersionVO.class);
-		
-		assertNotNull(createdVersion);
-		assertNotNull(createdVersion.getKey());
-		assertNotNull(createdVersion.getName());
-		assertNotNull(createdVersion.getEffectivePeriodUntil());
-		
-		assertTrue(createdVersion.getKey() > 0);
-		
-		assertEquals(2, createdVersion.getKey());
-		assertEquals("Name2", createdVersion.getName());
-		assertEquals(new Date(2), createdVersion.getEffectivePeriodUntil());
-	}
-	
-	@Test
-	@Order(3)
 	public void testFindById() throws JsonMappingException, JsonProcessingException {
-		Integer id = 1;
-		
+
 		specification = new RequestSpecBuilder()
 				.setBasePath("/v1/versao")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -138,7 +127,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		var content =
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.pathParam("id", id)
+				.pathParam("id", idMax)
 				.when()
 					.get("{id}")
 				.then()
@@ -154,20 +143,20 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		assertNotNull(persistedVersion.getName());
 		assertNotNull(persistedVersion.getEffectivePeriodUntil());
 		
-		assertTrue(persistedVersion.getKey() == id);
-		
+		assertEquals(idMax, persistedVersion.getKey());
 		assertEquals("Name1", persistedVersion.getName());
 		assertEquals(new Date(1), persistedVersion.getEffectivePeriodUntil());
 	}
 	
 	@Test
-	@Order(4)
+	@Order(3)
 	public void testFindCustom() throws JsonMappingException, JsonProcessingException {
-		String name = "Name2";
+		String effectivePeriodYear = "2023";
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("/v1/versao")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -175,7 +164,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		var content =
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.queryParam("nome", name)
+				.queryParam("anoVigencia", effectivePeriodYear)
 				.when()
 					.get()
 				.then()
@@ -188,17 +177,18 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		
 		assertNotNull(result);
 		
-		assertTrue(result.contains("name=" + name));
+		assertTrue(result.contains("effectivePeriodUntil=" + effectivePeriodYear));
 	}
 	
 	@Test
-	@Order(5)
+	@Order(4)
 	public void testFindByIdWithResourceNotFoundException() throws JsonMappingException, JsonProcessingException {
 		Integer id = 10;
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("/v1/versao")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -220,16 +210,16 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	@Order(6)
+	@Order(5)
 	public void testUpdateById() throws JsonMappingException, JsonProcessingException {
-		Integer id = 1;
-		VersionVO mockVO = input.mockVO();
+		VersionVO mockVO = versionMock.mockVO();
 		mockVO.setName(2 + "Name");
 		mockVO.setEffectivePeriodUntil(new Date(2));
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("v1/versao")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -237,7 +227,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		var content = 
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.pathParam("id", id)
+				.pathParam("id", idMax)
 				.body(mockVO)
 				.when()
 					.put("{id}")
@@ -250,7 +240,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		VersionVO persistedVersion = objectMapper.readValue(content, VersionVO.class);
 		
 		assertNotNull(persistedVersion);
-		assertEquals(id, persistedVersion.getKey());
+		assertEquals(idMax, persistedVersion.getKey());
 		assertEquals("2Name", persistedVersion.getName());
 		assertEquals(new Date(2), persistedVersion.getEffectivePeriodUntil());
 	}
