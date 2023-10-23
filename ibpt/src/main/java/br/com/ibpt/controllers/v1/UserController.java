@@ -23,7 +23,7 @@ public class UserController {
 	private UserService userService;
 	
 	@GetMapping("/{id}")
-	public UserVO findAll(@PathVariable("id") Integer id) {
+	public UserVO findById(@PathVariable("id") Integer id) {
 		return userService.findById(id);
 	}
 	
@@ -38,7 +38,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/{id}")
-	public UserVO update(@PathVariable("id") Integer id, @RequestBody UserVO vo) {
+	public UserVO updateById(@PathVariable("id") Integer id, @RequestBody UserVO vo) {
 		return userService.updateById(id, vo);
 	}
 }
