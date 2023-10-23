@@ -24,10 +24,11 @@ import br.com.ibpt.config.TestConfigs;
 import br.com.ibpt.integrationtests.mocks.v1.CompanyMock;
 import br.com.ibpt.integrationtests.mocks.v1.VersionMock;
 import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
+import br.com.ibpt.integrationtests.vo.v1.AccountCredentialsVO;
 import br.com.ibpt.integrationtests.vo.v1.CompanyVO;
+import br.com.ibpt.integrationtests.vo.v1.TokenVO;
 import br.com.ibpt.integrationtests.vo.v1.UpdateVO;
 import br.com.ibpt.integrationtests.vo.v1.VersionVO;
-import br.com.ibpt.model.v1.IbptUpdate;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -44,6 +45,9 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 	private static CompanyMock inputCompany;
 	private static VersionMock inputVersion;
 	
+	private static String accessToken = "Bearer ";
+	private static Integer idCompany = 0;
+	
 	@BeforeAll
 	public static void setup() {
 		objectMapper = new ObjectMapper();
@@ -54,14 +58,37 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
+	@Order(0)
+	public void authorization() {
+		AccountCredentialsVO user = new AccountCredentialsVO("Henrique", "he@01");
+		
+		accessToken = accessToken +
+				given()
+				.basePath("/auth/signin")
+				.port(TestConfigs.SERVER_PORT)
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.body(user)
+				.when()
+					.post()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+						.as(TokenVO.class)
+					.getAccessToken();
+	}
+	
+	@Test
 	@Order(1) 
-	public void testCreateFirstCompany() throws JsonMappingException, JsonProcessingException {
+	public void testCreateCompany() throws JsonMappingException, JsonProcessingException {
 		CompanyVO mockVO = inputCompany.mockVO(1);
+		mockVO.setIsActive(true);
 		mockVO.setFkCompanySameDb(null);
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("v1/empresa/novo")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -85,7 +112,6 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(createdCompany.getKey() > 0);
 		
-		assertEquals(1, createdCompany.getKey());
 		assertEquals("11111111111111", createdCompany.getCnpj());
 		assertEquals("Trade Name1", createdCompany.getTradeName());
 		assertEquals("Business Name1", createdCompany.getBusinessName());
@@ -93,19 +119,22 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		assertEquals(false, createdCompany.getHaveAuthorization());
 		assertEquals("111111111", createdCompany.getConnection());
 		assertEquals("Observation1", createdCompany.getObservation());
-		assertEquals(false, createdCompany.getIsActive());
+		assertEquals(true, createdCompany.getIsActive());
 		assertEquals(null, createdCompany.getFkCompanySameDb());
+		
+		idCompany = createdCompany.getKey();
 	}
 	
 	@Test
 	@Order(2) 
-	public void testCreateSecondCompany() throws JsonMappingException, JsonProcessingException {
+	public void testCreateCompanySameDb() throws JsonMappingException, JsonProcessingException {
 		CompanyVO mockVO = inputCompany.mockVO(2);
-		mockVO.setFkCompanySameDb(1);
+		mockVO.setFkCompanySameDb(idCompany);
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("v1/empresa/novo")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -129,7 +158,6 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(createdCompany.getKey() > 0);
 		
-		assertEquals(2, createdCompany.getKey());
 		assertEquals("22222222222222", createdCompany.getCnpj());
 		assertEquals("Trade Name2", createdCompany.getTradeName());
 		assertEquals("Business Name2", createdCompany.getBusinessName());
@@ -138,12 +166,12 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		assertEquals("222222222", createdCompany.getConnection());
 		assertEquals("Observation2", createdCompany.getObservation());
 		assertEquals(true, createdCompany.getIsActive());
-		assertEquals(1, createdCompany.getFkCompanySameDb());
+		assertEquals(idCompany, createdCompany.getFkCompanySameDb());
 	}
 	
 	@Test
 	@Order(3)
-	public void createVersion() throws JsonMappingException, JsonProcessingException {
+	public void testCreateVersion() throws JsonMappingException, JsonProcessingException {
 		VersionVO mockVO = inputVersion.mockVO(1);
 		Date currentDate = new Date();
 		mockVO.setEffectivePeriodUntil(currentDate);
@@ -151,6 +179,7 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		specification = new RequestSpecBuilder()
 				.setBasePath("/v1/versao/novo")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -176,35 +205,21 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(createdVersion.getKey() > 0);
 		
-		assertEquals(1, createdVersion.getKey());
 		assertEquals("Name1", createdVersion.getName());
 		assertEquals(currentDate, createdVersion.getEffectivePeriodUntil());
 	}
 	
-	/*
-	
-	// Implementar essa função no Controller
-	@PostMapping
-	public IbptUpdate create(@RequestBody IbptUpdate entity) {
-		return ibptUpdateService.create(entity);
-	}
-	
-	// Implementar essa função no Service
-	public IbptUpdate create(IbptUpdate entity) {
-		return ibptUpdateRepository.save(entity);
-	}
 	
 	@Test
 	@Order(4)
-	public void mockFirstIbptUpdate() throws JsonMappingException, JsonProcessingException {
-		IbptUpdate entity = new IbptUpdate();
-		entity.setFkVersion(1);
-		entity.setFkCompany(1);
-		entity.setIsUpdated(false);
+	public void testFindCustomBeforeUpdated() throws JsonMappingException, JsonProcessingException {
+		String companyCnpj = "11111111111111";
+		String versionName = "Name1";
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("v1/atualizacao")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -212,36 +227,37 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		var content = 
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.body(entity)
+				.queryParam("empresaCnpj", companyCnpj)
+				.queryParam("versaoNome", versionName)
 				.when()
-					.post()
+					.get()
 				.then()
 					.statusCode(200)
 				.extract()
 					.body()
 					.asString();
 		
-		var result = objectMapper.readValue(content, IbptUpdate.class);
+		var result = objectMapper.readValue(content, ArrayList.class).toString();
 		
 		assertNotNull(result);
 		
-		assertEquals(1, result.getId());
-		assertEquals(1, result.getFkVersion());
-		assertEquals(1, result.getFkCompany());
-		assertEquals(false, result.getIsUpdated());
+		assertTrue(
+				result.contains("companyCnpj=" + companyCnpj) 
+			 && result.contains("versionName=" + versionName)
+			 && result.contains("isUpdated=false")
+		);
 	}
 	
 	@Test
 	@Order(5)
-	public void mockSecondIbptUpdate() throws JsonMappingException, JsonProcessingException {
-		IbptUpdate entity = new IbptUpdate();
-		entity.setFkVersion(1);
-		entity.setFkCompany(2);
-		entity.setIsUpdated(false);
+	public void testFindCustomBeforeUpdated2() throws JsonMappingException, JsonProcessingException {
+		String companyCnpj = "22222222222222";
+		String versionName = "Name1";
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("v1/atualizacao")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -249,35 +265,39 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		var content = 
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.body(entity)
+				.queryParam("empresaCnpj", companyCnpj)
+				.queryParam("versaoNome", versionName)
 				.when()
-				.post()
+					.get()
 				.then()
-				.statusCode(200)
+					.statusCode(200)
 				.extract()
-				.body()
-				.asString();
+					.body()
+					.asString();
 		
-		var result = objectMapper.readValue(content, IbptUpdate.class);
+		var result = objectMapper.readValue(content, ArrayList.class).toString();
 		
 		assertNotNull(result);
 		
-		assertEquals(2, result.getId());
-		assertEquals(1, result.getFkVersion());
-		assertEquals(2, result.getFkCompany());
-		assertEquals(false, result.getIsUpdated());
+		assertTrue(
+				result.contains("companyCnpj=" + companyCnpj) 
+			 && result.contains("versionName=" + versionName)
+			 && result.contains("isUpdated=false")
+		);
+		
 	}
 	
 	@Test
 	@Order(6)
 	public void testUpdate() {
 		UpdateVO vo = new UpdateVO();
-		vo.setId(1);
+		vo.setId(676);
 		vo.setValue(true);
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("/v1/atualizacao")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -291,18 +311,19 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 				.then()
 					.statusCode(200);
 		
-		System.out.println(content.toString());
 		assertNotNull(content);
 	}
 	
 	@Test
 	@Order(7)
-	public void testFindCustom() throws JsonMappingException, JsonProcessingException {
-		Boolean isUpdated = true;
+	public void testFindCustomAfterUpdated() throws JsonMappingException, JsonProcessingException {
+		String companyCnpj = "11111111111111";
+		String versionName = "Name1";
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("v1/atualizacao")
 				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -310,7 +331,8 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		var content = 
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.queryParam("estaAtualizado", isUpdated)
+				.queryParam("empresaCnpj", companyCnpj)
+				.queryParam("versaoNome", versionName)
 				.when()
 					.get()
 				.then()
@@ -323,8 +345,48 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		
 		assertNotNull(result);
 		
-		assertTrue(result.contains("isUpdated=" + isUpdated));
+		assertTrue(
+				result.contains("companyCnpj=" + companyCnpj) 
+			 && result.contains("versionName=" + versionName)
+			 && result.contains("isUpdated=true")
+		);
 	}
 	
-	*/
+	@Test
+	@Order(8)
+	public void testFindCustomAfterUpdated2() throws JsonMappingException, JsonProcessingException {
+		String companyCnpj = "22222222222222";
+		String versionName = "Name1";
+		
+		specification = new RequestSpecBuilder()
+				.setBasePath("v1/atualizacao")
+				.setPort(TestConfigs.SERVER_PORT)
+				.addHeader("Authorization", accessToken)
+				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
+		
+		var content = 
+				given().spec(specification)
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.queryParam("empresaCnpj", companyCnpj)
+				.queryParam("versaoNome", versionName)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		var result = objectMapper.readValue(content, ArrayList.class).toString();
+		
+		assertNotNull(result);
+		
+		assertTrue(
+				result.contains("companyCnpj=" + companyCnpj) 
+			 && result.contains("versionName=" + versionName)
+			 && result.contains("isUpdated=true")
+		);
+	}
 }

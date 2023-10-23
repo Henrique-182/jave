@@ -25,6 +25,9 @@ public class CompanyService {
 	@Autowired
 	private CompanyMapper companyMapper;
 	
+	@Autowired
+	private IbptUpdateService ibptUpdateService;
+	
 	public CompanyVO findById(Integer id) {
 		Company company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 	
@@ -50,6 +53,8 @@ public class CompanyService {
 		if (vo == null) throw new RequiredObjectIsNullException();
 		
 		Company persisted = companyRepository.save(companyMapper.toCompany(vo));
+		
+		ibptUpdateService.PROC_NEW_IBPT_UPDATE();
 		
 		return companyMapper.toCompanyVO(persisted);
 	}

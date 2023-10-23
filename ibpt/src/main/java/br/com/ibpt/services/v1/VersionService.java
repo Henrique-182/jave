@@ -25,6 +25,9 @@ public class VersionService {
 	@Autowired
 	private VersionMapper versionMapper;
 	
+	@Autowired
+	private IbptUpdateService ibptUpdateService;
+	
 	public VersionVO findById(Integer id) {
 		Version entity = versionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
 		
@@ -42,6 +45,8 @@ public class VersionService {
 		if (vo == null) throw new RequiredObjectIsNullException();
 		
 		Version persisted = versionRepository.save(versionMapper.toVersion(vo));
+		
+		ibptUpdateService.PROC_NEW_IBPT_UPDATE(persisted.getId());
 		
 		return versionMapper.toVersionVO(persisted);
 	}
