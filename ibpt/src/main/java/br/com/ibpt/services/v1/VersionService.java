@@ -46,7 +46,7 @@ public class VersionService {
 		
 		Version persisted = versionRepository.save(versionMapper.toVersion(vo));
 		
-		ibptUpdateService.PROC_NEW_IBPT_UPDATE(persisted.getId());
+		ibptUpdateService.callProcNewIbptUpdate(persisted.getId());
 		
 		return versionMapper.toVersionVO(persisted);
 	}

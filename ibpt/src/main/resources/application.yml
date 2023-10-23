@@ -6,6 +6,10 @@ security:
       secret-key: 53cr37
       expire-length: 3600000
 spring:
+  data:
+    jdbc:
+      repositories:
+        enabled: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/jave?useTimezone=true&serverTimezone=America/Sao_Paulo
@@ -16,7 +20,7 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
     show-sql: false
   flyway:
     baselineOnMigrate: true

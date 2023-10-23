@@ -54,7 +54,7 @@ public class CompanyService {
 		
 		Company persisted = companyRepository.save(companyMapper.toCompany(vo));
 		
-		ibptUpdateService.PROC_NEW_IBPT_UPDATE();
+		ibptUpdateService.callProcNewIbptUpdate();
 		
 		return companyMapper.toCompanyVO(persisted);
 	}
