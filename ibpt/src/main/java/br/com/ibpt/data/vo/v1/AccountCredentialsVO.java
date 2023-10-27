@@ -11,8 +11,16 @@ public class AccountCredentialsVO implements Serializable {
 	private String fullname;
 	private String password;
 	
+	public AccountCredentialsVO() {}
+
 	public AccountCredentialsVO(String userName, String password) {
 		this.userName = userName;
+		this.password = password;
+	}
+	
+	public AccountCredentialsVO(String userName, String fullname, String password) {
+		this.userName = userName;
+		this.fullname = fullname;
 		this.password = password;
 	}
 
