@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -34,6 +35,7 @@ import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
+@DirtiesContext
 public class VersionControllerTest extends AbstractIntegrationTest {
 
 	private static RequestSpecification specification;
@@ -75,7 +77,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 	@Test
 	@Order(1)
 	public void testCreateVersion() throws JsonMappingException, JsonProcessingException {
-		VersionVO mockVO = versionMock.mockVO(1);
+		VersionVO mockVO = versionMock.mockVO(2);
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("/v1/versao/novo")
@@ -106,8 +108,8 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(createdVersion.getKey() > 0);
 		
-		assertEquals("Name1", createdVersion.getName());
-		assertEquals(new Date(1), createdVersion.getEffectivePeriodUntil());
+		assertEquals("Name2", createdVersion.getName());
+		assertEquals(new Date(2), createdVersion.getEffectivePeriodUntil());
 		
 		idMax = createdVersion.getKey();
 	}
@@ -144,8 +146,8 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		assertNotNull(persistedVersion.getEffectivePeriodUntil());
 		
 		assertEquals(idMax, persistedVersion.getKey());
-		assertEquals("Name1", persistedVersion.getName());
-		assertEquals(new Date(1), persistedVersion.getEffectivePeriodUntil());
+		assertEquals("Name2", persistedVersion.getName());
+		assertEquals(new Date(2), persistedVersion.getEffectivePeriodUntil());
 	}
 	
 	@Test

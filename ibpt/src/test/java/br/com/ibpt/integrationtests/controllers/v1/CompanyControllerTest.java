@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -33,6 +34,7 @@ import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
+@DirtiesContext
 public class CompanyControllerTest extends AbstractIntegrationTest {
 
 	private static RequestSpecification specification;
@@ -74,7 +76,7 @@ public class CompanyControllerTest extends AbstractIntegrationTest {
 	@Test
 	@Order(1)
 	public void testCreateCompany() throws JsonMappingException, JsonProcessingException {
-		CompanyVO mockVO = companyMock.mockVO(1);
+		CompanyVO mockVO = companyMock.mockVO(3);
 		
 		specification = new RequestSpecBuilder()
 				.setBasePath("v1/empresa/novo")
@@ -103,15 +105,15 @@ public class CompanyControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(createdCompany.getKey() > 0);
 		
-		assertEquals("11111111111111", createdCompany.getCnpj());
-		assertEquals("Trade Name1", createdCompany.getTradeName());
-		assertEquals("Business Name1", createdCompany.getBusinessName());
+		assertEquals("33333333333333", createdCompany.getCnpj());
+		assertEquals("Trade Name3", createdCompany.getTradeName());
+		assertEquals("Business Name3", createdCompany.getBusinessName());
 		assertEquals("Esti", createdCompany.getSoftware());
 		assertEquals(false, createdCompany.getHaveAuthorization());
-		assertEquals("111111111", createdCompany.getConnection());
-		assertEquals("Observation1", createdCompany.getObservation());
+		assertEquals("333333333", createdCompany.getConnection());
+		assertEquals("Observation3", createdCompany.getObservation());
 		assertEquals(false, createdCompany.getIsActive());
-		assertEquals(1, createdCompany.getFkCompanySameDb());
+		assertEquals(9, createdCompany.getFkCompanySameDb());
 		
 		idMax = createdCompany.getKey();
 	}
@@ -145,15 +147,15 @@ public class CompanyControllerTest extends AbstractIntegrationTest {
 		assertNotNull(persistedCompany);
 		
 		assertEquals(idMax, persistedCompany.getKey());
-		assertEquals("11111111111111", persistedCompany.getCnpj());
-		assertEquals("Trade Name1", persistedCompany.getTradeName());
-		assertEquals("Business Name1", persistedCompany.getBusinessName());
+		assertEquals("33333333333333", persistedCompany.getCnpj());
+		assertEquals("Trade Name3", persistedCompany.getTradeName());
+		assertEquals("Business Name3", persistedCompany.getBusinessName());
 		assertEquals("Esti", persistedCompany.getSoftware());
 		assertEquals(false, persistedCompany.getHaveAuthorization());
-		assertEquals("111111111", persistedCompany.getConnection());
-		assertEquals("Observation1", persistedCompany.getObservation());
+		assertEquals("333333333", persistedCompany.getConnection());
+		assertEquals("Observation3", persistedCompany.getObservation());
 		assertEquals(false, persistedCompany.getIsActive());
-		assertEquals(1, persistedCompany.getFkCompanySameDb());
+		assertEquals(9, persistedCompany.getFkCompanySameDb());
 	}
 	
 	@Test
@@ -252,13 +254,13 @@ public class CompanyControllerTest extends AbstractIntegrationTest {
 		CompanyVO persistedCompany = objectMapper.readValue(content, CompanyVO.class);
 		
 		assertEquals(idMax, persistedCompany.getKey());
-		assertEquals("11111111111111", persistedCompany.getCnpj());
-		assertEquals("159Trade Name", persistedCompany.getTradeName());
-		assertEquals("159Business Name", persistedCompany.getBusinessName());
+		assertEquals("33333333333333", persistedCompany.getCnpj());
+		assertEquals(idMax + "Trade Name", persistedCompany.getTradeName());
+		assertEquals(idMax + "Business Name", persistedCompany.getBusinessName());
 		assertEquals("Stac", persistedCompany.getSoftware());
 		assertEquals(true, persistedCompany.getHaveAuthorization());
-		assertEquals("159159159", persistedCompany.getConnection());
-		assertEquals("159Observation", persistedCompany.getObservation());
+		assertEquals("" + idMax + idMax + idMax, persistedCompany.getConnection());
+		assertEquals(idMax + "Observation", persistedCompany.getObservation());
 		assertEquals(true, persistedCompany.getIsActive());
 		assertEquals(null, persistedCompany.getFkCompanySameDb());
 	}

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonParseException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationFeature;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonMappingException;
@@ -33,6 +34,7 @@ import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
+@DirtiesContext
 public class UserControllerTest {
 
 	private static RequestSpecification specification;
@@ -184,8 +186,8 @@ public class UserControllerTest {
 	@Order(5)
 	void testUpdateById() throws JsonParseException, JsonMappingException, IOException {
 		UserVO userVO = new UserVO();
-		userVO.setUserName("marina2");
-		userVO.setFullName("Marina Lobo2");
+		userVO.setUserName("marina");
+		userVO.setFullName("Marina Lobo");
 		userVO.setAccountNonExpired(true);
 		userVO.setAccountNonLocked(true);;
 		userVO.setCredentialsNonExpired(true);
@@ -221,8 +223,8 @@ public class UserControllerTest {
 		
 		assertTrue(result.getId() > 0);
 		
-		assertEquals("marina2", result.getUserName());
-		assertEquals("Marina Lobo2", result.getFullName());
+		assertEquals("marina", result.getUserName());
+		assertEquals("Marina Lobo", result.getFullName());
 		assertEquals(true, result.getAccountNonExpired());
 		assertEquals(true, result.getAccountNonLocked());
 		assertEquals(true, result.getCredentialsNonExpired());

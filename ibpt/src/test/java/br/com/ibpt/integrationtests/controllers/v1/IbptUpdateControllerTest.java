@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -14,8 +15,10 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +29,7 @@ import br.com.ibpt.integrationtests.mocks.v1.VersionMock;
 import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.ibpt.integrationtests.vo.v1.AccountCredentialsVO;
 import br.com.ibpt.integrationtests.vo.v1.CompanyVO;
+import br.com.ibpt.integrationtests.vo.v1.IbptUpdateVO;
 import br.com.ibpt.integrationtests.vo.v1.TokenVO;
 import br.com.ibpt.integrationtests.vo.v1.UpdateVO;
 import br.com.ibpt.integrationtests.vo.v1.VersionVO;
@@ -37,6 +41,7 @@ import io.restassured.specification.RequestSpecification;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
+@DirtiesContext
 public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 
 	private static RequestSpecification specification;
@@ -47,6 +52,7 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 	
 	private static String accessToken = "Bearer ";
 	private static Integer idCompany = 0;
+	private static Integer idIbptUpdate = 0;
 	
 	@BeforeAll
 	public static void setup() {
@@ -237,15 +243,17 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		var result = objectMapper.readValue(content, ArrayList.class).toString();
+		var result = objectMapper.readValue(content, new TypeReference<List<IbptUpdateVO>>() {});
 		
 		assertNotNull(result);
 		
 		assertTrue(
-				result.contains("companyCnpj=" + companyCnpj) 
-			 && result.contains("versionName=" + versionName)
-			 && result.contains("isUpdated=false")
+			  result.get(0).getCompanyCnpj().equals(companyCnpj)
+			&& result.get(0).getVersionName().equals(versionName)
+			&& result.get(0).getIsUpdated().equals(false)
 		);
+		
+		idIbptUpdate = result.get(0).getKey();
 	}
 	
 	@Test
@@ -291,7 +299,7 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 	@Order(6)
 	public void testUpdate() {
 		UpdateVO vo = new UpdateVO();
-		vo.setId(676);
+		vo.setId(idIbptUpdate);
 		vo.setValue(true);
 		
 		specification = new RequestSpecBuilder()
@@ -352,6 +360,7 @@ public class IbptUpdateControllerTest extends AbstractIntegrationTest {
 		);
 	}
 	
+	@DirtiesContext
 	@Test
 	@Order(8)
 	public void testFindCustomAfterUpdated2() throws JsonMappingException, JsonProcessingException {

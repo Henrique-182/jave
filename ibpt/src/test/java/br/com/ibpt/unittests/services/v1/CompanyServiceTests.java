@@ -29,7 +29,9 @@ import br.com.ibpt.mappers.v1.CompanyMapper;
 import br.com.ibpt.model.v1.Company;
 import br.com.ibpt.repositories.v1.CompanyCustomRepository;
 import br.com.ibpt.repositories.v1.CompanyRepository;
+import br.com.ibpt.repositories.v1.VersionRepository;
 import br.com.ibpt.services.v1.CompanyService;
+import br.com.ibpt.services.v1.IbptUpdateService;
 import br.com.ibpt.unittests.mocks.v1.MockCompany;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -43,6 +45,9 @@ public class CompanyServiceTests {
 	CompanyService companyService;
 	
 	@Mock
+	IbptUpdateService ibptUpdateService;
+	
+	@Mock
 	CompanyRepository companyRepository;
 	
 	@Mock
@@ -50,6 +55,9 @@ public class CompanyServiceTests {
 	
 	@Spy
 	CompanyMapper companyMapper;
+	
+	@Spy
+	VersionRepository versionRepository;
 	
 	@BeforeEach
 	void setUp() {

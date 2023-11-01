@@ -3,13 +3,12 @@ package br.com.ibpt.integrationtests.controllers.v1;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.Date;
-
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import br.com.ibpt.config.TestConfigs;
 import br.com.ibpt.integrationtests.vo.v1.AccountCredentialsVO;
@@ -17,6 +16,7 @@ import br.com.ibpt.integrationtests.vo.v1.TokenVO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
+@DirtiesContext
 public class AuthControllerTest {
 	
 	private static TokenVO tokenVO;

@@ -30,6 +30,7 @@ import br.com.ibpt.mappers.v1.VersionMapper;
 import br.com.ibpt.model.v1.Version;
 import br.com.ibpt.repositories.v1.VersionCustomRepository;
 import br.com.ibpt.repositories.v1.VersionRepository;
+import br.com.ibpt.services.v1.IbptUpdateService;
 import br.com.ibpt.services.v1.VersionService;
 import br.com.ibpt.unittests.mocks.v1.VersionMock;
 
@@ -42,6 +43,9 @@ public class VersionServiceTests {
 	@Autowired
 	@InjectMocks
 	VersionService versionService;
+	
+	@Mock
+	IbptUpdateService ibptUpdateService;
 	
 	@Mock
 	VersionRepository versionRepository;
