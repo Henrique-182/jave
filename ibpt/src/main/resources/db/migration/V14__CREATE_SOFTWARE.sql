@@ -1,0 +1,4 @@
+CREATE TABLE `software` (
+    ID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    NAME varchar(100) NOT NULL
+);
