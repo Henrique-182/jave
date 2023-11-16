@@ -1,4 +1,4 @@
-package br.com.ibpt.model.company.v2;
+package br.com.ibpt.model.v2;
 
 import java.io.Serializable;
 import java.util.Objects;
