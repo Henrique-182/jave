@@ -24,4 +24,11 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
 		 + " WHERE COSO.fkCompany = :id " 
 		  )
 	void updateCompanySoftwareIsActiveByFkCompany(@Param("id") Integer id, @Param("value") Boolean value);
+	
+	@Modifying
+	@Query("UPDATE CompanySoftware COSO "
+		 + "   SET COSO.isActive = :value "
+		 + " WHERE COSO.id = :id " 
+		  )
+	void updateCompanySoftwareIsActiveById(@Param("id") Integer id, @Param("value") Boolean value);
 }

@@ -56,4 +56,12 @@ public class SoftwareService {
 		
 		return mapper.toVO(repository.save(entity));
 	}
+	
+	public void deleteById(Integer id) {
+		Software entity = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
+		
+		repository.delete(entity);
+	}
+	
 }

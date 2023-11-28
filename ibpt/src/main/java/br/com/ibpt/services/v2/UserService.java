@@ -1,4 +1,4 @@
-package br.com.ibpt.services.v1;
+package br.com.ibpt.services.v2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,18 +32,21 @@ import br.com.ibpt.repositories.v1.UserRepository;
 public class UserService implements UserDetailsService {
 	
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepository repository;
 	
 	@Autowired
-	private UserMapper userMapper;
+	private UserMapper mapper;
+	
+	@Autowired
+	private PagedResourcesAssembler<UserVO> assembler;
 
 	public UserService(UserRepository userRepository) {
-		this.userRepository = userRepository;
+		this.repository = userRepository;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		var user = userRepository.findByUserName(username);
+		var user = repository.findByUserName(username);
 		
 		if(user != null) {
 			return user;
@@ -47,22 +55,27 @@ public class UserService implements UserDetailsService {
 		}
 	}
 	
+	public PagedModel<EntityModel<UserVO>> findCustomPageable(Pageable pageable) {
+		
+		Page<User> entityList = repository.findAll(pageable);
+		
+		Page<UserVO> voList = entityList.map(u -> mapper.toUserVO(u));
+		
+		return assembler.toModel(voList);
+	}
+	
 	public UserVO findById(Integer id) {
-		User entity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
+		User entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
 		
-		return userMapper.toUserVO(entity);
+		return mapper.toUserVO(entity);
 	}
 	
-	public List<UserVO> findAll() {
-		return userMapper.toUserVOList(userRepository.findAll());
-	}
-	
-	public UserVO create(AccountCredentialsVO vo) {
+	public UserVO create(AccountCredentialsVO data) {
 		User user = new User();
-		user.setUserName(vo.getUserName());
-		user.setFullName(vo.getFullname());
+		user.setUserName(data.getUserName());
+		user.setFullName(data.getFullname());
 		
-		String password = createHash(vo.getPassword());
+		String password = createHash(data.getPassword());
 		if (password.startsWith("{pbkdf2}")) {
 			password = password.substring("{pbkdf2}".length());
 		}
@@ -77,11 +90,11 @@ public class UserService implements UserDetailsService {
 		pList.add(new Permission(3)); // COMMON_USER
 		user.setPermissions(pList);
 		
-		return userMapper.toUserVO(userRepository.save(user));
+		return mapper.toUserVO(repository.save(user));
 	}
 	
 	public UserVO updateById(Integer id, UserVO vo) {
-		User entity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
+		User entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
 		entity.setUserName(vo.getUserName());
 		entity.setFullName(vo.getFullName());
 		entity.setAccountNonExpired(vo.getAccountNonExpired());
@@ -90,7 +103,14 @@ public class UserService implements UserDetailsService {
 		entity.setEnabled(vo.getEnabled());
 		entity.setPermissions(vo.getPermissions());
 		
-		return userMapper.toUserVO(userRepository.save(entity));
+		return mapper.toUserVO(repository.save(entity));
+	}
+	
+	public void deleteById(Integer id) {
+		User entity = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
+		
+		repository.delete(entity);
 	}
 	
 	private static String createHash(String password) {

@@ -11,13 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import br.com.ibpt.config.TestConfigs;
+import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.ibpt.integrationtests.vo.v1.AccountCredentialsVO;
 import br.com.ibpt.integrationtests.vo.v1.TokenVO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
 @DirtiesContext
-public class AuthControllerTest {
+public class AuthControllerTest extends AbstractIntegrationTest {
 	
 	private static TokenVO tokenVO;
 

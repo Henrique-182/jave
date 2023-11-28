@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,9 +56,9 @@ public class SoftwareController {
 	)
 	@GetMapping
 	public ResponseEntity<PagedModel<EntityModel<SoftwareVO>>> findAll(
-		@RequestParam(value = "page", defaultValue = "0") Integer page,
-		@RequestParam(value = "size", defaultValue = "10") Integer size,
-		@RequestParam(value = "direction", defaultValue = "asc") String direction
+		@RequestParam(value = "pagina", defaultValue = "0") Integer page,
+		@RequestParam(value = "tamanho", defaultValue = "10") Integer size,
+		@RequestParam(value = "direcao", defaultValue = "asc") String direction
 	) {
 		
 		Pageable pageable = ControllerUtil.pageable(page, size, direction, "name");
@@ -117,4 +118,23 @@ public class SoftwareController {
 	public SoftwareVO updateById(@PathVariable("id") Integer id, @RequestBody SoftwareVO data) {
 		return service.updateById(id, data);
 	}
+	
+	@Operation(
+			summary = "Deletes a Software",
+			description = "Deletes a Software By Id",
+			tags = {"Software"},
+			responses = {
+				@ApiResponse(description = "Deleted", responseCode = "204", content = @Content),
+				@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+				@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+				@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
+				@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content),
+			}
+		)
+		@DeleteMapping(path = "/{id}")
+		public ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
+			service.deleteById(id);
+			
+			return ResponseEntity.noContent().build();
+		}
 }

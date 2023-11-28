@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.controllers.v1;
+package br.com.ibpt.integrationtests.controllers.v2;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,9 +22,11 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonMappingExcep
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ibpt.config.TestConfigs;
+import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.ibpt.integrationtests.vo.v1.AccountCredentialsVO;
 import br.com.ibpt.integrationtests.vo.v1.TokenVO;
 import br.com.ibpt.integrationtests.vo.v1.UserVO;
+import br.com.ibpt.integrationtests.vo.wrappers.v2.WrapperUserVO;
 import br.com.ibpt.model.v1.Permission;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -35,13 +37,13 @@ import io.restassured.specification.RequestSpecification;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
 @DirtiesContext
-public class UserControllerTest {
+public class UserControllerTest extends AbstractIntegrationTest {
 
 	private static RequestSpecification specification;
 	private static ObjectMapper objectMapper;
 	
 	private static String accessToken = "Bearer ";
-	private static Integer idUser;
+	private static UserVO user;
 	
 	@BeforeAll
 	public static void setup() {
@@ -51,11 +53,11 @@ public class UserControllerTest {
 	
 	@Test
 	@Order(1)
-	void testCreateUser() throws JsonParseException, JsonMappingException, IOException {
-		AccountCredentialsVO user = new AccountCredentialsVO("marina", "Marina Lobo", "ma@01");
+	public void testCreateUser() throws JsonParseException, JsonMappingException, IOException {
+		AccountCredentialsVO data = new AccountCredentialsVO("marina", "Marina Lobo", "ma@01");
 		
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/usuario/novo")
+				.setBasePath("/v2/usuario")
 				.setPort(TestConfigs.SERVER_PORT)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
@@ -64,9 +66,9 @@ public class UserControllerTest {
 		var content =
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.body(user)
+				.body(data)
 				.when()
-					.post()
+					.post("novo")
 				.then()
 					.statusCode(200)
 				.extract()
@@ -74,6 +76,7 @@ public class UserControllerTest {
 					.asString();
 				
 		UserVO createdUser = objectMapper.readValue(content, UserVO.class);
+		user = createdUser;
 		
 		assertNotNull(createdUser);
 		assertNotNull(createdUser.getId());
@@ -87,22 +90,18 @@ public class UserControllerTest {
 		assertEquals(true, createdUser.getCredentialsNonExpired());
 		assertEquals(true, createdUser.getEnabled());
 		assertEquals(3, createdUser.getPermissions().get(0).getId());
-		
-		idUser = createdUser.getId();
 	}
+	
 	@Test
 	@Order(2)
-	void authorization() throws JsonParseException, JsonMappingException, IOException {
-		AccountCredentialsVO user = new AccountCredentialsVO("marina", "ma@01");
+	public void authorization() throws JsonParseException, JsonMappingException, IOException {
+		AccountCredentialsVO data = new AccountCredentialsVO("marina", "ma@01");
 		
-		specification = null;
-		
-		accessToken = accessToken +
-				given()
+		accessToken += given()
 				.basePath("/auth/signin")
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
 				.port(TestConfigs.SERVER_PORT)
-				.body(user)
+				.body(data)
 				.when()
 					.post()
 				.then()
@@ -111,54 +110,24 @@ public class UserControllerTest {
 					.body()
 						.as(TokenVO.class)
 					.getAccessToken();
+		
+		specification = new RequestSpecBuilder()
+				.setBasePath("/v2/usuario")
+				.addHeader("Authorization", accessToken)
+				.setPort(TestConfigs.SERVER_PORT)
+				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
 	}
 	
 	@Test
 	@Order(3)
-	void testFindAll() throws JsonParseException, JsonMappingException, IOException {
-		
-		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/usuario")
-				.setPort(TestConfigs.SERVER_PORT)
-				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
-				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-				.build();
-		
-		var content =
-				given().spec(specification)
-				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.header("Authorization", accessToken)
-				.when()
-					.get()
-				.then()
-					.statusCode(200)
-				.extract()
-					.body()
-					.asString();
-				
-		var result = objectMapper.readValue(content, ArrayList.class).toString();
-		
-		assertNotNull(result);
-		
-		assertTrue(result.contains("userName=marina"));
-	}
-	
-	@Test
-	@Order(4)
 	void testFindById() throws JsonParseException, JsonMappingException, IOException {
 		
-		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/usuario")
-				.setPort(TestConfigs.SERVER_PORT)
-				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
-				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-				.build();
-		
 		var content =
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.header("Authorization", accessToken)
-				.pathParam("id", idUser)
+				.pathParam("id", user.getId())
 				.when()
 					.get("{id}")
 				.then()
@@ -183,11 +152,11 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	@Order(5)
+	@Order(4)
 	void testUpdateById() throws JsonParseException, JsonMappingException, IOException {
 		UserVO userVO = new UserVO();
 		userVO.setUserName("marina");
-		userVO.setFullName("Marina Lobo");
+		userVO.setFullName("Marina Pires");
 		userVO.setAccountNonExpired(true);
 		userVO.setAccountNonLocked(true);;
 		userVO.setCredentialsNonExpired(true);
@@ -196,18 +165,11 @@ public class UserControllerTest {
 		pList.add(new Permission(1)); // ADMIN
 		userVO.setPermissions(pList);
 		
-		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/usuario")
-				.setPort(TestConfigs.SERVER_PORT)
-				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
-				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-				.build();
-		
 		var content =
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
 				.header("Authorization", accessToken)
-				.pathParam("id", idUser)
+				.pathParam("id", user.getId())
 				.body(userVO)
 				.when()
 					.put("{id}")
@@ -224,11 +186,64 @@ public class UserControllerTest {
 		assertTrue(result.getId() > 0);
 		
 		assertEquals("marina", result.getUserName());
-		assertEquals("Marina Lobo", result.getFullName());
+		assertEquals("Marina Pires", result.getFullName());
 		assertEquals(true, result.getAccountNonExpired());
 		assertEquals(true, result.getAccountNonLocked());
 		assertEquals(true, result.getCredentialsNonExpired());
 		assertEquals(true, result.getEnabled());
 		assertEquals("ADMIN", result.getPermissions().get(0).getDescription());
 	}
+	
+	@Test
+	@Order(5)
+	void testFindAll() throws JsonParseException, JsonMappingException, IOException  {
+		Integer page = 0;
+		Integer size = 10;
+		String direction = "ASC";
+		String sortBy = "nomeCompleto";
+		
+		var content =
+				given().spec(specification)
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.queryParam("pagina", page)
+				.queryParam("tamanho", size)
+				.queryParam("direcao", direction)
+				.queryParam("ordenadoPor", sortBy)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+				
+		WrapperUserVO wrapper = objectMapper.readValue(content, WrapperUserVO.class);
+		
+		List<UserVO> resultList = wrapper.getEmbedded().getUsers();
+		
+		UserVO userOne = resultList.get(0);
+		
+		assertEquals("henrique", userOne.getUserName());
+		assertEquals("Henrique Augusto", userOne.getFullName());
+		assertEquals(true, userOne.getAccountNonExpired());
+		assertEquals(true, userOne.getAccountNonLocked());
+		assertEquals(true, userOne.getCredentialsNonExpired());
+		assertEquals(true, userOne.getEnabled());
+		assertEquals(1, userOne.getPermissions().get(0).getId());
+		assertEquals("ADMIN", userOne.getPermissions().get(0).getDescription());
+	}
+	
+	@Test
+	@Order(6)
+	void testDeleteById() {
+		
+		given().spec(specification)
+			.contentType(TestConfigs.CONTENT_TYPE_JSON)
+			.pathParam("id", user.getId())
+			.when()
+				.delete("{id}")
+			.then()
+				.statusCode(204);
+	}
+	
 }

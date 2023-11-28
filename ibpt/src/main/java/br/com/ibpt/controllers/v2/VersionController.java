@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,25 +55,27 @@ public class VersionController {
 	)
 	@GetMapping
 	public ResponseEntity<PagedModel<EntityModel<VersionVO>>> findAll(
-		@RequestParam(name = "pagina", defaultValue = "0") Integer page,
-		@RequestParam(name = "tamanho", defaultValue = "10") Integer size,
-		@RequestParam(name = "direcao", defaultValue = "asc") String direction,
-		@RequestParam(name = "ordenadoPor", defaultValue = "name") String orderBy,
+		@RequestParam(value = "pagina", defaultValue = "0", required = false) Integer page,
+		@RequestParam(value = "tamanho", defaultValue = "10", required = false) Integer size,
+		@RequestParam(value = "direcao", defaultValue = "asc", required = false) String direction,
+		@RequestParam(value = "ordenadoPor", defaultValue = "nome", required = false) String sortBy,
 		@RequestParam(value = "nome", required = false) String name,
 		@RequestParam(value = "mesVigencia", required = false) String effectivePeriodMonth,
 		@RequestParam(value = "anoVigencia", required = false) String effectivePeriodYear
 	) {
 		
-		orderBy = "vigenciaAte".equalsIgnoreCase(orderBy) ? "effectivePeriodUntil" : "name";
+		sortBy = "vigenciaAte".equalsIgnoreCase(sortBy) ? "effectivePeriodUntil" : "name";
 		
-		Pageable pageable = ControllerUtil.pageable(page, size, direction, orderBy);
+		Pageable pageable = ControllerUtil.pageable(page, size);
 		
 		return ResponseEntity.ok(
-				   service.findAll(
+				   service.findCustomPaginable(
 			           pageable,
 					   name, 
 					   effectivePeriodMonth,
-				       effectivePeriodYear
+				       effectivePeriodYear,
+				       sortBy,
+				       direction
 			       )
 			   );
 	}
@@ -129,4 +132,24 @@ public class VersionController {
 	public VersionVO updateById(@PathVariable("id") Integer id, @RequestBody VersionVO data) {
 		return service.updateById(id, data);
 	}
+	
+	@Operation(
+		summary = "Deletes a Version",
+		description = "Deletes a Version By Id",
+		tags = {"Version"},
+		responses = {
+			@ApiResponse(description = "Deleted", responseCode = "204", content = @Content),
+			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+			@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
+			@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content),
+		}
+	)
+	@DeleteMapping(path = "/{id}")
+	public ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
+		service.deleteById(id);
+		
+		return ResponseEntity.noContent().build();
+	}
+	
 }

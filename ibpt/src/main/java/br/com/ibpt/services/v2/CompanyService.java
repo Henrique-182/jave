@@ -15,16 +15,12 @@ import br.com.ibpt.exceptions.ResourceNotFoundException;
 import br.com.ibpt.mappers.v2.CompanyMapper;
 import br.com.ibpt.model.v2.Company;
 import br.com.ibpt.repositories.v2.CompanyRepository;
-import br.com.ibpt.repositories.v2.CompanySoftwareRepository;
 
 @Service
 public class CompanyService {
 
 	@Autowired
 	private CompanyRepository repository;
-	
-	@Autowired
-	private CompanySoftwareRepository companySoftwareRepository;
 	
 	@Autowired
 	private CompanyMapper mapper;
@@ -80,6 +76,14 @@ public class CompanyService {
 	@Transactional
 	public void updateCompanySoftwareIsActiveById(CompanyActiveVO data) {
 		
-		companySoftwareRepository.updateCompanySoftwareIsActiveById(data.getId(), data.getValue());
+		repository.updateCompanySoftwareIsActiveById(data.getId(), data.getValue());
 	}
+	
+	public void deleteById(Integer id) {
+		Company entity = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
+		
+		repository.delete(entity);
+	}
+	
 }

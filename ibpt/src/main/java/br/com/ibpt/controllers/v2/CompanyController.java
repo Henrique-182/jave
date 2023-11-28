@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -147,4 +148,22 @@ public class CompanyController {
 		service.updateCompanySoftwareIsActiveById(data);
 	}
 	
+	@Operation(
+			summary = "Deletes a Company",
+			description = "Deletes a Company By Id",
+			tags = {"Company"},
+			responses = {
+				@ApiResponse(description = "Deleted", responseCode = "204", content = @Content),
+				@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+				@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+				@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
+				@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content),
+			}
+		)
+	@DeleteMapping(path = "/{id}")
+	public ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
+		service.deleteById(id);
+		
+		return ResponseEntity.noContent().build();
+	}
 }

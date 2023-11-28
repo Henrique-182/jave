@@ -5,8 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,8 +67,13 @@ public class IbptController {
 		@RequestParam(value = "empresaNome", required = false) String companyName,
 		@RequestParam(value = "estaAtualizado", required = false) Boolean isUpdated
 	) {
+		sortBy = sortBy.equalsIgnoreCase("empresaCnpj") ? "companySoftware.company.cnpj"
+				: sortBy.equalsIgnoreCase("empresaNome") ? "companySoftware.company.tradeName"
+				: sortBy.equalsIgnoreCase("estaAtualizado") ? "isUpdated"
+				: sortBy.equalsIgnoreCase("versaoNome") ? "version.name"
+				: "id";
 		
-		Pageable pageable = ControllerUtil.pageable(page, size, direction, sortBy);
+		Pageable pageable = ControllerUtil.pageable(page, size);
 	
 		return ResponseEntity.ok(
 					service.findCustomPaginable(
@@ -75,7 +82,9 @@ public class IbptController {
 						versionName,
 						companyCnpj,
 						companyName,
-						isUpdated
+						isUpdated,
+						sortBy,
+						direction
 					)
 				);
 	}
@@ -109,8 +118,15 @@ public class IbptController {
 			@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content),
 		}
 	)	
-@PatchMapping
+	@PatchMapping
 	public void updateById(@RequestBody IbptUpdateVO data) {
 		service.updateById(data);
+	}
+	
+	@DeleteMapping(path = "/{id}")
+	public ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
+		service.deleteById(id);
+		
+		return ResponseEntity.noContent().build();
 	}
 }

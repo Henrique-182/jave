@@ -1,22 +1,22 @@
-package br.com.ibpt.integrationtests.vo.v1;
+package br.com.ibpt.integrationtests.vo.v2;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
+
+import br.com.ibpt.model.v2.CompanySoftware;
 
 public class CompanyVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer key;
 	private String cnpj;
 	private String tradeName;
 	private String businessName;
-	private String software;
-	private Boolean haveAuthorization;
-	private String connection;
 	private String observation;
 	private Boolean isActive;
-	private Integer fkCompanySameDb;
+	private List<CompanySoftware> softwares;
 	
 	public CompanyVO() {}
 
@@ -52,30 +52,6 @@ public class CompanyVO implements Serializable {
 		this.businessName = businessName;
 	}
 
-	public String getSoftware() {
-		return software;
-	}
-
-	public void setSoftware(String software) {
-		this.software = software;
-	}
-
-	public Boolean getHaveAuthorization() {
-		return haveAuthorization;
-	}
-
-	public void setHaveAuthorization(Boolean haveAuthorization) {
-		this.haveAuthorization = haveAuthorization;
-	}
-
-	public String getConnection() {
-		return connection;
-	}
-
-	public void setConnection(String connection) {
-		this.connection = connection;
-	}
-
 	public String getObservation() {
 		return observation;
 	}
@@ -92,18 +68,17 @@ public class CompanyVO implements Serializable {
 		this.isActive = isActive;
 	}
 
-	public Integer getFkCompanySameDb() {
-		return fkCompanySameDb;
+	public List<CompanySoftware> getSoftwares() {
+		return softwares;
 	}
 
-	public void setFkCompanySameDb(Integer fkCompanySameDb) {
-		this.fkCompanySameDb = fkCompanySameDb;
+	public void setSoftwares(List<CompanySoftware> softwares) {
+		this.softwares = softwares;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(businessName, cnpj, connection, fkCompanySameDb, haveAuthorization, isActive, key,
-				observation, software, tradeName);
+		return Objects.hash(businessName, cnpj, isActive, key, observation, softwares, tradeName);
 	}
 
 	@Override
@@ -116,11 +91,9 @@ public class CompanyVO implements Serializable {
 			return false;
 		CompanyVO other = (CompanyVO) obj;
 		return Objects.equals(businessName, other.businessName) && Objects.equals(cnpj, other.cnpj)
-				&& Objects.equals(connection, other.connection)
-				&& Objects.equals(fkCompanySameDb, other.fkCompanySameDb)
-				&& Objects.equals(haveAuthorization, other.haveAuthorization)
 				&& Objects.equals(isActive, other.isActive) && Objects.equals(key, other.key)
-				&& Objects.equals(observation, other.observation) && Objects.equals(software, other.software)
+				&& Objects.equals(observation, other.observation) && Objects.equals(softwares, other.softwares)
 				&& Objects.equals(tradeName, other.tradeName);
 	}
+
 }

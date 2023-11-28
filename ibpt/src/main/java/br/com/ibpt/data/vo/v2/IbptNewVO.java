@@ -7,22 +7,21 @@ public class IbptNewVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer id;
+	private Integer key;
 	
 	public IbptNewVO() {}
 
-	public Integer getId() {
-		return id;
+	public Integer getKey() {
+		return key;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setKey(Integer key) {
+		this.key = key;
 	}
-
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(key);
 	}
 
 	@Override
@@ -34,7 +33,7 @@ public class IbptNewVO implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		IbptNewVO other = (IbptNewVO) obj;
-		return Objects.equals(id, other.id);
+		return Objects.equals(key, other.key);
 	}
-	
+
 }

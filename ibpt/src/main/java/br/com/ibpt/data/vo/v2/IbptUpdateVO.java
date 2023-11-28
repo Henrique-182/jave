@@ -7,31 +7,32 @@ public class IbptUpdateVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer id;
+	private Integer key;
 	private Boolean value;
 	
 	public IbptUpdateVO() {}
-	
-	public Integer getId() {
-		return id;
+
+	public Integer getKey() {
+		return key;
 	}
-	
-	public void setId(Integer id) {
-		this.id = id;
+
+	public void setKey(Integer key) {
+		this.key = key;
 	}
-	
+
 	public Boolean getValue() {
 		return value;
 	}
-	
+
 	public void setValue(Boolean value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, value);
+		return Objects.hash(key, value);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -41,7 +42,7 @@ public class IbptUpdateVO implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		IbptUpdateVO other = (IbptUpdateVO) obj;
-		return Objects.equals(id, other.id) && Objects.equals(value, other.value);
+		return Objects.equals(key, other.key) && Objects.equals(value, other.value);
 	}
-
+	
 }

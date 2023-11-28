@@ -1,13 +1,11 @@
-package br.com.ibpt.unittests.services.v1;
+package br.com.ibpt.unittests.services.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +26,7 @@ import br.com.ibpt.exceptions.ResourceNotFoundException;
 import br.com.ibpt.mappers.v1.UserMapper;
 import br.com.ibpt.model.v1.User;
 import br.com.ibpt.repositories.v1.UserRepository;
-import br.com.ibpt.services.v1.UserService;
+import br.com.ibpt.services.v2.UserService;
 import br.com.ibpt.unittests.mocks.v1.UserMock;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -39,13 +37,13 @@ public class UserServiceTest {
 	
 	@Autowired
 	@InjectMocks
-	private UserService userService;
+	private UserService service;
 
 	@Mock
-	private UserRepository userRepository;
+	private UserRepository repository;
 	
 	@Spy
-	private UserMapper userMapper;
+	private UserMapper mapper;
 	
 	@BeforeEach
 	void setUp() {
@@ -59,10 +57,10 @@ public class UserServiceTest {
 		User mockEntity = input.mockEntity(id);
 		UserVO mockVO = input.mockVO(id);
 		
-		when(userRepository.findById(any(Integer.class))).thenReturn(Optional.of(mockEntity));
-		when(userMapper.toUserVO(any(User.class))).thenReturn(mockVO);
+		when(repository.findById(any(Integer.class))).thenReturn(Optional.of(mockEntity));
+		when(mapper.toUserVO(any(User.class))).thenReturn(mockVO);
 		
-		UserVO result = userService.findById(id);
+		UserVO result = service.findById(id);
 		
 		assertNotNull(result);
 		
@@ -81,7 +79,7 @@ public class UserServiceTest {
 		Integer id = 1000;
 		
 		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-			userService.findById(id);
+			service.findById(id);
 		});
 		
 		String expectedMessage = "No records found for this id!";
@@ -91,40 +89,15 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	void testFindAll() {
-		List<User> mockEntityList = input.mockEntityList();
-		List<UserVO> mockVOList = input.mockVOList();
-		
-		when(userRepository.findAll()).thenReturn(mockEntityList);
-		when(userMapper.toUserVOList(anyList())).thenReturn(mockVOList);
-		
-		List<UserVO> resultList = userService.findAll();
-		
-		assertNotNull(resultList);
-		
-		UserVO resultTwo = resultList.get(2);
-		assertNotNull(resultTwo);
-		assertEquals(2, resultTwo.getId());
-		assertEquals("Username2", resultTwo.getUserName());
-		assertEquals("Full Name2", resultTwo.getFullName());
-		assertEquals(true, resultTwo.getAccountNonExpired());
-		assertEquals(true, resultTwo.getAccountNonLocked());
-		assertEquals(true, resultTwo.getCredentialsNonExpired());
-		assertEquals(true, resultTwo.getEnabled());
-		assertEquals("Description2", resultTwo.getPermissions().get(0).getDescription());
-	
-	}
-	
-	@Test
 	void testCreate() {
 		User mockEntity = input.mockEntity(1);
 		UserVO mockVO = input.mockVO(1);
 		AccountCredentialsVO user = new AccountCredentialsVO("Username0", "Full Name0", "Password0");
 		
-		when(userRepository.save(any(User.class))).thenReturn(mockEntity);
-		when(userMapper.toUserVO(any(User.class))).thenReturn(mockVO);
+		when(repository.save(any(User.class))).thenReturn(mockEntity);
+		when(mapper.toUserVO(any(User.class))).thenReturn(mockVO);
 		
-		UserVO result = userService.create(user);
+		UserVO result = service.create(user);
 		
 		assertNotNull(result);
 		
@@ -146,11 +119,11 @@ public class UserServiceTest {
 		mockVO.setFullName(id + "Full Name");
 		User mockEntity = input.mockEntity(id);
 		
-		when(userRepository.findById(any(Integer.class))).thenReturn(Optional.of(mockEntity));
-		when(userRepository.save(any(User.class))).thenReturn(mockEntity);
-		when(userMapper.toUserVO(any(User.class))).thenReturn(mockVO);
+		when(repository.findById(any(Integer.class))).thenReturn(Optional.of(mockEntity));
+		when(repository.save(any(User.class))).thenReturn(mockEntity);
+		when(mapper.toUserVO(any(User.class))).thenReturn(mockVO);
 		
-		UserVO result = userService.updateById(id, mockVO);
+		UserVO result = service.updateById(id, mockVO);
 		
 		assertNotNull(result);
 		
@@ -163,4 +136,14 @@ public class UserServiceTest {
 		assertEquals(true, result.getEnabled());
 		assertEquals("Description2", result.getPermissions().get(0).getDescription());
 	}
+	
+	@Test
+	void testDeleteById() {
+		User entity = input.mockEntity(1); 
+		
+		when(repository.findById(1)).thenReturn(Optional.of(entity));
+		
+		service.deleteById(1);
+	}
+	
 }

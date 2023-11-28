@@ -56,6 +56,22 @@ public class CompanySoftwareIbpt implements Serializable {
 		this.id = id;
 	}
 
+	public CompanyIbpt getCompany() {
+		return company;
+	}
+
+	public void setCompany(CompanyIbpt company) {
+		this.company = company;
+	}
+
+	public SoftwareIbpt getSoftware() {
+		return software;
+	}
+
+	public void setSoftware(SoftwareIbpt software) {
+		this.software = software;
+	}
+
 	public String getType() {
 		return type;
 	}

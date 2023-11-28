@@ -21,7 +21,9 @@ public class IbptCustomRepository {
 		String versionName,
 		String companyCnpj,
 		String companyName,
-		Boolean isUpdated
+		Boolean isUpdated,
+		String sortBy,
+		String direction
 	) {
 		String query = "SELECT IBPT FROM Ibpt IBPT ";
 		String condition = "WHERE ";
@@ -49,6 +51,14 @@ public class IbptCustomRepository {
 		if (isUpdated != null) {
 			query += condition + " IBPT.isUpdated = :isUpdated ";
 			condition = "AND ";
+		}
+		
+		if (sortBy != null) {
+			query += "ORDER BY IBPT." + sortBy + " ";
+			
+			if (direction != null) {
+				query += direction;
+			}
 		}
 		
 		var q = entityManager.createQuery(query, Ibpt.class);

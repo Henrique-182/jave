@@ -10,7 +10,7 @@ public class CompanyVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer id;
+	private Integer key;
 	private String cnpj;
 	private String tradeName;
 	private String businessName;
@@ -20,12 +20,12 @@ public class CompanyVO implements Serializable {
 
 	public CompanyVO() {}
 
-	public Integer getId() {
-		return id;
+	public Integer getKey() {
+		return key;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setKey(Integer key) {
+		this.key = key;
 	}
 
 	public String getCnpj() {
@@ -78,7 +78,7 @@ public class CompanyVO implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(businessName, cnpj, id, isActive, observation, softwares, tradeName);
+		return Objects.hash(businessName, cnpj, key, isActive, observation, softwares, tradeName);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class CompanyVO implements Serializable {
 			return false;
 		CompanyVO other = (CompanyVO) obj;
 		return Objects.equals(businessName, other.businessName) && Objects.equals(cnpj, other.cnpj)
-				&& Objects.equals(id, other.id) && Objects.equals(isActive, other.isActive)
+				&& Objects.equals(key, other.key) && Objects.equals(isActive, other.isActive)
 				&& Objects.equals(observation, other.observation) && Objects.equals(softwares, other.softwares)
 				&& Objects.equals(tradeName, other.tradeName);
 	}

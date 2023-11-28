@@ -7,17 +7,17 @@ public class SoftwareVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer id;
+	private Integer key;
 	private String name;
 	
 	public SoftwareVO() {}
 	
-	public Integer getId() {
-		return id;
+	public Integer getKey() {
+		return key;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setKey(Integer key) {
+		this.key = key;
 	}
 
 	public String getName() {
@@ -30,7 +30,7 @@ public class SoftwareVO implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name);
+		return Objects.hash(key, name);
 	}
 	
 	@Override
@@ -42,7 +42,7 @@ public class SoftwareVO implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		SoftwareVO other = (SoftwareVO) obj;
-		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
+		return Objects.equals(key, other.key) && Objects.equals(name, other.name);
 	}
 	
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.ibpt.data.vo.v2.IbptNewVO;
 import br.com.ibpt.data.vo.v2.IbptUpdateVO;
 import br.com.ibpt.data.vo.v2.IbptVO;
+import br.com.ibpt.exceptions.ResourceNotFoundException;
 import br.com.ibpt.mappers.v2.IbptMapper;
 import br.com.ibpt.model.v2.Ibpt;
 import br.com.ibpt.repositories.v2.IbptCustomRepository;
@@ -40,7 +41,9 @@ public class IbptService {
 		String versionName,
 		String companyCnpj,
 		String companyName,
-		Boolean isUpdated
+		Boolean isUpdated,
+		String sortBy,
+		String direction
 	) {
 		
 		List<Ibpt> entityList = customRepository.findCustom(
@@ -48,7 +51,9 @@ public class IbptService {
 			versionName,
 			companyCnpj,
 			companyName,
-			isUpdated
+			isUpdated,
+			sortBy,
+			direction
 		);
 		
 		var voList = mapper.toVOList(entityList);
@@ -57,15 +62,23 @@ public class IbptService {
 	}
 	
 	public void callProcNewIbpt(IbptNewVO data) {
-		repository.callProcNewIbpt(data.getId());
+		repository.callProcNewIbpt(data.getKey());
 	}
 
 	@Transactional
 	public void updateById(IbptUpdateVO data) {
 		
-		Integer idVersion = repository.findVersionById(data.getId());
-		Integer idCompanySoftware = repository.findCompanySoftwareById(data.getId());
+		Integer idVersion = repository.findVersionById(data.getKey());
+		Integer idCompanySoftware = repository.findCompanySoftwareById(data.getKey());
 		
 		repository.updateByVersionAndCompanySoftware(idVersion, idCompanySoftware, data.getValue());
 	}
+	
+	public void deleteById(Integer id) {
+		Ibpt entity = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
+		
+		repository.delete(entity);
+	}
+	
 }

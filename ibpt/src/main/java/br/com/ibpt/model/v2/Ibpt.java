@@ -1,6 +1,7 @@
 package br.com.ibpt.model.v2;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import br.com.ibpt.model.v1.Version;
 import jakarta.persistence.Column;
@@ -68,12 +69,22 @@ public class Ibpt implements Serializable {
 		this.isUpdated = isUpdated;
 	}
 
-	public Ibpt(Integer id, Version version, CompanySoftwareIbpt companySoftware, Boolean isUpdated) {
-		super();
-		this.id = id;
-		this.version = version;
-		this.companySoftware = companySoftware;
-		this.isUpdated = isUpdated;
+	@Override
+	public int hashCode() {
+		return Objects.hash(companySoftware, id, isUpdated, version);
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Ibpt other = (Ibpt) obj;
+		return Objects.equals(companySoftware, other.companySoftware) && Objects.equals(id, other.id)
+				&& Objects.equals(isUpdated, other.isUpdated) && Objects.equals(version, other.version);
+	}
+
 }

@@ -10,19 +10,19 @@ public class IbptVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer id;
+	private Integer key;
 	private Version version;
 	private CompanySoftwareIbpt companySoftware;
 	private Boolean isUpdated;
 	
 	public IbptVO() {}
 
-	public Integer getId() {
-		return id;
+	public Integer getKey() {
+		return key;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setKey(Integer key) {
+		this.key = key;
 	}
 
 	public Version getVersion() {
@@ -51,7 +51,7 @@ public class IbptVO implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(companySoftware, id, isUpdated, version);
+		return Objects.hash(companySoftware, key, isUpdated, version);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class IbptVO implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		IbptVO other = (IbptVO) obj;
-		return Objects.equals(companySoftware, other.companySoftware) && Objects.equals(id, other.id)
+		return Objects.equals(companySoftware, other.companySoftware) && Objects.equals(key, other.key)
 				&& Objects.equals(isUpdated, other.isUpdated) && Objects.equals(version, other.version);
 	}
 	

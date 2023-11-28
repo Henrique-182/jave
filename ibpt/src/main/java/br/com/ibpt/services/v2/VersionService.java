@@ -15,8 +15,8 @@ import br.com.ibpt.exceptions.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.ResourceNotFoundException;
 import br.com.ibpt.mappers.v1.VersionMapper;
 import br.com.ibpt.model.v1.Version;
-import br.com.ibpt.repositories.v1.VersionCustomRepository;
 import br.com.ibpt.repositories.v1.VersionRepository;
+import br.com.ibpt.repositories.v2.VersionCustomRepository;
 
 @Service
 public class VersionService {
@@ -33,14 +33,22 @@ public class VersionService {
 	@Autowired
 	private PagedResourcesAssembler<VersionVO> assembler;
 	
-	public PagedModel<EntityModel<VersionVO>> findAll(
+	public PagedModel<EntityModel<VersionVO>> findCustomPaginable(
 		Pageable pageable,
 		String name,
 		String effectivePeriodMonth,
-		String effectivePeriodYear
+		String effectivePeriodYear,
+		String sortBy,
+		String direction
 	) {
 		
-		List<Version> entityList = customRepository.findCustom(name, effectivePeriodMonth, effectivePeriodYear);
+		List<Version> entityList = customRepository.findCustom(
+				name, 
+				effectivePeriodMonth, 
+				effectivePeriodYear, 
+				sortBy, 
+				direction
+		);
 		
 		var voList = mapper.toVersionVOList(entityList);
 		
@@ -70,4 +78,12 @@ public class VersionService {
 		
 		return mapper.toVersionVO(repository.save(entity));
 	}
+	
+	public void deleteById(Integer id) {
+		Version entity = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
+		
+		repository.delete(entity);
+	}
+	
 }

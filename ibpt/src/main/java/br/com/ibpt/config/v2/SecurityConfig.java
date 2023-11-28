@@ -43,13 +43,13 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+	public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 	
 	@SuppressWarnings("removal")
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
 				.httpBasic(HttpBasicConfigurer::disable)
 				.csrf(AbstractHttpConfigurer::disable)
@@ -63,16 +63,17 @@ public class SecurityConfig {
 							"/auth/refresh/**",
 							"/swagger-ui/**",
 							"/v3/api-docs/**",
-							"/v1/usuario/novo"
+							"/v2/usuario/novo"
 						).permitAll()
 						.requestMatchers(
-							"/v1/**",
 							"/v2/**"
 						).authenticated()
 						.requestMatchers("/users").denyAll()
 				)
+				.cors(cors -> cors.disable())
 				.apply(new JwtConfigurer(tokenProvider))
 				.and()
 				.build();
 	}
+
 }

@@ -13,4 +13,9 @@ public class ControllerUtil {
 		
 		return PageRequest.of(page, size, Sort.by(sortDirection, sortBy));		
 	}
+	
+	public static Pageable pageable(Integer page, Integer size) {
+		
+		return PageRequest.of(page, size);		
+	}
 }
