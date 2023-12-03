@@ -11,8 +11,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import br.com.ibpt.data.vo.v1.VersionVO;
-import br.com.ibpt.exceptions.RequiredObjectIsNullException;
-import br.com.ibpt.exceptions.ResourceNotFoundException;
+import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
+import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 import br.com.ibpt.mappers.v1.VersionMapper;
 import br.com.ibpt.model.v1.Version;
 import br.com.ibpt.repositories.v1.VersionRepository;

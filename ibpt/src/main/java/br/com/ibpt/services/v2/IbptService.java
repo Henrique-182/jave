@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.ibpt.data.vo.v2.IbptNewVO;
 import br.com.ibpt.data.vo.v2.IbptUpdateVO;
 import br.com.ibpt.data.vo.v2.IbptVO;
-import br.com.ibpt.exceptions.ResourceNotFoundException;
+import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 import br.com.ibpt.mappers.v2.IbptMapper;
 import br.com.ibpt.model.v2.Ibpt;
 import br.com.ibpt.repositories.v2.IbptCustomRepository;

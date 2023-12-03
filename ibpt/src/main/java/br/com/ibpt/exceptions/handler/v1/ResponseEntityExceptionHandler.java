@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import br.com.ibpt.exceptions.ExceptionResponse;
-import br.com.ibpt.exceptions.InvalidJwtAuthenticationException;
-import br.com.ibpt.exceptions.RequiredObjectIsNullException;
-import br.com.ibpt.exceptions.ResourceNotFoundException;
+import br.com.ibpt.exceptions.v1.ExceptionResponse;
+import br.com.ibpt.exceptions.v1.InvalidJwtAuthenticationException;
+import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
+import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 
 @ControllerAdvice
 @RestController

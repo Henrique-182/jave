@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.ibpt.data.vo.v2.SoftwareVO;
-import br.com.ibpt.exceptions.RequiredObjectIsNullException;
-import br.com.ibpt.exceptions.ResourceNotFoundException;
+import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
+import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 import br.com.ibpt.mappers.v2.SoftwareMapper;
 import br.com.ibpt.model.v2.Software;
 import br.com.ibpt.repositories.v2.SoftwareRepository;

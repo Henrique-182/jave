@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.ibpt.data.vo.v1.AccountCredentialsVO;
 import br.com.ibpt.data.vo.v1.UserVO;
-import br.com.ibpt.exceptions.ResourceNotFoundException;
+import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 import br.com.ibpt.mappers.v1.UserMapper;
 import br.com.ibpt.model.v1.User;
 import br.com.ibpt.repositories.v1.UserRepository;

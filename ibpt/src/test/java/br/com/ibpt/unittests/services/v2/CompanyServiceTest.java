@@ -19,8 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.ibpt.data.vo.v2.CompanyVO;
-import br.com.ibpt.exceptions.RequiredObjectIsNullException;
-import br.com.ibpt.exceptions.ResourceNotFoundException;
+import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
+import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 import br.com.ibpt.mappers.v2.CompanyMapper;
 import br.com.ibpt.model.v2.Company;
 import br.com.ibpt.model.v2.CompanySoftware;

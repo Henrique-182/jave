@@ -19,7 +19,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import br.com.ibpt.data.vo.v1.TokenVO;
-import br.com.ibpt.exceptions.InvalidJwtAuthenticationException;
+import br.com.ibpt.exceptions.v1.InvalidJwtAuthenticationException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 

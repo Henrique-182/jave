@@ -1,4 +1,4 @@
-package br.com.ibpt.exceptions;
+package br.com.ibpt.exceptions.v1;
 
 import java.io.Serializable;
 import java.util.Date;
