@@ -1,4 +1,4 @@
-package br.com.ibpt.controllers.v2;
+package br.com.ibpt.controllers.v3;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ibpt.data.vo.v1.VersionVO;
-import br.com.ibpt.services.v2.VersionService;
+import br.com.ibpt.data.vo.v3.VersionVO;
+import br.com.ibpt.services.v3.VersionService;
 import br.com.ibpt.util.v2.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -26,8 +26,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping(path = "/v2/versao")
-@Tag(name = "Versao", description = "Endpoints For Managing Version")
+@RequestMapping(path = "/v3/version")
+@Tag(name = "Version", description = "Endpoints For Managing Version")
 public class VersionController {
 
 	@Autowired
@@ -54,17 +54,17 @@ public class VersionController {
 		}
 	)
 	@GetMapping
-	public ResponseEntity<PagedModel<EntityModel<VersionVO>>> findAll(
-		@RequestParam(value = "pagina", defaultValue = "0", required = false) Integer page,
-		@RequestParam(value = "tamanho", defaultValue = "10", required = false) Integer size,
-		@RequestParam(value = "direcao", defaultValue = "asc", required = false) String direction,
-		@RequestParam(value = "ordenadoPor", defaultValue = "nome", required = false) String sortBy,
-		@RequestParam(value = "nome", required = false) String name,
-		@RequestParam(value = "mesVigencia", required = false) String effectivePeriodMonth,
-		@RequestParam(value = "anoVigencia", required = false) String effectivePeriodYear
+	public ResponseEntity<PagedModel<EntityModel<VersionVO>>> findCustomPaginable(
+		@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+		@RequestParam(value = "size", defaultValue = "10", required = false) Integer size,
+		@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction,
+		@RequestParam(value = "sortBy", defaultValue = "name", required = false) String sortBy,
+		@RequestParam(value = "name", required = false) String name,
+		@RequestParam(value = "effectivePeriodMonth", required = false) String effectivePeriodMonth,
+		@RequestParam(value = "effectivePeriodYear", required = false) String effectivePeriodYear
 	) {
 		
-		sortBy = "vigenciaAte".equalsIgnoreCase(sortBy) ? "effectivePeriodUntil" : "name";
+		sortBy = "effectivePeriodUntil".equalsIgnoreCase(sortBy) ? "effectivePeriodUntil" : "name";
 		
 		Pageable pageable = ControllerUtil.pageable(page, size);
 		

@@ -1,25 +1,25 @@
-package br.com.ibpt.mappers.v1;
+package br.com.ibpt.mappers.v3;
 
 import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import br.com.ibpt.data.vo.v1.VersionVO;
+import br.com.ibpt.data.vo.v3.VersionVO;
 import br.com.ibpt.model.v1.Version;
 
 @Mapper(componentModel = "spring")
 public interface VersionMapper {
 
 	@Mapping(source = "id", target = "key")
-	VersionVO toVersionVO(Version entity);
+	VersionVO toVO(Version entity);
 	
 	@Mapping(source = "key", target = "id")
-	Version toVersion(VersionVO vo);
+	Version toEntity(VersionVO vo);
 	
 	@Mapping(source = "id", target = "key")
-	List<VersionVO> toVersionVOList(List<Version> entityList);
+	List<VersionVO> toVOList(List<Version> entityList);
 	
 	@Mapping(source = "key", target = "id")
-	List<Version> toVersionList(List<VersionVO> voList);
+	List<Version> toEntityList(List<VersionVO> voList);
 }

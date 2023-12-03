@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.controllers.v2;
+package br.com.ibpt.integrationtests.controllers.v3;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,7 +79,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 						.getAccessToken();
 		
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v2/versao")
+				.setBasePath("/v3/version")
 				.setPort(TestConfigs.SERVER_PORT)
 				.addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
@@ -112,6 +112,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals("Name2", createdVersion.getName());
 		assertEquals(date, createdVersion.getEffectivePeriodUntil());
+		assertTrue(content.contains("\"_links\":{\"versionVOList\":{\"href\":\"http://localhost:8888/v3/version?page=0&size=10&direction=asc&sortBy=name\"}}}"));
 	}
 	
 	@Test
@@ -135,6 +136,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		assertEquals(version.getKey(), persistedVersion.getKey());
 		assertEquals("Name2", persistedVersion.getName());
 		assertEquals(date, persistedVersion.getEffectivePeriodUntil());
+		assertTrue(content.contains("\"_links\":{\"versionVOList\":{\"href\":\"http://localhost:8888/v3/version?page=0&size=10&direction=asc&sortBy=name\"}}}"));
 	}
 	
 	@Test
@@ -164,6 +166,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		assertEquals(version.getKey(), updatedVersion.getKey());
 		assertEquals("2Name", updatedVersion.getName());
 		assertEquals(date, updatedVersion.getEffectivePeriodUntil());
+		assertTrue(content.contains("\"_links\":{\"versionVOList\":{\"href\":\"http://localhost:8888/v3/version?page=0&size=10&direction=asc&sortBy=name\"}}}"));
 	}
 	
 	@Test
@@ -181,21 +184,21 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 	
 	@Test
 	@Order(5)
-	public void testFindAll() throws JsonMappingException, JsonProcessingException, ParseException {
+	public void testFindCustomPageable() throws JsonMappingException, JsonProcessingException, ParseException {
 		Integer page = 0;
 		Integer size = 10;
 		String direction = "desc";
-		String orderBy = "vigenciaAte";
+		String sortBy = "effectivePeriodUntil";
 		String effectivePeriodYear = "2023";
 		
 		var content =
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.queryParam("pagina", page)
-				.queryParam("tamanho", size)
-				.queryParam("direcao", direction)
-				.queryParam("ordenadoPor", orderBy)
-				.queryParam("anoVigencia", effectivePeriodYear)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.queryParam("sortBy", sortBy)
+				.queryParam("effectivePeriodYear", effectivePeriodYear)
 				.when()
 					.get()
 				.then()
@@ -214,4 +217,54 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		assertEquals("23.2.D", softwareOne.getName());
 		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2023-10-31"), softwareOne.getEffectivePeriodUntil());
 	}
+	
+	@Test
+	@Order(6)
+	public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
+
+		RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
+				.setBasePath("/v3/version")
+				.setPort(TestConfigs.SERVER_PORT)
+				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
+		
+		given().spec(specificationWithoutToken)	
+			.contentType(TestConfigs.CONTENT_TYPE_JSON)
+			.when()
+				.get()
+			.then()
+				.statusCode(403);
+	}
+	
+	@Test
+	@Order(7)
+	public void testHATEOAS() throws JsonMappingException, JsonProcessingException  {
+		Integer page = 0;
+		Integer size = 10;
+		String direction = "desc";
+		String sortBy = "name";
+		
+		var content = given().spec(specification)	
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.queryParam("sortBy", sortBy)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/version/1\"}}"));
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/version/2\"}}"));
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/version/3\"}}"));
+		
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/version?direction=desc&sortBy=name&page=0&size=10\"}}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":3,\"totalPages\":1,\"number\":0}"));
+	}
+	
 }

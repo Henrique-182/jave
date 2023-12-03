@@ -1,10 +1,12 @@
-package br.com.ibpt.data.vo.v1;
+package br.com.ibpt.data.vo.v3;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class VersionVO implements Serializable {
+import org.springframework.hateoas.RepresentationModel;
+
+public class VersionVO extends RepresentationModel<VersionVO> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

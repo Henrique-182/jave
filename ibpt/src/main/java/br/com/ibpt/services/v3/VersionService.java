@@ -1,4 +1,7 @@
-package br.com.ibpt.services.v2;
+package br.com.ibpt.services.v3;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 
@@ -10,10 +13,11 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
-import br.com.ibpt.data.vo.v1.VersionVO;
+import br.com.ibpt.controllers.v3.VersionController;
+import br.com.ibpt.data.vo.v3.VersionVO;
 import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
-import br.com.ibpt.mappers.v1.VersionMapper;
+import br.com.ibpt.mappers.v3.VersionMapper;
 import br.com.ibpt.model.v1.Version;
 import br.com.ibpt.repositories.v1.VersionRepository;
 import br.com.ibpt.repositories.v2.VersionCustomRepository;
@@ -50,7 +54,9 @@ public class VersionService {
 				direction
 		);
 		
-		var voList = mapper.toVersionVOList(entityList);
+		var voList = mapper.toVOList(entityList);
+		
+		voList = voList.stream().map(v -> addLinkSelfRef(v)).toList();
 		
 		return assembler.toModel(new PageImpl<>(voList, pageable, voList.size()));
 	}
@@ -58,15 +64,15 @@ public class VersionService {
 	public VersionVO findById(Integer id) {
 		Version entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
-		return mapper.toVersionVO(entity);
+		return addLinkVOList(mapper.toVO(entity));
 	}
 	
 	public VersionVO create(VersionVO data) {
 		if (data == null) throw new RequiredObjectIsNullException();
 		
-		Version entity = mapper.toVersion(data);
+		Version createdEntity = repository.save(mapper.toEntity(data));
 		
-		return mapper.toVersionVO(repository.save(entity));
+		return addLinkVOList(mapper.toVO(createdEntity));
 	}
 	
 	public VersionVO updateById(Integer id, VersionVO data) {
@@ -76,14 +82,23 @@ public class VersionService {
 		entity.setName(data.getName());
 		entity.setEffectivePeriodUntil(data.getEffectivePeriodUntil());
 		
-		return mapper.toVersionVO(repository.save(entity));
+		Version updatedEntity = repository.save(entity);
+		
+		return addLinkVOList(mapper.toVO(updatedEntity));
 	}
 	
 	public void deleteById(Integer id) {
-		Version entity = repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
+		Version entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		repository.delete(entity);
+	}
+	
+	private VersionVO addLinkSelfRef(VersionVO vo) {
+		return vo.add(linkTo(methodOn(VersionController.class).findById(vo.getKey())).withSelfRel());
+	}
+	
+	private VersionVO addLinkVOList(VersionVO vo) {
+		return vo.add(linkTo(methodOn(VersionController.class).findCustomPaginable(0, 10, "asc", "name", null, null, null)).withRel("versionVOList").expand());
 	}
 	
 }
