@@ -37,6 +37,8 @@ spring:
 springdoc:
   paths-to-match:
     - /v1/**
+    - /v2/**
+    - /v3/**
     - /auth/* 
   swagger-ui: 
     use-root-path: true

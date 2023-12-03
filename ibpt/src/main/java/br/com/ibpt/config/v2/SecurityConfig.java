@@ -66,7 +66,8 @@ public class SecurityConfig {
 							"/v2/usuario/novo"
 						).permitAll()
 						.requestMatchers(
-							"/v2/**"
+							"/v2/**",
+							"/v3/**"
 						).authenticated()
 						.requestMatchers("/users").denyAll()
 				)
