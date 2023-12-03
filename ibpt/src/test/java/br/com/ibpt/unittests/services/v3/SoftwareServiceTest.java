@@ -1,4 +1,4 @@
-package br.com.ibpt.unittests.services.v2;
+package br.com.ibpt.unittests.services.v3;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,13 +19,13 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.ibpt.data.vo.v2.SoftwareVO;
+import br.com.ibpt.data.vo.v3.SoftwareVO;
 import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 import br.com.ibpt.mappers.v2.SoftwareMapper;
 import br.com.ibpt.model.v2.Software;
 import br.com.ibpt.repositories.v2.SoftwareRepository;
-import br.com.ibpt.services.v2.SoftwareService;
+import br.com.ibpt.services.v3.SoftwareService;
 import br.com.ibpt.unittests.mocks.v2.SoftwareMock;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -65,6 +65,7 @@ public class SoftwareServiceTest {
 		assertNotNull(createdSoftware);
 		assertEquals(2, createdSoftware.getKey());
 		assertEquals("Name2", createdSoftware.getName());
+		assertEquals("</v3/software?page=0&size=10&direction=asc>;rel=\"softwareVOList\"", createdSoftware.getLinks().toString());
 	}
 	
 	@Test
@@ -90,10 +91,26 @@ public class SoftwareServiceTest {
 		when(mapper.toVO(any(Software.class))).thenReturn(mockVO);
 		
 		SoftwareVO persistedSoftware = service.findById(id);
-		
+
 		assertNotNull(persistedSoftware);
 		assertEquals(2, persistedSoftware.getKey());
 		assertEquals("Name2", persistedSoftware.getName());
+		assertEquals("</v3/software?page=0&size=10&direction=asc>;rel=\"softwareVOList\"", persistedSoftware.getLinks().toString());
+	}
+	
+	@Test
+	void testFindByIdWithResourceNotFoundException() {
+		Integer id = 10;
+		
+		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+			service.findById(id);
+		});
+		
+		String expectedMessage = "No records found for the id (" + id + ") !";
+		String actualMessage = exception.getMessage();
+		
+		assertEquals(expectedMessage, actualMessage);
+		
 	}
 	
 	@Test
@@ -115,6 +132,7 @@ public class SoftwareServiceTest {
 		assertNotNull(updatedSoftware);
 		assertEquals(2, updatedSoftware.getKey());
 		assertEquals("2Name", updatedSoftware.getName());
+		assertEquals("</v3/software?page=0&size=10&direction=asc>;rel=\"softwareVOList\"", updatedSoftware.getLinks().toString());
 	}
 	
 	@Test
@@ -152,4 +170,20 @@ public class SoftwareServiceTest {
 		
 		service.deleteById(1);
 	}
+	
+	@Test
+	void testDeleteByIdWithResourceNotFoundException() {
+		Integer id = 10;
+		
+		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+			service.deleteById(id);
+		});
+		
+		String expectedMessage = "No records found for the id (" + id + ") !";
+		String actualMessage = exception.getMessage();
+		
+		assertEquals(expectedMessage, actualMessage);
+		
+	}
+	
 }

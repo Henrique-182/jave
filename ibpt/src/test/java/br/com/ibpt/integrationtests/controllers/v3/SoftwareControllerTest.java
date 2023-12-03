@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.controllers.v2;
+package br.com.ibpt.integrationtests.controllers.v3;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,7 +72,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 						.getAccessToken();
 		
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v2/sistema")
+				.setBasePath("/v3/software")
 				.setPort(TestConfigs.SERVER_PORT)
 				.addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
@@ -102,6 +102,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		assertTrue(createdSoftware.getKey() > 0);
 		
 		assertEquals("Name0", createdSoftware.getName());
+		assertTrue(content.contains("\"_links\":{\"softwareVOList\":{\"href\":\"http://localhost:8888/v3/software?page=0&size=10&direction=asc\"}}}"));
 	}
 	
 	@Test
@@ -123,6 +124,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(software.getKey(), persistedCompany.getKey());
 		assertEquals("Name0", persistedCompany.getName());
+		assertTrue(content.contains("\"_links\":{\"softwareVOList\":{\"href\":\"http://localhost:8888/v3/software?page=0&size=10&direction=asc\"}}}"));
 	}
 	
 	@Test
@@ -146,6 +148,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(software.getKey(), updatedCompany.getKey());
 		assertEquals("0Name", updatedCompany.getName());
+		assertTrue(content.contains("\"_links\":{\"softwareVOList\":{\"href\":\"http://localhost:8888/v3/software?page=0&size=10&direction=asc\"}}}"));
 	}
 	
 	@Test
@@ -164,15 +167,15 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 	@Test
 	@Order(5)
 	public void testFindAll() throws JsonMappingException, JsonProcessingException {
-		Integer pagina = 0;
-		Integer tamanho = 10;
-		String direcao = "desc";
+		Integer page = 0;
+		Integer size = 10;
+		String direction = "desc";
 		
 		var content = given().spec(specification)	
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.queryParam("pagina", pagina)
-				.queryParam("tamanho", tamanho)
-				.queryParam("direcao", direcao)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
 				.when()
 					.get()
 				.then()
@@ -190,4 +193,58 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		assertEquals(2, softwareOne.getKey());
 		assertEquals("Stac", softwareOne.getName());
 	}
+	
+	@Test
+	@Order(6)
+	public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
+
+		RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
+				.setBasePath("/v3/software")
+				.setPort(TestConfigs.SERVER_PORT)
+				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
+		
+		Integer page = 0;
+		Integer size = 10;
+		String direction = "desc";
+		
+		given().spec(specificationWithoutToken)	
+			.contentType(TestConfigs.CONTENT_TYPE_JSON)
+			.queryParam("page", page)
+			.queryParam("size", size)
+			.queryParam("direction", direction)
+			.when()
+				.get()
+			.then()
+				.statusCode(403);
+	}
+	
+	@Test
+	@Order(7)
+	public void testHATEOAS() throws JsonMappingException, JsonProcessingException  {
+		Integer page = 0;
+		Integer size = 10;
+		String direction = "desc";
+		
+		var content = given().spec(specification)	
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/software/1\"}}"));
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/software/2\"}}"));
+		
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/software?direction=desc&page=0&size=10&sort=name,desc\"}}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":2,\"totalPages\":1,\"number\":0}"));
+	}
+	
 }

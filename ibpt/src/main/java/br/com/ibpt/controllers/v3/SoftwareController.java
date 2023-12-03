@@ -1,4 +1,4 @@
-package br.com.ibpt.controllers.v2;
+package br.com.ibpt.controllers.v3;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ibpt.data.vo.v2.SoftwareVO;
-import br.com.ibpt.services.v2.SoftwareService;
+import br.com.ibpt.data.vo.v3.SoftwareVO;
+import br.com.ibpt.services.v3.SoftwareService;
 import br.com.ibpt.util.v2.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -26,7 +26,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping(path = "/v2/sistema")
+@RequestMapping(path = "/v3/software")
 @Tag(name = "Software", description = "Endpoints for Managing Softwares")
 public class SoftwareController {
 
@@ -55,15 +55,15 @@ public class SoftwareController {
 		}
 	)
 	@GetMapping
-	public ResponseEntity<PagedModel<EntityModel<SoftwareVO>>> findAll(
-		@RequestParam(value = "pagina", defaultValue = "0") Integer page,
-		@RequestParam(value = "tamanho", defaultValue = "10") Integer size,
-		@RequestParam(value = "direcao", defaultValue = "asc") String direction
+	public ResponseEntity<PagedModel<EntityModel<SoftwareVO>>> findAllPageable(
+		@RequestParam(value = "page", defaultValue = "0") Integer page,
+		@RequestParam(value = "size", defaultValue = "10") Integer size,
+		@RequestParam(value = "direction", defaultValue = "asc") String direction
 	) {
 		
 		Pageable pageable = ControllerUtil.pageable(page, size, direction, "name");
 		
-		return ResponseEntity.ok(service.findAll(pageable));
+		return ResponseEntity.ok(service.findAllPageable(pageable));
 	}
 	
 	@Operation(
