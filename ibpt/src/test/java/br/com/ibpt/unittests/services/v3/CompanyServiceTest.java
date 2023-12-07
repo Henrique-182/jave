@@ -1,4 +1,4 @@
-package br.com.ibpt.unittests.services.v2;
+package br.com.ibpt.unittests.services.v3;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,14 +18,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.ibpt.data.vo.v2.CompanyVO;
+import br.com.ibpt.data.vo.v3.CompanyVO;
 import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
-import br.com.ibpt.mappers.v2.CompanyMapper;
+import br.com.ibpt.mappers.v3.CompanyMapper;
 import br.com.ibpt.model.v2.Company;
 import br.com.ibpt.model.v2.CompanySoftware;
 import br.com.ibpt.repositories.v2.CompanyRepository;
-import br.com.ibpt.services.v2.CompanyService;
+import br.com.ibpt.services.v3.CompanyService;
 import br.com.ibpt.unittests.mocks.v2.CompanyMock;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -67,6 +67,7 @@ public class CompanyServiceTest {
 		assertEquals("Business Name2", createdCompany.getBusinessName());
 		assertEquals("Observation2", createdCompany.getObservation());
 		assertEquals(true, createdCompany.getIsActive());
+		assertEquals("</v3/company?page=0&size=10&direction=asc&sortBy=name>;rel=\"companyVOList\"", createdCompany.getLinks().toString());
 		
 		List<CompanySoftware> createdCompanySoftware = createdCompany.getSoftwares();
 		
@@ -123,6 +124,7 @@ public class CompanyServiceTest {
 		assertEquals("Business Name2", persistedCompany.getBusinessName());
 		assertEquals("Observation2", persistedCompany.getObservation());
 		assertEquals(true, persistedCompany.getIsActive());
+		assertEquals("</v3/company?page=0&size=10&direction=asc&sortBy=name>;rel=\"companyVOList\"", persistedCompany.getLinks().toString());
 		
 		List<CompanySoftware> persistedCompanySoftware = persistedCompany.getSoftwares();
 		
@@ -150,6 +152,20 @@ public class CompanyServiceTest {
 	}
 	
 	@Test
+	void testFindByIdWithResourceNotFoundException() {
+		Integer id = 10;
+		
+		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+			service.findById(id);
+		});
+		
+		String expectedMessage = "No records found for the id (" + id + ") !";
+		String actualMessage = exception.getMessage();
+		
+		assertEquals(expectedMessage, actualMessage);
+	}
+	
+	@Test
 	void testUpdateById() {
 		Integer id = 2;
 		
@@ -173,6 +189,7 @@ public class CompanyServiceTest {
 		assertEquals("2Business Name", updatedCompany.getBusinessName());
 		assertEquals("2Observation", updatedCompany.getObservation());
 		assertEquals(true, updatedCompany.getIsActive());
+		assertEquals("</v3/company?page=0&size=10&direction=asc&sortBy=name>;rel=\"companyVOList\"", updatedCompany.getLinks().toString());
 		
 		List<CompanySoftware> updatedCompanySoftware = updatedCompany.getSoftwares();
 		
@@ -234,4 +251,19 @@ public class CompanyServiceTest {
 		
 		service.deleteById(1);
 	}
+	
+	@Test
+	void testDeleteByIdWithResourceNotFoundException() {
+		Integer id = 10;
+		
+		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+			service.deleteById(id);
+		});
+		
+		String expectedMessage = "No records found for the id (" + id + ") !";
+		String actualMessage = exception.getMessage();
+		
+		assertEquals(expectedMessage, actualMessage);
+	}
+	
 }

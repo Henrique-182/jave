@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.controllers.v2;
+package br.com.ibpt.integrationtests.controllers.v3;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,7 +74,7 @@ public class CompanyControllerTest extends AbstractIntegrationTest {
 						.getAccessToken();
 		
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v2/empresa")
+				.setBasePath("/v3/company")
 				.setPort(TestConfigs.SERVER_PORT)
 				.addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, accessToken)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
@@ -255,7 +255,7 @@ public class CompanyControllerTest extends AbstractIntegrationTest {
 			.contentType(TestConfigs.CONTENT_TYPE_JSON)
 			.body(data)
 			.when()
-				.patch("/sistema")
+				.patch("/software")
 			.then()
 				.statusCode(200);
 		
@@ -388,17 +388,19 @@ public class CompanyControllerTest extends AbstractIntegrationTest {
 	@Test
 	@Order(7)
 	public void testFindAll() throws JsonMappingException, JsonProcessingException {
-		Integer pagina = 5;
-		Integer tamanho = 15;
-		String direcao = "asc";
-		String ordenadoPor = "cnpj";
+		Integer page = 0;
+		Integer size = 10;
+		String direction = "asc";
+		String sortBy = "cnpj";
+		String name = "rai";
 		
 		var content = given().spec(specification)	
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.queryParam("pagina", pagina)
-				.queryParam("tamanho", tamanho)
-				.queryParam("direcao", direcao)
-				.queryParam("ordenadoPor", ordenadoPor)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.queryParam("sortBy", sortBy)
+				.queryParam("name", name)
 				.when()
 					.get()
 				.then()
@@ -413,36 +415,75 @@ public class CompanyControllerTest extends AbstractIntegrationTest {
 		
 		CompanyVO persistedCompany = resultList.get(0);
 		
-		assertEquals(81, persistedCompany.getKey());
-		assertEquals("14616883000173", persistedCompany.getCnpj());
-		assertEquals("NOVA FENIX EMBALAGENS", persistedCompany.getTradeName());
-		assertEquals("NOVA FENIX EMBALAGENS E MATERIAL LIMPEZA LTDA - ME", persistedCompany.getBusinessName());
+		assertEquals(140, persistedCompany.getKey());
+		assertEquals("14767260000100", persistedCompany.getCnpj());
+		assertEquals("MORAIS DISTRIBUIDORA DE MATERIAIS PARA CONSTRUCAO", persistedCompany.getTradeName());
+		assertEquals("MORAIS DISTRIBUIDORA DE MATERIAIS PARA CONSTRUCAO LTDA - ME", persistedCompany.getBusinessName());
 		assertEquals("", persistedCompany.getObservation());
 		assertEquals(true, persistedCompany.getIsActive());
+		assertTrue(content.toString().contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/company/140\"}}"));
 		
-		List<CompanySoftware> createdCompanySoftware = persistedCompany.getSoftwares();
+		List<CompanySoftware> persistedCompanySoftware = persistedCompany.getSoftwares();
 		
-		CompanySoftware companySoftwareOne = createdCompanySoftware.get(0);
+		CompanySoftware companySoftwareOne = persistedCompanySoftware.get(0);
 		
-		assertEquals(81, companySoftwareOne.getId());
-		assertEquals("Stac", companySoftwareOne.getSoftware().getName());
+		assertEquals(140, companySoftwareOne.getId());
+		assertEquals("Esti", companySoftwareOne.getSoftware().getName());
 		assertEquals("FISCAL", companySoftwareOne.getType());
-		assertEquals(true, companySoftwareOne.getHaveAuthorization());
-		assertEquals("", companySoftwareOne.getConnection());
+		assertEquals(false, companySoftwareOne.getHaveAuthorization());
+		assertEquals("741878875", companySoftwareOne.getConnection());
 		assertEquals("", companySoftwareOne.getObservation());
 		assertEquals(true, companySoftwareOne.getIsActive());
-		assertEquals(21, companySoftwareOne.getFkCompanySoftwareSameDb());
-		
-		CompanySoftware companySoftwareTwo = createdCompanySoftware.get(1);
-		
-		assertEquals(283, companySoftwareTwo.getId());
-		assertEquals("Stac", companySoftwareTwo.getSoftware().getName());
-		assertEquals("GERAL", companySoftwareTwo.getType());
-		assertEquals(true, companySoftwareTwo.getHaveAuthorization());
-		assertEquals("grupohbembalagens.ddns.com.br:65391", companySoftwareTwo.getConnection());
-		assertEquals("", companySoftwareTwo.getObservation());
-		assertEquals(true, companySoftwareTwo.getIsActive());
-		assertEquals(21, companySoftwareTwo.getFkCompanySoftwareSameDb());	
+		assertEquals(null, companySoftwareOne.getFkCompanySoftwareSameDb());
 	}
 	
+	@Test
+	@Order(8)
+	public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
+
+		RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
+				.setBasePath("/v3/company")
+				.setPort(TestConfigs.SERVER_PORT)
+				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
+		
+		given().spec(specificationWithoutToken)	
+			.contentType(TestConfigs.CONTENT_TYPE_JSON)
+			.when()
+				.get()
+			.then()
+				.statusCode(403);
+	}
+	
+	@Test
+	@Order(9)
+	public void testHATEOAS() throws JsonMappingException, JsonProcessingException  {
+		Integer page = 10;
+		Integer size = 10;
+		String direction = "asc";
+		
+		var content = given().spec(specification)	
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/company/112\"}}"));
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/company/140\"}}"));
+		
+		assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=0&size=10\"}"));
+		assertTrue(content.contains("\"prev\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=9&size=10\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=10&size=10\"}"));
+		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=11&size=10\"}"));
+		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=15&size=10\"}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":158,\"totalPages\":16,\"number\":10}"));
+	}
 }

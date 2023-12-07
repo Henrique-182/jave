@@ -58,7 +58,10 @@ public class VersionService {
 		
 		voList = voList.stream().map(v -> addLinkSelfRef(v)).toList();
 		
-		return assembler.toModel(new PageImpl<>(voList, pageable, voList.size()));
+		final int start = (int) pageable.getOffset();
+		final int end = Math.min((start + pageable.getPageSize()), voList.size());
+		
+		return assembler.toModel(new PageImpl<>(voList.subList(start, end), pageable, voList.size()));
 	}
 	
 	public VersionVO findById(Integer id) {

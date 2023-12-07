@@ -1,4 +1,4 @@
-package br.com.ibpt.controllers.v2;
+package br.com.ibpt.controllers.v3;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ibpt.data.vo.v2.CompanyActiveVO;
-import br.com.ibpt.data.vo.v2.CompanyVO;
-import br.com.ibpt.services.v2.CompanyService;
+import br.com.ibpt.data.vo.v3.CompanyVO;
+import br.com.ibpt.services.v3.CompanyService;
 import br.com.ibpt.util.v2.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping(path = "/v2/empresa")
+@RequestMapping(path = "/v3/company")
 @Tag(name = "Company", description = "Endpoints For Managing Companies")
 public class CompanyController {
 
@@ -56,21 +56,41 @@ public class CompanyController {
 		}
 	)	
 	@GetMapping
-	public ResponseEntity<PagedModel<EntityModel<CompanyVO>>> findAll(
-		@RequestParam(value = "pagina", defaultValue = "0", required = false) Integer page,
-		@RequestParam(value = "tamanho", defaultValue = "10", required = false) Integer size,
-		@RequestParam(value = "direcao", defaultValue = "asc", required = false) String direction,	
-		@RequestParam(value = "ordenadoPor", defaultValue = "nome", required = false) String sortBy
+	public ResponseEntity<PagedModel<EntityModel<CompanyVO>>> findPageable(
+		@RequestParam(value = "", defaultValue = "0", required = false) Integer page,
+		@RequestParam(value = "size", defaultValue = "10", required = false) Integer size,
+		@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction,	
+		@RequestParam(value = "sortBy", defaultValue = "tradeName", required = false) String sortBy,
+		@RequestParam(value = "cnpj", required = false) String cnpj,
+		@RequestParam(value = "name", required = false) String name,
+		@RequestParam(value = "isActive", required = false) Boolean isActive,
+		@RequestParam(value = "softwareName", required = false) String softwareName,
+		@RequestParam(value = "softwareType", required = false) String softwareType,
+		@RequestParam(value = "softwareFkSameDb", required = false) Integer softwareFkSameDb
 	) {
 		sortBy = sortBy.equalsIgnoreCase("cnpj") ? "cnpj"
-				: sortBy.equalsIgnoreCase("razaoSocial") ? "businessName"
-				: sortBy.equalsIgnoreCase("observacao") ? "observation"
-				: sortBy.equalsIgnoreCase("estaAtivo") ? "isActive"
+				: sortBy.equalsIgnoreCase("businessName") ? "businessName"
+				: sortBy.equalsIgnoreCase("isActive") ? "isActive"
+				: sortBy.equalsIgnoreCase("softwareName") ? "softwares.software.name"
+				: sortBy.equalsIgnoreCase("softwareType") ? "softwares.type"
 				: "tradeName";
+
+		Pageable pageable = ControllerUtil.pageable(page, size);
 		
-		Pageable pageable = ControllerUtil.pageable(page, size, direction, sortBy);
-		
-		return ResponseEntity.ok(service.findAll(pageable));
+		return ResponseEntity
+				.ok(
+					service.findPageable(
+						pageable,
+						cnpj,
+						name,
+						isActive,
+						softwareName,
+						softwareType,
+						softwareFkSameDb,
+						sortBy,
+						direction
+					)
+				);
 	}
 	
 	@Operation(
@@ -143,7 +163,7 @@ public class CompanyController {
 		service.updateCompanyIsActiveById(data);
 	}
 	
-	@PatchMapping(path = "/sistema")
+	@PatchMapping(path = "/software")
 	public void updateCompanySoftwareIsActiveById(@RequestBody CompanyActiveVO data) {
 		service.updateCompanySoftwareIsActiveById(data);
 	}

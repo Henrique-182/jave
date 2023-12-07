@@ -1,6 +1,6 @@
 package br.com.ibpt.unittests.mocks.v2;
 
-import br.com.ibpt.data.vo.v2.CompanyVO;
+import br.com.ibpt.data.vo.v3.CompanyVO;
 import br.com.ibpt.model.v2.Company;
 
 public class CompanyMock {
