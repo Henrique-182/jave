@@ -1,4 +1,4 @@
-package br.com.ibpt.config.v2;
+package br.com.ibpt.config.v3;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

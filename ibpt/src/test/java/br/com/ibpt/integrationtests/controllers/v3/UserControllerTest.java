@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.controllers.v2;
+package br.com.ibpt.integrationtests.controllers.v3;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,11 +21,13 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationF
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonMappingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import br.com.ibpt.config.TestConfigs;
 import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.ibpt.integrationtests.vo.v1.AccountCredentialsVO;
 import br.com.ibpt.integrationtests.vo.v1.TokenVO;
-import br.com.ibpt.integrationtests.vo.v1.UserVO;
+import br.com.ibpt.integrationtests.vo.v3.UserVO;
 import br.com.ibpt.integrationtests.vo.wrappers.v2.WrapperUserVO;
 import br.com.ibpt.model.v1.Permission;
 import io.restassured.builder.RequestSpecBuilder;
@@ -53,22 +55,21 @@ public class UserControllerTest extends AbstractIntegrationTest {
 	
 	@Test
 	@Order(1)
-	public void testCreateUser() throws JsonParseException, JsonMappingException, IOException {
+	void testCreateUser() throws JsonParseException, JsonMappingException, IOException {
 		AccountCredentialsVO data = new AccountCredentialsVO("marina", "Marina Lobo", "ma@01");
 		
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v2/usuario")
+				.setBasePath("/v3/user")
 				.setPort(TestConfigs.SERVER_PORT)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
 		
-		var content =
-				given().spec(specification)
+		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
 				.body(data)
 				.when()
-					.post("novo")
+					.post("new")
 				.then()
 					.statusCode(200)
 				.extract()
@@ -79,9 +80,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
 		user = createdUser;
 		
 		assertNotNull(createdUser);
-		assertNotNull(createdUser.getId());
+		assertNotNull(createdUser.getKey());
 		
-		assertTrue(createdUser.getId() > 0);
+		assertTrue(createdUser.getKey() > 0);
 		
 		assertEquals("marina", createdUser.getUserName());
 		assertEquals("Marina Lobo", createdUser.getFullName());
@@ -90,11 +91,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
 		assertEquals(true, createdUser.getCredentialsNonExpired());
 		assertEquals(true, createdUser.getEnabled());
 		assertEquals(3, createdUser.getPermissions().get(0).getId());
+		assertTrue(content.contains("\"_links\":{\"userVOList\":{\"href\":\"http://localhost:8888/v3/user?page=0&size=10&direction=asc&sortBy=userName\"}}"));
 	}
 	
 	@Test
 	@Order(2)
-	public void authorization() throws JsonParseException, JsonMappingException, IOException {
+	void authorization() throws JsonParseException, JsonMappingException, IOException {
 		AccountCredentialsVO data = new AccountCredentialsVO("marina", "ma@01");
 		
 		accessToken += given()
@@ -112,8 +114,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 					.getAccessToken();
 		
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v2/usuario")
-				.addHeader("Authorization", accessToken)
+				.setBasePath("/v3/user")
+				.addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, accessToken)
 				.setPort(TestConfigs.SERVER_PORT)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
@@ -127,7 +129,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 		var content =
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.pathParam("id", user.getId())
+				.pathParam("id", user.getKey())
 				.when()
 					.get("{id}")
 				.then()
@@ -136,19 +138,20 @@ public class UserControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 				
-		UserVO result = objectMapper.readValue(content, UserVO.class);
+		UserVO persistedUser = objectMapper.readValue(content, UserVO.class);
 		
-		assertNotNull(result);
+		assertNotNull(persistedUser);
 		
-		assertTrue(result.getId() > 0);
+		assertTrue(persistedUser.getKey() > 0);
 		
-		assertEquals("marina", result.getUserName());
-		assertEquals("Marina Lobo", result.getFullName());
-		assertEquals(true, result.getAccountNonExpired());
-		assertEquals(true, result.getAccountNonLocked());
-		assertEquals(true, result.getCredentialsNonExpired());
-		assertEquals(true, result.getEnabled());
-		assertEquals("COMMON_USER", result.getPermissions().get(0).getDescription());
+		assertEquals("marina", persistedUser.getUserName());
+		assertEquals("Marina Lobo", persistedUser.getFullName());
+		assertEquals(true, persistedUser.getAccountNonExpired());
+		assertEquals(true, persistedUser.getAccountNonLocked());
+		assertEquals(true, persistedUser.getCredentialsNonExpired());
+		assertEquals(true, persistedUser.getEnabled());
+		assertEquals("COMMON_USER", persistedUser.getPermissions().get(0).getDescription());
+		assertTrue(content.contains("\"_links\":{\"userVOList\":{\"href\":\"http://localhost:8888/v3/user?page=0&size=10&direction=asc&sortBy=userName\"}}"));
 	}
 	
 	@Test
@@ -169,7 +172,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
 				.header("Authorization", accessToken)
-				.pathParam("id", user.getId())
+				.pathParam("id", user.getKey())
 				.body(userVO)
 				.when()
 					.put("{id}")
@@ -179,19 +182,20 @@ public class UserControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 				
-		UserVO result = objectMapper.readValue(content, UserVO.class);
+		UserVO updatedUser = objectMapper.readValue(content, UserVO.class);
 		
-		assertNotNull(result);
+		assertNotNull(updatedUser);
 		
-		assertTrue(result.getId() > 0);
+		assertTrue(updatedUser.getKey() > 0);
 		
-		assertEquals("marina", result.getUserName());
-		assertEquals("Marina Pires", result.getFullName());
-		assertEquals(true, result.getAccountNonExpired());
-		assertEquals(true, result.getAccountNonLocked());
-		assertEquals(true, result.getCredentialsNonExpired());
-		assertEquals(true, result.getEnabled());
-		assertEquals("ADMIN", result.getPermissions().get(0).getDescription());
+		assertEquals("marina", updatedUser.getUserName());
+		assertEquals("Marina Pires", updatedUser.getFullName());
+		assertEquals(true, updatedUser.getAccountNonExpired());
+		assertEquals(true, updatedUser.getAccountNonLocked());
+		assertEquals(true, updatedUser.getCredentialsNonExpired());
+		assertEquals(true, updatedUser.getEnabled());
+		assertEquals("ADMIN", updatedUser.getPermissions().get(0).getDescription());
+		assertTrue(content.contains("\"_links\":{\"userVOList\":{\"href\":\"http://localhost:8888/v3/user?page=0&size=10&direction=asc&sortBy=userName\"}}"));
 	}
 	
 	@Test
@@ -200,15 +204,15 @@ public class UserControllerTest extends AbstractIntegrationTest {
 		Integer page = 0;
 		Integer size = 10;
 		String direction = "ASC";
-		String sortBy = "nomeCompleto";
+		String sortBy = "fullname";
 		
 		var content =
 				given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.queryParam("pagina", page)
-				.queryParam("tamanho", size)
-				.queryParam("direcao", direction)
-				.queryParam("ordenadoPor", sortBy)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.queryParam("sortBy", sortBy)
 				.when()
 					.get()
 				.then()
@@ -235,11 +239,59 @@ public class UserControllerTest extends AbstractIntegrationTest {
 	
 	@Test
 	@Order(6)
+	void testFindAllWithoutToken() {
+
+		RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
+				.setBasePath("/v3/user")
+				.setPort(TestConfigs.SERVER_PORT)
+				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
+		
+		given().spec(specificationWithoutToken)	
+			.contentType(TestConfigs.CONTENT_TYPE_JSON)
+			.when()
+				.get()
+			.then()
+				.statusCode(403);
+	}
+	
+	@Test
+	@Order(7)
+	void testHATEOAS() throws JsonMappingException, JsonProcessingException  {
+		Integer page = 0;
+		Integer size = 10;
+		String direction = "asc";
+		String sortBy = "fullname";
+		
+		var content = given().spec(specification)	
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.queryParam("sortBy", sortBy)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/user/1\"}}"));
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/user/2\"}}"));
+		
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/user?direction=asc&sortBy=fullname&page=0&size=10&sort=fullName,asc\"}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":3,\"totalPages\":1,\"number\":0}"));
+	}
+	
+	@Test
+	@Order(8)
 	void testDeleteById() {
 		
 		given().spec(specification)
 			.contentType(TestConfigs.CONTENT_TYPE_JSON)
-			.pathParam("id", user.getId())
+			.pathParam("id", user.getKey())
 			.when()
 				.delete("{id}")
 			.then()

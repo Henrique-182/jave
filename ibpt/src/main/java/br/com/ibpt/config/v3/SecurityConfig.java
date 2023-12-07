@@ -1,4 +1,4 @@
-package br.com.ibpt.config.v2;
+package br.com.ibpt.config.v3;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +63,7 @@ public class SecurityConfig {
 							"/auth/refresh/**",
 							"/swagger-ui/**",
 							"/v3/api-docs/**",
-							"/v2/usuario/novo"
+							"/v3/user/new"
 						).permitAll()
 						.requestMatchers(
 							"/v2/**",

@@ -1,4 +1,7 @@
-package br.com.ibpt.services.v2;
+package br.com.ibpt.services.v3;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +23,12 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm;
 import org.springframework.stereotype.Service;
 
+import br.com.ibpt.controllers.v3.UserController;
 import br.com.ibpt.data.vo.v1.AccountCredentialsVO;
-import br.com.ibpt.data.vo.v1.UserVO;
+import br.com.ibpt.data.vo.v3.UserVO;
+import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
-import br.com.ibpt.mappers.v1.UserMapper;
+import br.com.ibpt.mappers.v3.UserMapper;
 import br.com.ibpt.model.v1.Permission;
 import br.com.ibpt.model.v1.User;
 import br.com.ibpt.repositories.v1.UserRepository;
@@ -55,30 +60,32 @@ public class UserService implements UserDetailsService {
 		}
 	}
 	
-	public PagedModel<EntityModel<UserVO>> findCustomPageable(Pageable pageable) {
+	public PagedModel<EntityModel<UserVO>> findAllPageable(Pageable pageable) {
 		
 		Page<User> entityList = repository.findAll(pageable);
 		
-		Page<UserVO> voList = entityList.map(u -> mapper.toUserVO(u));
+		Page<UserVO> voList = entityList.map(u -> mapper.toVO(u));
+		
+		voList.map(u -> addLinkSelfRel(u));
 		
 		return assembler.toModel(voList);
 	}
 	
 	public UserVO findById(Integer id) {
-		User entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
+		User entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
-		return mapper.toUserVO(entity);
+		return addLinkVOList(mapper.toVO(entity));
 	}
 	
 	public UserVO create(AccountCredentialsVO data) {
+		if (data == null) throw new RequiredObjectIsNullException();
+		
 		User user = new User();
 		user.setUserName(data.getUserName());
 		user.setFullName(data.getFullname());
 		
 		String password = createHash(data.getPassword());
-		if (password.startsWith("{pbkdf2}")) {
-			password = password.substring("{pbkdf2}".length());
-		}
+		if (password.startsWith("{pbkdf2}")) password = password.substring("{pbkdf2}".length());
 		user.setPassword(password);
 		
 		user.setAccountNonExpired(true);
@@ -90,11 +97,15 @@ public class UserService implements UserDetailsService {
 		pList.add(new Permission(3)); // COMMON_USER
 		user.setPermissions(pList);
 		
-		return mapper.toUserVO(repository.save(user));
+		User persistedUser = repository.save(user);
+		
+		return addLinkVOList(mapper.toVO(persistedUser));
 	}
 	
 	public UserVO updateById(Integer id, UserVO vo) {
-		User entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
+		if (vo == null) throw new RequiredObjectIsNullException();
+		
+		User entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		entity.setUserName(vo.getUserName());
 		entity.setFullName(vo.getFullName());
 		entity.setAccountNonExpired(vo.getAccountNonExpired());
@@ -103,7 +114,9 @@ public class UserService implements UserDetailsService {
 		entity.setEnabled(vo.getEnabled());
 		entity.setPermissions(vo.getPermissions());
 		
-		return mapper.toUserVO(repository.save(entity));
+		User updatedUser = repository.save(entity);
+		
+		return addLinkVOList(mapper.toVO(updatedUser));
 	}
 	
 	public void deleteById(Integer id) {
@@ -111,6 +124,14 @@ public class UserService implements UserDetailsService {
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		repository.delete(entity);
+	}
+	
+	private UserVO addLinkSelfRel(UserVO vo) {
+		return vo.add(linkTo(methodOn(UserController.class).findById(vo.getKey())).withSelfRel());
+	}
+	
+	private UserVO addLinkVOList(UserVO vo) {
+		return vo.add(linkTo(methodOn(UserController.class).findAllPageable(0, 10, "asc", "userName")).withRel("userVOList").expand());
 	}
 	
 	private static String createHash(String password) {

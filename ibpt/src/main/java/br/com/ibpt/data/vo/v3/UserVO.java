@@ -1,16 +1,18 @@
-package br.com.ibpt.integrationtests.vo.v1;
+package br.com.ibpt.data.vo.v3;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import br.com.ibpt.model.v1.Permission;
 
-public class UserVO implements Serializable {
+public class UserVO extends RepresentationModel<UserVO> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer id;
+	private Integer key;
 	private String userName;
 	private String fullName;
 	private Boolean accountNonExpired;
@@ -21,12 +23,12 @@ public class UserVO implements Serializable {
 	
 	public UserVO() {}
 
-	public Integer getId() {
-		return id;
+	public Integer getKey() {
+		return key;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setKey(Integer key) {
+		this.key = key;
 	}
 
 	public String getUserName() {
@@ -87,7 +89,7 @@ public class UserVO implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(accountNonExpired, accountNonLocked, credentialsNonExpired, enabled, fullName, id,
+		return Objects.hash(accountNonExpired, accountNonLocked, credentialsNonExpired, enabled, fullName, key,
 				permissions, userName);
 	}
 
@@ -104,7 +106,7 @@ public class UserVO implements Serializable {
 				&& Objects.equals(accountNonLocked, other.accountNonLocked)
 				&& Objects.equals(credentialsNonExpired, other.credentialsNonExpired)
 				&& Objects.equals(enabled, other.enabled) && Objects.equals(fullName, other.fullName)
-				&& Objects.equals(id, other.id) && Objects.equals(permissions, other.permissions)
+				&& Objects.equals(key, other.key) && Objects.equals(permissions, other.permissions)
 				&& Objects.equals(userName, other.userName);
 	}
 

@@ -1,9 +1,9 @@
-package br.com.ibpt.unittests.mocks.v1;
+package br.com.ibpt.unittests.mocks.v3;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.ibpt.data.vo.v1.UserVO;
+import br.com.ibpt.data.vo.v3.UserVO;
 import br.com.ibpt.model.v1.Permission;
 import br.com.ibpt.model.v1.User;
 
@@ -35,7 +35,7 @@ public class UserMock {
 	
 	public UserVO mockVO(Integer number) {
 		UserVO vo = new UserVO();
-		vo.setId(number);
+		vo.setKey(number);
 		vo.setUserName("Username" + number);
 		vo.setFullName("Full Name" + number);
 		vo.setAccountNonExpired(
