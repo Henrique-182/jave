@@ -484,6 +484,6 @@ public class CompanyControllerTest extends AbstractIntegrationTest {
 		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=10&size=10\"}"));
 		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=11&size=10\"}"));
 		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=15&size=10\"}"));
-		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":158,\"totalPages\":16,\"number\":10}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":160,\"totalPages\":16,\"number\":10}"));
 	}
 }

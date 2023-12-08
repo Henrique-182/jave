@@ -264,7 +264,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/version/3\"}}"));
 		
 		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/version?direction=desc&sortBy=name&page=0&size=10\"}}"));
-		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":3,\"totalPages\":1,\"number\":0}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":4,\"totalPages\":1,\"number\":0}"));
 	}
 	
 }
