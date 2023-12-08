@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.controllers.v2;
+package br.com.ibpt.integrationtests.controllers.v3;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +31,6 @@ import br.com.ibpt.integrationtests.vo.v1.TokenVO;
 import br.com.ibpt.integrationtests.vo.v1.VersionVO;
 import br.com.ibpt.integrationtests.vo.v2.CompanyActiveVO;
 import br.com.ibpt.integrationtests.vo.v2.CompanyVO;
-import br.com.ibpt.integrationtests.vo.v2.IbptNewVO;
 import br.com.ibpt.integrationtests.vo.v2.IbptUpdateVO;
 import br.com.ibpt.integrationtests.vo.v2.IbptVO;
 import br.com.ibpt.integrationtests.vo.wrappers.v2.WrapperIbptVO;
@@ -107,7 +106,7 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		firstCompany = companyMock.mockVO(4);
 		
 		var content = given().spec(specification)	
-				.basePath("/v2/empresa")
+				.basePath("/v3/company")
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
 				.body(firstCompany)
 				.when()
@@ -163,7 +162,7 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		secondCompany.getSoftwares().get(0).setFkCompanySoftwareSameDb(firstCompany.getSoftwares().get(0).getId());
 		
 		var content = given().spec(specification)	
-				.basePath("/v2/empresa")
+				.basePath("/v3/company")
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
 				.body(secondCompany)
 				.when()
@@ -219,7 +218,7 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		version.setEffectivePeriodUntil(new SimpleDateFormat("yyyy-MM-dd").parse("2023-01-01"));
 		
 		var content = given().spec(specification)
-				.basePath("/v2/versao")
+				.basePath("/v3/version")
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
 				.body(version)
 				.when()
@@ -242,17 +241,16 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 	@Test
 	@Order(4)
 	public void testCreateIbpt() throws JsonMappingException, JsonProcessingException, ParseException {
-		IbptNewVO data = new IbptNewVO();
-		data.setKey(version.getKey());
+		Integer versionId = version.getKey();
 		
 		given().spec(specification)
-			.basePath("/v2/atualizacao")
+			.basePath("/v3/ibpt")
 			.contentType(TestConfigs.CONTENT_TYPE_JSON)
-			.body(data)
+			.pathParam("versionId", versionId)
 			.when()
-				.post()
+				.post("{versionId}")
 			.then()
-				.statusCode(200);
+				.statusCode(204);
 	}
 	
 	@Test
@@ -266,14 +264,14 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		String versionNome = version.getName();
 		
 		var content = given().spec(specification)
-				.basePath("v2/atualizacao")
+				.basePath("/v3/ibpt")
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.queryParam("pagina", page)
-				.queryParam("tamanho", size)
-				.queryParam("direcao", direction)
-				.queryParam("ordenadoPor", sortBy)
-				.queryParam("empresaCnpj", companyCnpj)
-				.queryParam("versaoNome", versionNome)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.queryParam("sortBy", sortBy)
+				.queryParam("companyCnpj", companyCnpj)
+				.queryParam("versionNome", versionNome)
 				.when()
 					.get()
 				.then()
@@ -333,14 +331,14 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		String versionNome = version.getName();
 		
 		var content = given().spec(specification)
-				.basePath("v2/atualizacao")
+				.basePath("/v3/ibpt")
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.queryParam("pagina", page)
-				.queryParam("tamanho", size)
-				.queryParam("direcao", direction)
-				.queryParam("ordenadoPor", sortBy)
-				.queryParam("empresaCnpj", companyCnpj)
-				.queryParam("versaoNome", versionNome)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.queryParam("sortBy", sortBy)
+				.queryParam("companyCnpj", companyCnpj)
+				.queryParam("versionNome", versionNome)
 				.when()
 					.get()
 				.then()
@@ -397,13 +395,13 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		data.setValue(true);
 		
 		given().spec(specification)
-			.basePath("/v2/atualizacao")
+			.basePath("/v3/ibpt")
 			.contentType(TestConfigs.CONTENT_TYPE_JSON)
 			.body(data)
 			.when()
 				.patch()
 			.then()
-				.statusCode(200);
+				.statusCode(204);
 	}
 	
 	@Test
@@ -412,19 +410,19 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		Integer page = 0;
 		Integer size = 10;
 		String direction = "asc";
-		String sortBy = "empresaCnpj";
+		String sortBy = "companyCnpj";
 		String companyCnpj = firstCompany.getCnpj();
 		String versionNome = version.getName();
 		
 		var content = given().spec(specification)
-				.basePath("v2/atualizacao")
+				.basePath("/v3/ibpt")
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.queryParam("pagina", page)
-				.queryParam("tamanho", size)
-				.queryParam("direcao", direction)
-				.queryParam("ordenadoPor", sortBy)
-				.queryParam("empresaCnpj", companyCnpj)
-				.queryParam("versaoNome", versionNome)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.queryParam("sortBy", sortBy)
+				.queryParam("companyCnpj", companyCnpj)
+				.queryParam("versionNome", versionNome)
 				.when()
 					.get()
 				.then()
@@ -483,14 +481,14 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		String versionNome = version.getName();
 		
 		var content = given().spec(specification)
-				.basePath("v2/atualizacao")
+				.basePath("/v3/ibpt")
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.queryParam("pagina", page)
-				.queryParam("tamanho", size)
-				.queryParam("direcao", direction)
-				.queryParam("ordenadoPor", sortBy)
-				.queryParam("empresaCnpj", companyCnpj)
-				.queryParam("versaoNome", versionNome)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.queryParam("sortBy", sortBy)
+				.queryParam("companyCnpj", companyCnpj)
+				.queryParam("versionNome", versionNome)
 				.when()
 					.get()
 				.then()
@@ -544,7 +542,7 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 	public void testDeleteById() {
 		
 		given().spec(specification)
-			.basePath("/v2/atualizacao")
+			.basePath("/v3/ibpt")
 			.contentType(TestConfigs.CONTENT_TYPE_JSON)
 			.pathParam("id", ibpt.getKey())
 			.when()
@@ -553,7 +551,7 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 				.statusCode(204);
 		
 		given().spec(specification)
-			.basePath("/v2/atualizacao")
+			.basePath("/v3/ibpt")
 			.contentType(TestConfigs.CONTENT_TYPE_JSON)
 			.pathParam("id", ibpt2.getKey())
 			.when()
@@ -564,13 +562,13 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 	
 	@Test
 	@Order(11)
-	public void testUpdateCompanIsActiveById() throws JsonMappingException, JsonProcessingException {
+	public void testUpdateCompanyIsActiveById() throws JsonMappingException, JsonProcessingException {
 		CompanyActiveVO data = new CompanyActiveVO();
 		data.setId(firstCompany.getKey());
 		data.setValue(false);
 		
 		given().spec(specification)	
-		.basePath("/v2/empresa")
+		.basePath("/v3/company")
 			.contentType(TestConfigs.CONTENT_TYPE_JSON)
 			.body(data)
 			.when()
@@ -582,7 +580,7 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		data.setValue(false);
 		
 		given().spec(specification)	
-			.basePath("/v2/empresa")
+			.basePath("/v3/company")
 			.contentType(TestConfigs.CONTENT_TYPE_JSON)
 			.body(data)
 			.when()
@@ -590,5 +588,57 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 			.then()
 				.statusCode(200);
 	}
+	
+	@Test
+	@Order(12)
+	public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
+
+		RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
+				.setBasePath("/v3/ibpt")
+				.setPort(TestConfigs.SERVER_PORT)
+				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
+		
+		given().spec(specificationWithoutToken)	
+			.contentType(TestConfigs.CONTENT_TYPE_JSON)
+			.when()
+				.get()
+			.then()
+				.statusCode(403);
+	}
+	
+	@Test
+	@Order(13)
+	public void testHATEOAS() throws JsonMappingException, JsonProcessingException  {
+		Integer page = 5;
+		Integer size = 10;
+		String direction = "asc";
+		
+		var content = given().spec(specification)	
+				.basePath("/v3/ibpt")
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/ibpt/51\"}}"));
+		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/ibpt/52\"}}"));
+		
+		assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=0&size=10\"}"));
+		assertTrue(content.contains("\"prev\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=4&size=10\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=5&size=10\"}"));
+		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=6&size=10\"}"));
+		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=63&size=10\"}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":632,\"totalPages\":64,\"number\":5"));
+	}
+	
 	
 }

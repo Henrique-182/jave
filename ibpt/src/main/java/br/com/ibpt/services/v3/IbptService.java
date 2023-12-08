@@ -1,4 +1,7 @@
-package br.com.ibpt.services.v2;
+package br.com.ibpt.services.v3;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 
@@ -11,9 +14,10 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.ibpt.data.vo.v2.IbptNewVO;
+import br.com.ibpt.controllers.v3.IbptController;
 import br.com.ibpt.data.vo.v2.IbptUpdateVO;
-import br.com.ibpt.data.vo.v2.IbptVO;
+import br.com.ibpt.data.vo.v3.IbptVO;
+import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 import br.com.ibpt.mappers.v2.IbptMapper;
 import br.com.ibpt.model.v2.Ibpt;
@@ -58,18 +62,32 @@ public class IbptService {
 		
 		var voList = mapper.toVOList(entityList);
 		
-		return assembler.toModel(new PageImpl<>(voList, pageable, voList.size()));
+		voList = voList.stream().map(i -> addLinkSelfRel(i)).toList();
+		
+		final int start = (int) pageable.getOffset();
+		final int end = Math.min((start + pageable.getPageSize()), voList.size());
+		
+		return assembler.toModel(new PageImpl<>(voList.subList(start, end), pageable, voList.size()));
 	}
 	
-	public void callProcNewIbpt(IbptNewVO data) {
-		repository.callProcNewIbpt(data.getKey());
+	public IbptVO findById(Integer id) {
+		Ibpt persistedEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
+		
+		return addLinkVOList(mapper.toVO(persistedEntity));
+	}
+	
+	public void callProcNewIbpt(Integer versionId) {
+		repository.callProcNewIbpt(versionId);
 	}
 
 	@Transactional
 	public void updateById(IbptUpdateVO data) {
+		if (data == null) throw new RequiredObjectIsNullException("It is not possible to update a null object");
 		
-		Integer idVersion = repository.findVersionById(data.getKey());
-		Integer idCompanySoftware = repository.findCompanySoftwareById(data.getKey());
+		Ibpt persistedEntity = repository.findById(data.getKey()).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + data.getKey() + ") !"));
+		
+		Integer idVersion = persistedEntity.getVersion().getId();
+		Integer idCompanySoftware = persistedEntity.getCompanySoftware().getId();
 		
 		repository.updateByVersionAndCompanySoftware(idVersion, idCompanySoftware, data.getValue());
 	}
@@ -81,4 +99,11 @@ public class IbptService {
 		repository.delete(entity);
 	}
 	
+	private IbptVO addLinkSelfRel(IbptVO vo) {
+		return vo.add(linkTo(methodOn(IbptController.class).findById(vo.getKey())).withSelfRel());
+	}
+	
+	private IbptVO addLinkVOList(IbptVO vo) {
+		return vo.add(linkTo(methodOn(IbptController.class).findCustomPageable(0, 10, "asc", "id", null, null, null, null, null)).withRel("ibptVOList").expand());
+	}
 }

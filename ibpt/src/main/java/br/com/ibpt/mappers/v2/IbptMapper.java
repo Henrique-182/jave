@@ -5,7 +5,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import br.com.ibpt.data.vo.v2.IbptVO;
+import br.com.ibpt.data.vo.v3.IbptVO;
 import br.com.ibpt.model.v2.Ibpt;
 
 @Mapper(componentModel = "spring")
