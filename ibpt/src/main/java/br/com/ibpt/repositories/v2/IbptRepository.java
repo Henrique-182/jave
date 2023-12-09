@@ -15,18 +15,6 @@ public interface IbptRepository extends JpaRepository<Ibpt, Integer> {
 	@Procedure("PROC_NEW_IBPT")
 	void callProcNewIbpt(Integer p_id_version);
 
-	@Query("SELECT IBPT.version.id "
-		 + "  FROM Ibpt IBPT "
-		 + " WHERE IBPT.id = :id "
-		  )
-	Integer findVersionById(@Param("id") Integer id);
-	
-	@Query("SELECT IBPT.companySoftware.id "
-		 + "  FROM Ibpt IBPT "
-		 + " WHERE IBPT.id = :id "
-		  )
-	Integer findCompanySoftwareById(@Param("id") Integer id);
-	
 	@Modifying
 	@Query("UPDATE Ibpt IBPT "
 		 + "   SET IBPT.isUpdated = :value "

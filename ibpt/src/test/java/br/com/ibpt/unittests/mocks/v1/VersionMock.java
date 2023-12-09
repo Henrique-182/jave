@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.com.ibpt.data.vo.v1.VersionVO;
+import br.com.ibpt.data.vo.v3.VersionVO;
 import br.com.ibpt.model.v1.Version;
 
 public class VersionMock {

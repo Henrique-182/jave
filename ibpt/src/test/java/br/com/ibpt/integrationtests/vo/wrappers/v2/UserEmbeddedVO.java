@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.com.ibpt.integrationtests.vo.v1.UserVO;
+import br.com.ibpt.integrationtests.vo.v3.UserVO;
 
 public class UserEmbeddedVO implements Serializable {
 

@@ -3,7 +3,7 @@ package br.com.ibpt.unittests.mocks.v2;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.ibpt.data.vo.v2.IbptVO;
+import br.com.ibpt.data.vo.v3.IbptVO;
 import br.com.ibpt.model.v2.Ibpt;
 import br.com.ibpt.unittests.mocks.v1.VersionMock;
 
