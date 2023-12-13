@@ -65,9 +65,9 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		
 		Version versionIbpt = ibpt.getVersion();
 		
-		assertEquals(3, versionIbpt.getId());
-		assertEquals("23.2.D", versionIbpt.getName());
-		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2023-10-31"), versionIbpt.getEffectivePeriodUntil());
+		assertEquals(5, versionIbpt.getId());
+		assertEquals("23.2.F", versionIbpt.getName());
+		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-31"), versionIbpt.getEffectivePeriodUntil());
 		
 		CompanySoftwareIbpt companySoftwareIbpt = ibpt.getCompanySoftware();
 		
@@ -116,9 +116,9 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		
 		Version versionIbpt = ibpt.getVersion();
 		
-		assertEquals(3, versionIbpt.getId());
-		assertEquals("23.2.D", versionIbpt.getName());
-		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2023-10-31"), versionIbpt.getEffectivePeriodUntil());
+		assertEquals(5, versionIbpt.getId());
+		assertEquals("23.2.F", versionIbpt.getName());
+		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-31"), versionIbpt.getEffectivePeriodUntil());
 		
 		CompanySoftwareIbpt companySoftwareIbpt = ibpt.getCompanySoftware();
 		

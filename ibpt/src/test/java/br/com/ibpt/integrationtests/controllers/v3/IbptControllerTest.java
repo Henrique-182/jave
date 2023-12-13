@@ -636,8 +636,8 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertTrue(content.contains("\"prev\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=4&size=10\"}"));
 		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=5&size=10\"}"));
 		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=6&size=10\"}"));
-		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=63&size=10\"}"));
-		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":632,\"totalPages\":64,\"number\":5"));
+		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=94&size=10\"}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":948,\"totalPages\":95,\"number\":5"));
 	}
 	
 	
