@@ -7,9 +7,11 @@ spring:
         enabled: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/jave?useTimezone=true&serverTimezone=America/Sao_Paulo
+    url: jdbc:mysql://localhost:3306/conhecimento?useTimezone=true&serverTimezone=America/Sao_Paulo
     username: root
     password: 12345678
+  flyway:
+    baselineOnMigrate: true
   jpa:
     hibernate:
       ddl-auto: none
