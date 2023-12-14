@@ -40,3 +40,4 @@ jobs:
         
         docker push ${{ secrets.DOCKER_USERNAME }}/ibpt:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/ibpt:${{ github.run_id }}
+        
