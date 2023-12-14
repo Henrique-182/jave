@@ -3,7 +3,7 @@ server:
 cors:
   originPatterns: http://localhost:443,http://localhost:3000
 file:
-  upload-dir: /home/runner/work/Jave/Jave/Ibpt/Server/Files
+  upload-dir: /home/runner/work/Ibpt/Server/Files/Ibpt
 security:
   jwt:
     token:
