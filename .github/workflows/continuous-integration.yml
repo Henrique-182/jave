@@ -25,13 +25,13 @@ jobs:
         distribution: 'adopt'
         cache: maven
     - name: Build Application JAR
-      working-directory: ./ibpt
+      working-directory: /home/runner/work/jave/jave/ibpt
       run: |
         pwd
         mvn clean package
 
     - name: Docker Compose Build
-      working-directory: ../
+      working-directory: /home/runner/work/jave/jave/
       run: docker compose build
 
     - name: Push to Docker Hub Container Registry
