@@ -213,9 +213,9 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		
 		VersionVO softwareOne = resultList.get(0);
 		
-		assertEquals(3, softwareOne.getKey());
-		assertEquals("23.2.D", softwareOne.getName());
-		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2023-10-31"), softwareOne.getEffectivePeriodUntil());
+		assertEquals(4, softwareOne.getKey());
+		assertEquals("23.2.E", softwareOne.getName());
+		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2023-11-30"), softwareOne.getEffectivePeriodUntil());
 	}
 	
 	@Test
@@ -264,7 +264,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/version/3\"}}"));
 		
 		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/version?direction=desc&sortBy=name&page=0&size=10\"}}"));
-		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":4,\"totalPages\":1,\"number\":0}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":6,\"totalPages\":1,\"number\":0}"));
 	}
 	
 }

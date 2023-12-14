@@ -51,9 +51,9 @@ public class VersionCustomRepositoryTest extends AbstractIntegrationTest {
 		
 		version = entityList.get(0);
 		
-		assertEquals(3, version.getId());
-		assertEquals("23.2.D", version.getName());
-		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2023-10-31"), version.getEffectivePeriodUntil());
+		assertEquals(5, version.getId());
+		assertEquals("23.2.F", version.getName());
+		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-31"), version.getEffectivePeriodUntil());
 	}
 	
 }
