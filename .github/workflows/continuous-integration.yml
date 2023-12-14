@@ -25,7 +25,7 @@ jobs:
         distribution: 'adopt'
         cache: maven
     - name: Build Application JAR
-      working-directory: ./
+      working-directory: ./ibpt
       run: |
         pwd
         mvn clean package
