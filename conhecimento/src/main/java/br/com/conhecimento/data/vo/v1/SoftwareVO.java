@@ -3,11 +3,6 @@ package br.com.conhecimento.data.vo.v1;
 import java.io.Serializable;
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
 public class SoftwareVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;

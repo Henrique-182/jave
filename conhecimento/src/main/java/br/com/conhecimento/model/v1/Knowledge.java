@@ -1,13 +1,19 @@
 package br.com.conhecimento.model.v1;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,11 +33,20 @@ public class Knowledge implements Serializable {
 	@Column(name = "DESCRIPTION", nullable = false)
 	private String description;
 	
-	@Column(name = "FK_SOFTWARE", nullable = false)
-	private String fkSoftware;
+	@ManyToOne
+	@JoinColumn(name = "FK_SOFTWARE")
+	private SoftwareKnowledge software;
 	
 	@Column(name = "CONTENT", nullable = false)
 	private String content;
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+		name = "KNOWLEDGE_TOPIC",
+		joinColumns = @JoinColumn(name = "FK_KNOWLEDGE"),
+		inverseJoinColumns = @JoinColumn(name = "FK_TOPIC")
+	)
+	private List<TopicKnowledge> topics;
 
 	public Knowledge() {}
 
@@ -59,12 +74,12 @@ public class Knowledge implements Serializable {
 		this.description = description;
 	}
 
-	public String getFkSoftware() {
-		return fkSoftware;
+	public SoftwareKnowledge getSoftware() {
+		return software;
 	}
 
-	public void setFkSoftware(String fkSoftware) {
-		this.fkSoftware = fkSoftware;
+	public void setSoftware(SoftwareKnowledge software) {
+		this.software = software;
 	}
 
 	public String getContent() {
@@ -74,10 +89,18 @@ public class Knowledge implements Serializable {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	
+	public List<TopicKnowledge> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(List<TopicKnowledge> topics) {
+		this.topics = topics;
+	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(content, description, fkSoftware, id, title);
+		return Objects.hash(content, description, id, software, title, topics);
 	}
 
 	@Override
@@ -90,8 +113,8 @@ public class Knowledge implements Serializable {
 			return false;
 		Knowledge other = (Knowledge) obj;
 		return Objects.equals(content, other.content) && Objects.equals(description, other.description)
-				&& Objects.equals(fkSoftware, other.fkSoftware) && Objects.equals(id, other.id)
-				&& Objects.equals(title, other.title);
+				&& Objects.equals(id, other.id) && Objects.equals(software, other.software)
+				&& Objects.equals(title, other.title) && Objects.equals(topics, other.topics);
 	}
-	
+
 }

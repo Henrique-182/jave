@@ -12,9 +12,10 @@
 	<artifactId>conhecimento</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>conhecimento</name>
-	<description>Base de Conhecimento dos Sistemas da Jave Informática</description>
+	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>19</java.version>
+		<springdoc.version>2.0.2</springdoc.version>
 		<maven.compiler.target>16</maven.compiler.target>
 		<maven.compiler.source>16</maven.compiler.source>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
@@ -36,6 +37,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${springdoc.version}</version>
 		</dependency>
 		
 		<dependency>
@@ -105,7 +112,7 @@
 			   <groupId>org.flywaydb</groupId>
 			   <artifactId>flyway-maven-plugin</artifactId>
 			   <configuration>
-			      <url>jdbc:mysql://localhost:3306/conhecimento?useTimezone=true&amp;serverTimezone=UTC&amp;useSSL=false</url>
+			      <url>jdbc:mysql://localhost:3306/jave_conhecimento?useTimezone=true&amp;serverTimezone=UTC&amp;useSSL=false</url>
 			      <user>root</user>
 			      <password>12345678</password>
 			   </configuration>

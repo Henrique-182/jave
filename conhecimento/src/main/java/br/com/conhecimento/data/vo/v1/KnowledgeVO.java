@@ -1,7 +1,11 @@
 package br.com.conhecimento.data.vo.v1;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
+
+import br.com.conhecimento.model.v1.SoftwareKnowledge;
+import br.com.conhecimento.model.v1.TopicKnowledge;
 
 public class KnowledgeVO implements Serializable {
 
@@ -10,8 +14,9 @@ public class KnowledgeVO implements Serializable {
 	private Integer key;
 	private String title;
 	private String description;
-	private String fkSoftware;
+	private SoftwareKnowledge software;
 	private String content;
+	private List<TopicKnowledge> topics;
 	
 	public KnowledgeVO() {}
 
@@ -39,12 +44,12 @@ public class KnowledgeVO implements Serializable {
 		this.description = description;
 	}
 
-	public String getFkSoftware() {
-		return fkSoftware;
+	public SoftwareKnowledge getSoftware() {
+		return software;
 	}
 
-	public void setFkSoftware(String fkSoftware) {
-		this.fkSoftware = fkSoftware;
+	public void setSoftware(SoftwareKnowledge software) {
+		this.software = software;
 	}
 
 	public String getContent() {
@@ -55,9 +60,17 @@ public class KnowledgeVO implements Serializable {
 		this.content = content;
 	}
 
+	public List<TopicKnowledge> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(List<TopicKnowledge> topics) {
+		this.topics = topics;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(content, description, fkSoftware, key, title);
+		return Objects.hash(content, description, key, software, title, topics);
 	}
 
 	@Override
@@ -70,8 +83,8 @@ public class KnowledgeVO implements Serializable {
 			return false;
 		KnowledgeVO other = (KnowledgeVO) obj;
 		return Objects.equals(content, other.content) && Objects.equals(description, other.description)
-				&& Objects.equals(fkSoftware, other.fkSoftware) && Objects.equals(key, other.key)
-				&& Objects.equals(title, other.title);
+				&& Objects.equals(key, other.key) && Objects.equals(software, other.software)
+				&& Objects.equals(title, other.title) && Objects.equals(topics, other.topics);
 	}
 
 }
