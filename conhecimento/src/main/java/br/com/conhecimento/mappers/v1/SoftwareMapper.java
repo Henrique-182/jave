@@ -1,5 +1,7 @@
 package br.com.conhecimento.mappers.v1;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,5 +16,11 @@ public interface SoftwareMapper {
 	
 	@Mapping(source = "key", target = "id")
 	Software toEntity(SoftwareVO vo);
+	
+	@Mapping(source = "id", target = "key")
+	List<SoftwareVO> toVOList(List<Software> entity);
+	
+	@Mapping(source = "key", target = "id")
+	List<Software> toEntity(List<SoftwareVO> vo);
 	
 }

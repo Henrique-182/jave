@@ -22,11 +22,13 @@ public class SoftwareService {
 	private SoftwareMapper mapper;
 	
 	public List<SoftwareVO> findAll() {
-		return repository.findAll().stream().map(s -> mapper.toVO(s)).toList();
+		List<Software> entityList = repository.findAll();
+		
+		return mapper.toVOList(entityList);
 	}
 	
 	public SoftwareVO findById(Integer id) {
-		Software persistedEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ")"));
+		Software persistedEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		return mapper.toVO(persistedEntity);
 	}
@@ -51,7 +53,7 @@ public class SoftwareService {
 	}
 	
 	public void deleteById(Integer id) {
-		Software entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ")"));
+		Software entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		repository.delete(entity);
 	}

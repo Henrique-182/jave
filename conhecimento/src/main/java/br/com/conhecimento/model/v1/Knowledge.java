@@ -35,7 +35,7 @@ public class Knowledge implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "FK_SOFTWARE")
-	private SoftwareKnowledge software;
+	private SoftwareKnwl software;
 	
 	@Column(name = "CONTENT", nullable = false)
 	private String content;
@@ -46,7 +46,7 @@ public class Knowledge implements Serializable {
 		joinColumns = @JoinColumn(name = "FK_KNOWLEDGE"),
 		inverseJoinColumns = @JoinColumn(name = "FK_TOPIC")
 	)
-	private List<TopicKnowledge> topics;
+	private List<TopicKnwl> topics;
 
 	public Knowledge() {}
 
@@ -74,11 +74,11 @@ public class Knowledge implements Serializable {
 		this.description = description;
 	}
 
-	public SoftwareKnowledge getSoftware() {
+	public SoftwareKnwl getSoftware() {
 		return software;
 	}
 
-	public void setSoftware(SoftwareKnowledge software) {
+	public void setSoftware(SoftwareKnwl software) {
 		this.software = software;
 	}
 
@@ -90,11 +90,11 @@ public class Knowledge implements Serializable {
 		this.content = content;
 	}
 	
-	public List<TopicKnowledge> getTopics() {
+	public List<TopicKnwl> getTopics() {
 		return topics;
 	}
 
-	public void setTopics(List<TopicKnowledge> topics) {
+	public void setTopics(List<TopicKnwl> topics) {
 		this.topics = topics;
 	}
 

@@ -11,8 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "TOPIC")
-public class TopicKnowledge implements Serializable {
+@Table(name = "SOFTWARE")
+public class SoftwareKnwl implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +24,7 @@ public class TopicKnowledge implements Serializable {
 	@Column(name = "NAME", nullable = false)
 	private String name;
 
-	public TopicKnowledge() {}
+	public SoftwareKnwl() {}
 
 	public Integer getId() {
 		return id;
@@ -55,7 +55,7 @@ public class TopicKnowledge implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TopicKnowledge other = (TopicKnowledge) obj;
+		SoftwareKnwl other = (SoftwareKnwl) obj;
 		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
 	}
 

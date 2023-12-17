@@ -28,7 +28,7 @@ public class TopicService {
 	}
 	
 	public TopicVO findById(Integer id) {
-		Topic persistedEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ")"));
+		Topic persistedEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		return mapper.toVO(persistedEntity);
 	}
@@ -53,7 +53,7 @@ public class TopicService {
 	}
 	
 	public void deleteById(Integer id) {
-		Topic entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ")"));
+		Topic entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		repository.delete(entity);
 	}

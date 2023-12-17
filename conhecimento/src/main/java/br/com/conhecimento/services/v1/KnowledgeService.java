@@ -28,7 +28,7 @@ public class KnowledgeService {
 	}
 	
 	public KnowledgeVO findById(Integer id) {
-		Knowledge persistedEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ")"));
+		Knowledge persistedEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		return mapper.toVO(persistedEntity);
 	}
@@ -44,7 +44,7 @@ public class KnowledgeService {
 	public KnowledgeVO updateById(Integer id, KnowledgeVO data) {
 		if (data == null) throw new RequiredObjectIsNullException();
 		
-		Knowledge entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ")"));
+		Knowledge entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		entity.setTitle(data.getTitle());
 		entity.setDescription(data.getDescription());
 		entity.setSoftware(data.getSoftware());
@@ -57,7 +57,7 @@ public class KnowledgeService {
 	}
 	
 	public void deleteById(Integer id) {
-		Knowledge entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ")"));
+		Knowledge entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		repository.delete(entity);
 	}

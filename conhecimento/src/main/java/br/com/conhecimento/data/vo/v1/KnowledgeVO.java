@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-import br.com.conhecimento.model.v1.SoftwareKnowledge;
-import br.com.conhecimento.model.v1.TopicKnowledge;
+import br.com.conhecimento.model.v1.SoftwareKnwl;
+import br.com.conhecimento.model.v1.TopicKnwl;
 
 public class KnowledgeVO implements Serializable {
 
@@ -14,9 +14,9 @@ public class KnowledgeVO implements Serializable {
 	private Integer key;
 	private String title;
 	private String description;
-	private SoftwareKnowledge software;
+	private SoftwareKnwl software;
 	private String content;
-	private List<TopicKnowledge> topics;
+	private List<TopicKnwl> topics;
 	
 	public KnowledgeVO() {}
 
@@ -44,11 +44,11 @@ public class KnowledgeVO implements Serializable {
 		this.description = description;
 	}
 
-	public SoftwareKnowledge getSoftware() {
+	public SoftwareKnwl getSoftware() {
 		return software;
 	}
 
-	public void setSoftware(SoftwareKnowledge software) {
+	public void setSoftware(SoftwareKnwl software) {
 		this.software = software;
 	}
 
@@ -60,11 +60,11 @@ public class KnowledgeVO implements Serializable {
 		this.content = content;
 	}
 
-	public List<TopicKnowledge> getTopics() {
+	public List<TopicKnwl> getTopics() {
 		return topics;
 	}
 
-	public void setTopics(List<TopicKnowledge> topics) {
+	public void setTopics(List<TopicKnwl> topics) {
 		this.topics = topics;
 	}
 
