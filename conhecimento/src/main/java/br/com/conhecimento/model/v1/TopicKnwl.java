@@ -25,6 +25,10 @@ public class TopicKnwl implements Serializable {
 	private String name;
 
 	public TopicKnwl() {}
+	
+	public TopicKnwl(Integer id) {
+		this.id = id;
+	}
 
 	public Integer getId() {
 		return id;

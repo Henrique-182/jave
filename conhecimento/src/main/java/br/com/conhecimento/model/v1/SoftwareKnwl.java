@@ -25,6 +25,15 @@ public class SoftwareKnwl implements Serializable {
 	private String name;
 
 	public SoftwareKnwl() {}
+	
+	public SoftwareKnwl(Integer id) {
+		this.id = id;
+		this.name = id == 1 
+				? "Esti" 
+				: id == 2
+				? "Stac"
+				: "";
+ 	}
 
 	public Integer getId() {
 		return id;
