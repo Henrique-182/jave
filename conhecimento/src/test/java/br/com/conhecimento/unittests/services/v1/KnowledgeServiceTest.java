@@ -3,6 +3,7 @@ package br.com.conhecimento.unittests.services.v1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
@@ -72,6 +73,7 @@ public class KnowledgeServiceTest {
 		assertEquals("Stac", knowledgeOne.getSoftware().getName());
 		assertEquals("Name0", knowledgeOne.getTopics().get(0).getName());
 		assertEquals("Name1", knowledgeOne.getTopics().get(1).getName());
+		assertTrue(knowledgeOne.getLinks().toString().contains("</v1/knowledge/1>;rel=\"self\""));
 		
 		KnowledgeVO knowledgeTwo = resultList.get(2);
 		
@@ -83,6 +85,7 @@ public class KnowledgeServiceTest {
 		assertEquals("Esti", knowledgeTwo.getSoftware().getName());
 		assertEquals("Name0", knowledgeTwo.getTopics().get(0).getName());
 		assertEquals("Name1", knowledgeTwo.getTopics().get(1).getName());
+		assertTrue(knowledgeTwo.getLinks().toString().contains("</v1/knowledge/2>;rel=\"self\""));
 	}
 	
 	@Test
@@ -107,6 +110,7 @@ public class KnowledgeServiceTest {
 		assertEquals("Stac", persistedKnowledge.getSoftware().getName());
 		assertEquals("Name0", persistedKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", persistedKnowledge.getTopics().get(1).getName());
+		assertTrue(persistedKnowledge.getLinks().toString().contains("</v1/knowledge>;rel=\"VOList\""));
 	}
 	
 	@Test
@@ -145,6 +149,7 @@ public class KnowledgeServiceTest {
 		assertEquals("Esti", createdKnowledge.getSoftware().getName());
 		assertEquals("Name0", createdKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", createdKnowledge.getTopics().get(1).getName());
+		assertTrue(createdKnowledge.getLinks().toString().contains("</v1/knowledge>;rel=\"VOList\""));
 	}
 	
 	@Test
@@ -185,6 +190,7 @@ public class KnowledgeServiceTest {
 		assertEquals("Esti", updatedKnowledge.getSoftware().getName());
 		assertEquals("Name0", updatedKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", updatedKnowledge.getTopics().get(1).getName());
+		assertTrue(updatedKnowledge.getLinks().toString().contains("</v1/knowledge>;rel=\"VOList\""));
 	}
 	
 	@Test

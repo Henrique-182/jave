@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import br.com.conhecimento.model.v1.SoftwareKnwl;
 import br.com.conhecimento.model.v1.TopicKnwl;
 
-public class KnowledgeVO implements Serializable {
+public class KnowledgeVO extends RepresentationModel<KnowledgeVO> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

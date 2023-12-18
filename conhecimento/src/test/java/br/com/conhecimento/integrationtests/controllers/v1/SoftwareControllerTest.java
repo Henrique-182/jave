@@ -78,6 +78,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		assertTrue(createdSoftware.getKey() > 0);
 		
 		assertEquals("Name0", createdSoftware.getName());
+		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/software\"}"));
 	}
 	
 	@Test
@@ -98,6 +99,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(software.getKey(), persistedSoftware.getKey());
 		assertEquals("Name0", persistedSoftware.getName());
+		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/software\"}"));
 	}
 	
 	@Test
@@ -120,6 +122,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(software.getKey(), persistedSoftware.getKey());
 		assertEquals(software.getKey() + "Name", persistedSoftware.getName());
+		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/software\"}"));
 	}
 	
 	@Test
@@ -159,6 +162,23 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(2, softwareTwo.getKey());
 		assertEquals("Stac", softwareTwo.getName());
+	}
+	
+	@Test
+	@Order(6)
+	void testHATEOAS() {
+		
+		var content = given().spec(specification)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/software/1\"}"));
+		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/software/2\"}"));
 	}
 	
 }

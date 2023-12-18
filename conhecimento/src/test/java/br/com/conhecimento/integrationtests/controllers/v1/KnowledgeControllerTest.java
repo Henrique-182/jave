@@ -84,6 +84,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertEquals("Description0", createdKnowledge.getDescription());
 		assertEquals("Content0", createdKnowledge.getContent());
 		assertEquals("Esti", createdKnowledge.getSoftware().getName());
+		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/knowledge\"}"));
 	}
 	
 	@Test
@@ -107,6 +108,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertEquals("Description0", persistedKnowledge.getDescription());
 		assertEquals("Content0", persistedKnowledge.getContent());
 		assertEquals("Esti", persistedKnowledge.getSoftware().getName());
+		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/knowledge\"}"));
 	}
 	
 	@Test
@@ -150,6 +152,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertEquals("Stac", updatedKnowledge.getSoftware().getName());
 		assertEquals("TG Config", updatedKnowledge.getTopics().get(0).getName());
 		assertEquals("Instalação", updatedKnowledge.getTopics().get(1).getName());
+		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/knowledge\"}"));
 	}
 	
 	@Test
@@ -187,6 +190,23 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertTrue(knowledgeOne.getContent().contains("<TGAPLICACAO name=\"Arca\" Caption=\"ARCA - Automação de Comércio e Indústria\">"));
 		assertEquals("TG Config", knowledgeOne.getTopics().get(0).getName());
 		assertEquals("Instalação", knowledgeOne.getTopics().get(1).getName());
+	}
+	
+	@Test
+	@Order(6)
+	void testHATEOAS() {
+		
+		var content = given().spec(specification)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/knowledge/1\"}"));
+		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/knowledge/2\"}"));
 	}
 	
 }

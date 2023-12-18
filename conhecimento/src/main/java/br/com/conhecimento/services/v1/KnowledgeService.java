@@ -1,10 +1,14 @@
 package br.com.conhecimento.services.v1;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.conhecimento.controllers.v1.KnowledgeController;
 import br.com.conhecimento.data.vo.v1.KnowledgeVO;
 import br.com.conhecimento.exceptions.v1.RequiredObjectIsNullException;
 import br.com.conhecimento.exceptions.v1.ResourceNotFoundException;
@@ -24,13 +28,15 @@ public class KnowledgeService {
 	public List<KnowledgeVO> findAll() {
 		List<Knowledge> entityList = repository.findAll();
 		
-		return mapper.toVOList(entityList);
+		List<KnowledgeVO> voList = mapper.toVOList(entityList).stream().map(k -> addLinkSelfRel(k)).toList();
+		
+		return voList;
 	}
 	
 	public KnowledgeVO findById(Integer id) {
 		Knowledge persistedEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
-		return mapper.toVO(persistedEntity);
+		return addLinkVOList(mapper.toVO(persistedEntity));
 	}
 	
 	public KnowledgeVO create(KnowledgeVO data) {
@@ -38,7 +44,7 @@ public class KnowledgeService {
 		
 		Knowledge createdEntity = repository.save(mapper.toEntity(data));
 		
-		return mapper.toVO(createdEntity);
+		return addLinkVOList(mapper.toVO(createdEntity));
 	}
 	
 	public KnowledgeVO updateById(Integer id, KnowledgeVO data) {
@@ -53,13 +59,21 @@ public class KnowledgeService {
 		
 		Knowledge updatedEntity = repository.save(entity);
 		
-		return mapper.toVO(updatedEntity);
+		return addLinkVOList(mapper.toVO(updatedEntity));
 	}
 	
 	public void deleteById(Integer id) {
 		Knowledge entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		repository.delete(entity);
+	}
+	
+	private KnowledgeVO addLinkSelfRel(KnowledgeVO vo) {
+		return vo.add(linkTo(methodOn(KnowledgeController.class).findById(vo.getKey())).withSelfRel());
+	}
+	
+	private KnowledgeVO addLinkVOList(KnowledgeVO vo) {
+		return vo.add(linkTo(methodOn(KnowledgeController.class).findAll()).withRel("VOList").expand());
 	}
 	
 }

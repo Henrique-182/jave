@@ -3,6 +3,7 @@ package br.com.conhecimento.unittests.services.v1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
@@ -67,12 +68,14 @@ public class TopicServiceTest {
 		assertNotNull(topicOne);
 		assertEquals(1, topicOne.getKey());
 		assertEquals("Name1", topicOne.getName());
+		assertTrue(topicOne.getLinks().toString().contains("</v1/topic/1>;rel=\"self\""));
 		
 		TopicVO topicTwo = resultList.get(2);
 		
 		assertNotNull(topicTwo);
 		assertEquals(2, topicTwo.getKey());
 		assertEquals("Name2", topicTwo.getName());
+		assertTrue(topicTwo.getLinks().toString().contains("</v1/topic/2>;rel=\"self\""));
 	}
 	
 	@Test
@@ -93,6 +96,7 @@ public class TopicServiceTest {
 		assertNotNull(persistedTopic);
 		assertEquals(1, persistedTopic.getKey());
 		assertEquals("Name1", persistedTopic.getName());
+		assertTrue(persistedTopic.getLinks().toString().contains("</v1/topic>;rel=\"VOList\""));
 	}
 	
 	@Test
@@ -127,6 +131,7 @@ public class TopicServiceTest {
 		assertNotNull(createdTopic);
 		assertEquals(0, createdTopic.getKey());
 		assertEquals("Name0", createdTopic.getName());
+		assertTrue(createdTopic.getLinks().toString().contains("</v1/topic>;rel=\"VOList\""));
 	}
 	
 	@Test

@@ -3,6 +3,7 @@ package br.com.conhecimento.unittests.services.v1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -65,6 +66,7 @@ public class SoftwareServiceTest {
 		
 		assertEquals(1, softwareOne.getKey());
 		assertEquals("Name1", softwareOne.getName());
+		assertTrue(softwareOne.getLinks().toString().contains("</v1/software/1>;rel=\"self\""));
 		
 		SoftwareVO softwareTwo = resultList.get(2);
 		
@@ -72,6 +74,7 @@ public class SoftwareServiceTest {
 		
 		assertEquals(2, softwareTwo.getKey());
 		assertEquals("Name2", softwareTwo.getName());
+		assertTrue(softwareTwo.getLinks().toString().contains("</v1/software/2>;rel=\"self\""));
 	}
 	
 	@Test
@@ -91,6 +94,7 @@ public class SoftwareServiceTest {
 		
 		assertEquals(1, persistedSoftware.getKey());
 		assertEquals("Name1", persistedSoftware.getName());
+		assertTrue(persistedSoftware.getLinks().toString().contains("</v1/software>;rel=\"VOList\""));
 	}
 	
 	@Test
@@ -124,6 +128,7 @@ public class SoftwareServiceTest {
 		
 		assertEquals(0, createdSoftware.getKey());
 		assertEquals("Name0", createdSoftware.getName());
+		assertTrue(createdSoftware.getLinks().toString().contains("</v1/software>;rel=\"VOList\""));
 	}
 	
 	@Test

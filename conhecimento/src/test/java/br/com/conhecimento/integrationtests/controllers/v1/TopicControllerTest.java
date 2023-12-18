@@ -80,6 +80,7 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		assertTrue(createdTopic.getKey() > 0);
 		
 		assertEquals("Name0", createdTopic.getName());
+		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/topic\"}"));
 	}
 	
 	@Test
@@ -100,6 +101,7 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(topic.getKey(), persistedTopic.getKey());
 		assertEquals("Name0", persistedTopic.getName());
+		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/topic\"}"));
 	}
 	
 	@Test
@@ -123,6 +125,7 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(topic.getKey(), updatedTopic.getKey());
 		assertEquals(topic.getKey() + "Name", updatedTopic.getName());
+		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/topic\"}"));
 	}
 	
 	@Test
@@ -162,6 +165,23 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(2, topicTwo.getKey());
 		assertEquals("Instalação", topicTwo.getName());
+	}
+	
+	@Test
+	@Order(6)
+	void testHATEOAS() {
+		
+		var content = given().spec(specification)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/topic/1\"}"));
+		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/topic/2\"}"));
 	}
 	
 }

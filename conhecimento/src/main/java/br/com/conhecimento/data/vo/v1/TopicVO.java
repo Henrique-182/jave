@@ -3,7 +3,9 @@ package br.com.conhecimento.data.vo.v1;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class TopicVO implements Serializable {
+import org.springframework.hateoas.RepresentationModel;
+
+public class TopicVO extends RepresentationModel<TopicVO> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -1,10 +1,14 @@
 package br.com.conhecimento.services.v1;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.conhecimento.controllers.v1.SoftwareController;
 import br.com.conhecimento.data.vo.v1.SoftwareVO;
 import br.com.conhecimento.exceptions.v1.RequiredObjectIsNullException;
 import br.com.conhecimento.exceptions.v1.ResourceNotFoundException;
@@ -24,13 +28,15 @@ public class SoftwareService {
 	public List<SoftwareVO> findAll() {
 		List<Software> entityList = repository.findAll();
 		
-		return mapper.toVOList(entityList);
+		List<SoftwareVO> voList = mapper.toVOList(entityList).stream().map(s -> addLinkSelfRel(s)).toList();
+		
+		return voList;
 	}
 	
 	public SoftwareVO findById(Integer id) {
 		Software persistedEntity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
-		return mapper.toVO(persistedEntity);
+		return addLinkVOList(mapper.toVO(persistedEntity));
 	}
 	
 	public SoftwareVO create(SoftwareVO data) {
@@ -38,7 +44,7 @@ public class SoftwareService {
 		
 		Software createdEntity = repository.save(mapper.toEntity(data));
 		
-		return mapper.toVO(createdEntity);
+		return addLinkVOList(mapper.toVO(createdEntity));
 	}
 	
 	public SoftwareVO updateById(Integer id, SoftwareVO data) {
@@ -49,13 +55,21 @@ public class SoftwareService {
 		
 		Software updatedEntity = repository.save(entity);
 		
-		return mapper.toVO(updatedEntity);
+		return addLinkVOList(mapper.toVO(updatedEntity));
 	}
 	
 	public void deleteById(Integer id) {
 		Software entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		repository.delete(entity);
+	}
+	
+	private SoftwareVO addLinkSelfRel(SoftwareVO vo) {
+		return vo.add(linkTo(methodOn(SoftwareController.class).findById(vo.getKey())).withSelfRel());
+	}
+	
+	private SoftwareVO addLinkVOList(SoftwareVO vo) {
+		return vo.add(linkTo(methodOn(SoftwareController.class).findAll()).withRel("VOList").expand());
 	}
 	
 }
