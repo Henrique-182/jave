@@ -1,8 +1,9 @@
 package br.com.conhecimento.controllers.v1;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.conhecimento.data.vo.v1.SoftwareVO;
 import br.com.conhecimento.services.v1.SoftwareService;
+import br.com.conhecimento.utils.v1.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,8 +54,15 @@ public class SoftwareController {
 		}
 	)	
 	@GetMapping
-	public List<SoftwareVO> findAll() {
-		return service.findAll();
+	public PagedModel<EntityModel<SoftwareVO>> findPageable(
+		@RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+		@RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
+		@RequestParam(name = "sortBy", required = false, defaultValue = "name") String sortBy,
+		@RequestParam(name = "direction", required = false, defaultValue = "asc") String direction
+	) {
+		Pageable pageable = ControllerUtil.pageable(page, size, sortBy, direction);
+		
+		return service.findPageable(pageable);
 	}
 	
 

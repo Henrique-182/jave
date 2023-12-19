@@ -3,9 +3,11 @@ package br.com.conhecimento.services.v1;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import br.com.conhecimento.controllers.v1.TopicController;
@@ -25,14 +27,16 @@ public class TopicService {
 	@Autowired
 	private TopicMapper mapper;
 	
-	public List<TopicVO> findAll() {
-		List<Topic> entityList = repository.findAll();
+	@Autowired
+	private PagedResourcesAssembler<TopicVO> assembler;
+	
+	public PagedModel<EntityModel<TopicVO>> findPageable(Pageable pageable) {
+		var entityList = repository.findAll(pageable);
 		
-		List<TopicVO> voList = mapper.toVOList(entityList);
+		var voList = entityList.map(t -> mapper.toVO(t));
+		voList.map(t -> addLinkSelfRel(t)).toList();
 		
-		voList = voList.stream().map(t -> addLinkSelfRel(t)).toList();
-		
-		return voList;
+		return assembler.toModel(voList);
 	}
 	
 	public TopicVO findById(Integer id) {
@@ -71,7 +75,7 @@ public class TopicService {
 	}
 	
 	private TopicVO addLinkVOList(TopicVO vo) {
-		return vo.add(linkTo(methodOn(TopicController.class).findAll()).withRel("VOList").expand());
+		return vo.add(linkTo(methodOn(TopicController.class).findPageable(0, 10, "name", "asc")).withRel("topicVOList").expand());
 	}
 	
 }

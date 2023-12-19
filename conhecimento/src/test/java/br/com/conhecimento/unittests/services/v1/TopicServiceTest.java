@@ -4,10 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -51,34 +49,6 @@ public class TopicServiceTest {
 	}
 	
 	@Test
-	void testFindAll() {
-		
-		List<Topic> mockEntityList = input.entityList();
-		List<TopicVO> mockVOList = input.voList();
-		
-		when(repository.findAll()).thenReturn(mockEntityList);
-		when(mapper.toVOList(anyList())).thenReturn(mockVOList);
-		
-		List<TopicVO> resultList = service.findAll();
-		
-		assertNotNull(resultList);
-		
-		TopicVO topicOne = resultList.get(1);
-		
-		assertNotNull(topicOne);
-		assertEquals(1, topicOne.getKey());
-		assertEquals("Name1", topicOne.getName());
-		assertTrue(topicOne.getLinks().toString().contains("</v1/topic/1>;rel=\"self\""));
-		
-		TopicVO topicTwo = resultList.get(2);
-		
-		assertNotNull(topicTwo);
-		assertEquals(2, topicTwo.getKey());
-		assertEquals("Name2", topicTwo.getName());
-		assertTrue(topicTwo.getLinks().toString().contains("</v1/topic/2>;rel=\"self\""));
-	}
-	
-	@Test
 	void testFindById() {
 		
 		Integer id = 1;
@@ -96,7 +66,7 @@ public class TopicServiceTest {
 		assertNotNull(persistedTopic);
 		assertEquals(1, persistedTopic.getKey());
 		assertEquals("Name1", persistedTopic.getName());
-		assertTrue(persistedTopic.getLinks().toString().contains("</v1/topic>;rel=\"VOList\""));
+		assertTrue(persistedTopic.getLinks().toString().contains("</v1/topic?page=0&size=10&sortBy=name&direction=asc>;rel=\"topicVOList\""));
 	}
 	
 	@Test
@@ -131,7 +101,7 @@ public class TopicServiceTest {
 		assertNotNull(createdTopic);
 		assertEquals(0, createdTopic.getKey());
 		assertEquals("Name0", createdTopic.getName());
-		assertTrue(createdTopic.getLinks().toString().contains("</v1/topic>;rel=\"VOList\""));
+		assertTrue(createdTopic.getLinks().toString().contains("</v1/topic?page=0&size=10&sortBy=name&direction=asc>;rel=\"topicVOList\""));
 	}
 	
 	@Test

@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +24,7 @@ import br.com.conhecimento.configs.v1.TestConfig;
 import br.com.conhecimento.integrationtests.mocks.v1.KnowledgeMock;
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
 import br.com.conhecimento.integrationtests.vo.v1.KnowledgeVO;
+import br.com.conhecimento.integrationtests.vo.wrappers.v1.KnowledgeWrapperVO;
 import br.com.conhecimento.model.v1.SoftwareKnwl;
 import br.com.conhecimento.model.v1.TopicKnwl;
 import io.restassured.builder.RequestSpecBuilder;
@@ -84,7 +84,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertEquals("Description0", createdKnowledge.getDescription());
 		assertEquals("Content0", createdKnowledge.getContent());
 		assertEquals("Esti", createdKnowledge.getSoftware().getName());
-		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/knowledge\"}"));
+		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v1/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
 	}
 	
 	@Test
@@ -108,7 +108,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertEquals("Description0", persistedKnowledge.getDescription());
 		assertEquals("Content0", persistedKnowledge.getContent());
 		assertEquals("Esti", persistedKnowledge.getSoftware().getName());
-		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/knowledge\"}"));
+		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v1/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
 	}
 	
 	@Test
@@ -152,7 +152,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertEquals("Stac", updatedKnowledge.getSoftware().getName());
 		assertEquals("TG Config", updatedKnowledge.getTopics().get(0).getName());
 		assertEquals("Instalação", updatedKnowledge.getTopics().get(1).getName());
-		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/knowledge\"}"));
+		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v1/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
 	}
 	
 	@Test
@@ -169,7 +169,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 	
 	@Test
 	@Order(5)
-	void testFindAll() throws JsonMappingException, JsonProcessingException {
+	void testFindPageable() throws JsonMappingException, JsonProcessingException {
 		
 		var content = given().spec(specification)
 				.when()
@@ -180,9 +180,11 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		var resultList = mapper.readValue(content, new TypeReference<List<KnowledgeVO>>() {});
+		var wrapper = mapper.readValue(content, KnowledgeWrapperVO.class);
+		
+		List<KnowledgeVO> resultList = wrapper.getEmbedded().getKnowledges();
 	
-		KnowledgeVO knowledgeOne = resultList.get(0);
+		KnowledgeVO knowledgeOne = resultList.get(1);
 		
 		assertEquals(1, knowledgeOne.getKey());
 		assertEquals("TG Config", knowledgeOne.getTitle());
@@ -205,8 +207,11 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/knowledge/1\"}"));
-		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/knowledge/2\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/knowledge/1\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/knowledge/2\"}"));
+		
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/knowledge?page=0&size=10&sort=title,asc\"}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":2,\"totalPages\":1,\"number\":0}"));
 	}
 	
 }

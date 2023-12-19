@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +23,7 @@ import br.com.conhecimento.configs.v1.TestConfig;
 import br.com.conhecimento.integrationtests.mocks.v1.TopicMock;
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
 import br.com.conhecimento.integrationtests.vo.v1.TopicVO;
+import br.com.conhecimento.integrationtests.vo.wrappers.v1.TopicWrapperVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -80,7 +80,7 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		assertTrue(createdTopic.getKey() > 0);
 		
 		assertEquals("Name0", createdTopic.getName());
-		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/topic\"}"));
+		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -101,7 +101,7 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(topic.getKey(), persistedTopic.getKey());
 		assertEquals("Name0", persistedTopic.getName());
-		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/topic\"}"));
+		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -125,7 +125,7 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(topic.getKey(), updatedTopic.getKey());
 		assertEquals(topic.getKey() + "Name", updatedTopic.getName());
-		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/topic\"}"));
+		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -154,17 +154,19 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		var resultList = mapper.readValue(content, new TypeReference<List<TopicVO>>() {});
+		var wrapper = mapper.readValue(content, TopicWrapperVO.class);
+		
+		List<TopicVO> resultList = wrapper.getEmbedded().getTopics();
 		
 		TopicVO topicOne = resultList.get(0);
 		
-		assertEquals(1, topicOne.getKey());
-		assertEquals("TG Config", topicOne.getName());
+		assertEquals(15, topicOne.getKey());
+		assertEquals("Aviso", topicOne.getName());
 		
 		TopicVO topicTwo = resultList.get(1);
 		
-		assertEquals(2, topicTwo.getKey());
-		assertEquals("Instalação", topicTwo.getName());
+		assertEquals(23, topicTwo.getKey());
+		assertEquals("Bat", topicTwo.getName());
 	}
 	
 	@Test
@@ -180,8 +182,14 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/topic/1\"}"));
-		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/topic/2\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/topic/15\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/topic/23\"}"));
+		
+		assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sort=name,asc\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sort=name,asc\"}"));
+		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v1/topic?page=1&size=10&sort=name,asc\"}"));
+		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v1/topic?page=2&size=10&sort=name,asc\"}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":24,\"totalPages\":3,\"number\":0}"));
 	}
 	
 }

@@ -4,10 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -51,44 +49,6 @@ public class KnowledgeServiceTest {
 	}
 	
 	@Test
-	void testFindAll() {
-		
-		List<Knowledge> mockEntityList = input.entityList();
-		List<KnowledgeVO> mockVOList = input.voList();
-		
-		when(repository.findAll()).thenReturn(mockEntityList);
-		when(mapper.toVOList(anyList())).thenReturn(mockVOList);
-		
-		List<KnowledgeVO> resultList = service.findAll();
-		
-		assertNotNull(resultList);
-		
-		KnowledgeVO knowledgeOne = resultList.get(1);
-		
-		assertNotNull(knowledgeOne);
-		assertEquals(1, knowledgeOne.getKey());
-		assertEquals("Title1", knowledgeOne.getTitle());
-		assertEquals("Description1", knowledgeOne.getDescription());
-		assertEquals("Content1", knowledgeOne.getContent());
-		assertEquals("Stac", knowledgeOne.getSoftware().getName());
-		assertEquals("Name0", knowledgeOne.getTopics().get(0).getName());
-		assertEquals("Name1", knowledgeOne.getTopics().get(1).getName());
-		assertTrue(knowledgeOne.getLinks().toString().contains("</v1/knowledge/1>;rel=\"self\""));
-		
-		KnowledgeVO knowledgeTwo = resultList.get(2);
-		
-		assertNotNull(knowledgeTwo);
-		assertEquals(2, knowledgeTwo.getKey());
-		assertEquals("Title2", knowledgeTwo.getTitle());
-		assertEquals("Description2", knowledgeTwo.getDescription());
-		assertEquals("Content2", knowledgeTwo.getContent());
-		assertEquals("Esti", knowledgeTwo.getSoftware().getName());
-		assertEquals("Name0", knowledgeTwo.getTopics().get(0).getName());
-		assertEquals("Name1", knowledgeTwo.getTopics().get(1).getName());
-		assertTrue(knowledgeTwo.getLinks().toString().contains("</v1/knowledge/2>;rel=\"self\""));
-	}
-	
-	@Test
 	void testFindById() {
 		
 		Integer id = 1;
@@ -110,7 +70,7 @@ public class KnowledgeServiceTest {
 		assertEquals("Stac", persistedKnowledge.getSoftware().getName());
 		assertEquals("Name0", persistedKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", persistedKnowledge.getTopics().get(1).getName());
-		assertTrue(persistedKnowledge.getLinks().toString().contains("</v1/knowledge>;rel=\"VOList\""));
+		assertTrue(persistedKnowledge.getLinks().toString().contains("</v1/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
 	}
 	
 	@Test
@@ -149,7 +109,7 @@ public class KnowledgeServiceTest {
 		assertEquals("Esti", createdKnowledge.getSoftware().getName());
 		assertEquals("Name0", createdKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", createdKnowledge.getTopics().get(1).getName());
-		assertTrue(createdKnowledge.getLinks().toString().contains("</v1/knowledge>;rel=\"VOList\""));
+		assertTrue(createdKnowledge.getLinks().toString().contains("</v1/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
 	}
 	
 	@Test
@@ -190,7 +150,7 @@ public class KnowledgeServiceTest {
 		assertEquals("Esti", updatedKnowledge.getSoftware().getName());
 		assertEquals("Name0", updatedKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", updatedKnowledge.getTopics().get(1).getName());
-		assertTrue(updatedKnowledge.getLinks().toString().contains("</v1/knowledge>;rel=\"VOList\""));
+		assertTrue(updatedKnowledge.getLinks().toString().contains("</v1/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
 	}
 	
 	@Test

@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +23,7 @@ import br.com.conhecimento.configs.v1.TestConfig;
 import br.com.conhecimento.integrationtests.mocks.v1.SoftwareMock;
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
 import br.com.conhecimento.integrationtests.vo.v1.SoftwareVO;
+import br.com.conhecimento.integrationtests.vo.wrappers.v1.SoftwareWrapperVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -78,7 +78,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		assertTrue(createdSoftware.getKey() > 0);
 		
 		assertEquals("Name0", createdSoftware.getName());
-		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/software\"}"));
+		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v1/software?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(software.getKey(), persistedSoftware.getKey());
 		assertEquals("Name0", persistedSoftware.getName());
-		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/software\"}"));
+		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v1/software?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -122,7 +122,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(software.getKey(), persistedSoftware.getKey());
 		assertEquals(software.getKey() + "Name", persistedSoftware.getName());
-		assertTrue(content.contains("\"VOList\":{\"href\":\"http://localhost:8888/v1/software\"}"));
+		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v1/software?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -140,7 +140,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 	
 	@Test
 	@Order(5)
-	void testFindAll() throws JsonMappingException, JsonProcessingException {
+	void testFindPageable() throws JsonMappingException, JsonProcessingException {
 		
 		var content = given().spec(specification)
 				.when()
@@ -151,7 +151,9 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		var resultList = mapper.readValue(content, new TypeReference<List<SoftwareVO>>() {});
+		var wrapper = mapper.readValue(content, SoftwareWrapperVO.class);
+		
+		List<SoftwareVO> resultList = wrapper.getEmbedded().getSoftwares();
 		
 		SoftwareVO softwareOne = resultList.get(0);
 		
@@ -177,8 +179,11 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/software/1\"}"));
-		assertTrue(content.contains("{\"rel\":\"self\",\"href\":\"http://localhost:8888/v1/software/2\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/software/1\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/software/2\"}"));
+		
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/software?page=0&size=10&sort=name,asc\"}"));
+		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":2,\"totalPages\":1,\"number\":0}"));
 	}
 	
 }

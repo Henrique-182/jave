@@ -3,9 +3,11 @@ package br.com.conhecimento.services.v1;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import br.com.conhecimento.controllers.v1.SoftwareController;
@@ -25,12 +27,16 @@ public class SoftwareService {
 	@Autowired
 	private SoftwareMapper mapper;
 	
-	public List<SoftwareVO> findAll() {
-		List<Software> entityList = repository.findAll();
+	@Autowired
+	private PagedResourcesAssembler<SoftwareVO> assembler;
+	
+	public PagedModel<EntityModel<SoftwareVO>> findPageable(Pageable pageable) {
+		var entityList = repository.findAll(pageable);
 		
-		List<SoftwareVO> voList = mapper.toVOList(entityList).stream().map(s -> addLinkSelfRel(s)).toList();
+		var voList = entityList.map(s -> mapper.toVO(s));
+		voList.map(s -> addLinkSelfRel(s)).toList();
 		
-		return voList;
+		return assembler.toModel(voList);
 	}
 	
 	public SoftwareVO findById(Integer id) {
@@ -69,7 +75,7 @@ public class SoftwareService {
 	}
 	
 	private SoftwareVO addLinkVOList(SoftwareVO vo) {
-		return vo.add(linkTo(methodOn(SoftwareController.class).findAll()).withRel("VOList").expand());
+		return vo.add(linkTo(methodOn(SoftwareController.class).findPageable(0, 10, "name", "asc")).withRel("softwareVOList").expand());
 	}
 	
 }

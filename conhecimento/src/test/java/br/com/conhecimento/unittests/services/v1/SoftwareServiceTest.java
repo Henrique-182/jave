@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -48,35 +47,7 @@ public class SoftwareServiceTest {
 	void setup() {
 		input = new SoftwareMock();
 	}
-	
-	@Test
-	void testFindAll() {
 		
-		List<Software> mockEntityList = input.entityList();
-		List<SoftwareVO> mockVOList = input.voList();
-				
-		when(repository.findAll()).thenReturn(mockEntityList);
-		when(mapper.toVOList(mockEntityList)).thenReturn(mockVOList);
-		
-		List<SoftwareVO> resultList = service.findAll();
-		
-		SoftwareVO softwareOne = resultList.get(1);
-		
-		assertNotNull(softwareOne);
-		
-		assertEquals(1, softwareOne.getKey());
-		assertEquals("Name1", softwareOne.getName());
-		assertTrue(softwareOne.getLinks().toString().contains("</v1/software/1>;rel=\"self\""));
-		
-		SoftwareVO softwareTwo = resultList.get(2);
-		
-		assertNotNull(softwareTwo);
-		
-		assertEquals(2, softwareTwo.getKey());
-		assertEquals("Name2", softwareTwo.getName());
-		assertTrue(softwareTwo.getLinks().toString().contains("</v1/software/2>;rel=\"self\""));
-	}
-	
 	@Test
 	void testFindById() {
 		
@@ -94,7 +65,7 @@ public class SoftwareServiceTest {
 		
 		assertEquals(1, persistedSoftware.getKey());
 		assertEquals("Name1", persistedSoftware.getName());
-		assertTrue(persistedSoftware.getLinks().toString().contains("</v1/software>;rel=\"VOList\""));
+		assertTrue(persistedSoftware.getLinks().toString().contains("</v1/software?page=0&size=10&sortBy=name&direction=asc>;rel=\"softwareVOList\""));
 	}
 	
 	@Test
@@ -128,7 +99,7 @@ public class SoftwareServiceTest {
 		
 		assertEquals(0, createdSoftware.getKey());
 		assertEquals("Name0", createdSoftware.getName());
-		assertTrue(createdSoftware.getLinks().toString().contains("</v1/software>;rel=\"VOList\""));
+		assertTrue(createdSoftware.getLinks().toString().contains("</v1/software?page=0&size=10&sortBy=name&direction=asc>;rel=\"softwareVOList\""));
 	}
 	
 	@Test
