@@ -54,15 +54,18 @@ public class KnowledgeController {
 		}
 	)	
 	@GetMapping
-	public PagedModel<EntityModel<KnowledgeVO>> findPageable(
+	public PagedModel<EntityModel<KnowledgeVO>> findCustomPageable(
 		@RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
 		@RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
 		@RequestParam(name = "sortBy", required = false, defaultValue = "title") String sortBy,
-		@RequestParam(name = "direction", required = false, defaultValue = "asc") String direction
+		@RequestParam(name = "direction", required = false, defaultValue = "asc") String direction,
+		@RequestParam(name = "knowledgeTitle", required = false, defaultValue = "") String knowledgeTitle,
+		@RequestParam(name = "knowledgeDescription", required = false, defaultValue = "") String knowledgeDescription,
+		@RequestParam(name = "knowledgeContent", required = false, defaultValue = "") String knowledgeContent
 	) {
 		Pageable pageable = ControllerUtil.pageable(page, size, sortBy, direction);
 		
-		return service.findPageable(pageable);
+		return service.findCustomPageable(knowledgeTitle, knowledgeDescription, knowledgeContent, pageable);
 	}
 	
 	@Operation(

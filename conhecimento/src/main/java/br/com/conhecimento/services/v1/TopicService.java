@@ -30,8 +30,9 @@ public class TopicService {
 	@Autowired
 	private PagedResourcesAssembler<TopicVO> assembler;
 	
-	public PagedModel<EntityModel<TopicVO>> findPageable(Pageable pageable) {
-		var entityList = repository.findAll(pageable);
+	public PagedModel<EntityModel<TopicVO>> findCustomPageable(String topicName, Pageable pageable) {
+		var entityList = repository.findPageableByNameContaining(topicName, pageable);
+		
 		
 		var voList = entityList.map(t -> mapper.toVO(t));
 		voList.map(t -> addLinkSelfRel(t)).toList();
@@ -75,7 +76,7 @@ public class TopicService {
 	}
 	
 	private TopicVO addLinkVOList(TopicVO vo) {
-		return vo.add(linkTo(methodOn(TopicController.class).findPageable(0, 10, "name", "asc")).withRel("topicVOList").expand());
+		return vo.add(linkTo(methodOn(TopicController.class).findCustomPageable(0, 10, "name", "asc", null)).withRel("topicVOList").expand());
 	}
 	
 }

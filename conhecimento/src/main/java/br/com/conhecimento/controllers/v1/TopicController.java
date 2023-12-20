@@ -54,16 +54,17 @@ public class TopicController {
 		}
 	)
 	@GetMapping
-	public PagedModel<EntityModel<TopicVO>> findPageable(
+	public PagedModel<EntityModel<TopicVO>> findCustomPageable(
 		@RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
 		@RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
 		@RequestParam(name = "sortBy", required = false, defaultValue = "name") String sortBy,
-		@RequestParam(name = "direction", required = false, defaultValue = "asc") String direction
+		@RequestParam(name = "direction", required = false, defaultValue = "asc") String direction,
+		@RequestParam(name = "topicName", required = false, defaultValue = "") String topicName
 	) {
 		
 		Pageable pageable = ControllerUtil.pageable(page, size, sortBy, direction);
 		
-		return service.findPageable(pageable);
+		return service.findCustomPageable(topicName, pageable);
 	}
 	
 	@Operation(

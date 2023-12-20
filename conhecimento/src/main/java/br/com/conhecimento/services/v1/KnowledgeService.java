@@ -30,8 +30,18 @@ public class KnowledgeService {
 	@Autowired
 	private PagedResourcesAssembler<KnowledgeVO> assembler;
 
-	public PagedModel<EntityModel<KnowledgeVO>> findPageable(Pageable pageable) {
-		var entityList = repository.findAll(pageable);
+	public PagedModel<EntityModel<KnowledgeVO>> findCustomPageable(
+		String knowledgeTitle, 
+		String knowledgeDescription, 
+		String knowledgeContent,
+		Pageable pageable
+	) {
+		var entityList = repository.findPageableByTitleContainingAndDescriptionContainingAndContentContaining(
+				knowledgeTitle, 
+				knowledgeDescription, 
+				knowledgeContent, 
+				pageable
+			);
 		
 		var voList = entityList.map(k -> mapper.toVO(k));
 		voList.map(k -> addLinkSelfRel(k));
@@ -79,7 +89,7 @@ public class KnowledgeService {
 	}
 	
 	private KnowledgeVO addLinkVOList(KnowledgeVO vo) {
-		return vo.add(linkTo(methodOn(KnowledgeController.class).findPageable(0, 10, "title", "asc")).withRel("knowledgeVOList").expand());
+		return vo.add(linkTo(methodOn(KnowledgeController.class).findCustomPageable(0, 10, "title", "asc", null, null, null)).withRel("knowledgeVOList").expand());
 	}
 	
 }

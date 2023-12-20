@@ -30,8 +30,8 @@ public class SoftwareService {
 	@Autowired
 	private PagedResourcesAssembler<SoftwareVO> assembler;
 	
-	public PagedModel<EntityModel<SoftwareVO>> findPageable(Pageable pageable) {
-		var entityList = repository.findAll(pageable);
+	public PagedModel<EntityModel<SoftwareVO>> findCustomPageable(String softwareName, Pageable pageable) {
+		var entityList = repository.findPageableByNameContaining(softwareName, pageable);
 		
 		var voList = entityList.map(s -> mapper.toVO(s));
 		voList.map(s -> addLinkSelfRel(s)).toList();
@@ -75,7 +75,7 @@ public class SoftwareService {
 	}
 	
 	private SoftwareVO addLinkVOList(SoftwareVO vo) {
-		return vo.add(linkTo(methodOn(SoftwareController.class).findPageable(0, 10, "name", "asc")).withRel("softwareVOList").expand());
+		return vo.add(linkTo(methodOn(SoftwareController.class).findCustomPageable(0, 10, "name", "asc", null)).withRel("softwareVOList").expand());
 	}
 	
 }
