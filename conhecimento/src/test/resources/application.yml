@@ -2,6 +2,11 @@ server:
   port: 8888
 cors:
   originPatterns: http://localhost:8080,http://localhost:80,http://localhost:3000
+security:
+  jwt:
+    token:
+      secret-key: ${KNOWLEDGE_JWT_SECRET_KEY}
+      expire-length: 3600000
 spring:
   data:
     jdbc:
@@ -24,5 +29,6 @@ spring:
 springdoc:
   paths-to-match: 
     - /v1/**
+    - /v2/**
   swagger-ui: 
     use-root-path: true
