@@ -1,4 +1,4 @@
-package br.com.conhecimento.security.jwt.v1;
+package br.com.conhecimento.security.jwt.v2;
 
 import java.io.IOException;
 
@@ -27,9 +27,9 @@ public class JwtTokenFilter extends GenericFilterBean {
 		String token = tokenProvider.resolveToken((HttpServletRequest) request);
 		
 		if (token != null && tokenProvider.validateToken(token)) {
-			Authentication authentication = tokenProvider.getAuthentication(token);
+			Authentication auth = tokenProvider.getAuthentication(token);
 			
-			if (authentication != null) SecurityContextHolder.getContext().setAuthentication(authentication);
+			if (auth != null) SecurityContextHolder.getContext().setAuthentication(auth);
 		}
 		
 		chain.doFilter(request, response);

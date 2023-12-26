@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,10 +18,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import br.com.conhecimento.security.jwt.v1.JwtConfigurer;
-import br.com.conhecimento.security.jwt.v1.JwtTokenProvider;
+import br.com.conhecimento.security.jwt.v2.JwtTokenFilter;
+import br.com.conhecimento.security.jwt.v2.JwtTokenProvider;
 
+@EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
@@ -40,16 +43,19 @@ public class SecurityConfig {
 		return passwordEncoder;
 	}
 	
+	@Bean
 	AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 	
-	@SuppressWarnings("removal")
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		JwtTokenFilter customFilter = new JwtTokenFilter(tokenProvider);
+		
 		return http
 				.httpBasic(HttpBasicConfigurer::disable)
 				.csrf(AbstractHttpConfigurer::disable)
+				.addFilterBefore(customFilter , UsernamePasswordAuthenticationFilter.class)
 				.sessionManagement(
 					session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				)
@@ -69,8 +75,7 @@ public class SecurityConfig {
 							"/users"
 						).denyAll()
 				)
-				.apply(new JwtConfigurer(tokenProvider))
-				.and()
+				.cors(cors -> {})
 				.build();
 	}
 	

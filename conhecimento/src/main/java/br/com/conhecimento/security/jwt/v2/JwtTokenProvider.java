@@ -1,4 +1,4 @@
-package br.com.conhecimento.security.jwt.v1;
+package br.com.conhecimento.security.jwt.v2;
 
 import java.util.Base64;
 import java.util.Date;
@@ -30,7 +30,7 @@ public class JwtTokenProvider {
 	private String secretKey = "secret";
 	
 	@Value("${security.jwt.token.expire-length:3600000}")
-	private long validitiInMilliseconds = 3600000;
+	private long validityInMilliseconds = 3600000;
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -45,11 +45,21 @@ public class JwtTokenProvider {
 	
 	public TokenVO createAccessToken(String username, List<String> roles) {
 		Date now = new Date();
-		Date validity = new Date(now.getTime() + validitiInMilliseconds);
+		Date validity = new Date(now.getTime() + validityInMilliseconds);
 		var accessToken = getAccessToken(username, roles, now, validity);
 		var refreshToken = getRefreshToken(username, roles, now);
 		
 		return new TokenVO(username, true, now, validity, accessToken, refreshToken);
+	}
+	
+	public TokenVO refreshToken(String refreshToken) {
+		if (refreshToken.contains("Bearer ")) refreshToken = refreshToken.substring("Bearer ".length());
+		
+		JWTVerifier verifier = JWT.require(algorithm).build();
+		DecodedJWT decodedJWT = verifier.verify(refreshToken);
+		String username = decodedJWT.getSubject();
+		List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+		return createAccessToken(username, roles);
 	}
 	
 	private String getAccessToken(String username, List<String> roles, Date now, Date validity) {
@@ -66,7 +76,7 @@ public class JwtTokenProvider {
 	}
 
 	private String getRefreshToken(String username, List<String> roles, Date now) {
-		Date validityRefreshToken = new Date(now.getTime() + (validitiInMilliseconds * 3));
+		Date validityRefreshToken = new Date(now.getTime() + (validityInMilliseconds * 3));
 		
 		return JWT.create()
 					.withClaim("roles", roles)
@@ -82,13 +92,23 @@ public class JwtTokenProvider {
 		
 		UserDetails userDetails = this.userDetailsService.loadUserByUsername(decodedJWT.getSubject());
 		
-		return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getAuthorities());
+		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 	
-	public String resolveToken(HttpServletRequest request) {
-		String bearerToken = request.getHeader("Authorization");
+	private DecodedJWT decodedToken(String token) {
+		Algorithm alg = Algorithm.HMAC256(secretKey.getBytes());
 		
-		if (bearerToken.startsWith("Bearer ") && bearerToken != null) return bearerToken.substring("Bearer ".length());
+		JWTVerifier jwtVerifier = JWT.require(alg).build();
+		
+		DecodedJWT decodedJWT = jwtVerifier.verify(token);
+		
+		return decodedJWT;
+	}
+	
+	public String resolveToken(HttpServletRequest req) {
+		String bearerToken = req.getHeader("Authorization");
+		
+		if (bearerToken != null && bearerToken.startsWith("Bearer ")) return bearerToken.substring("Bearer ".length());
 		
 		return null;
 	}
@@ -103,16 +123,6 @@ public class JwtTokenProvider {
 		} catch (Exception e) {
 			throw new InvalidJwtAuthenticationException("Expired or Invalid JWT Token!");
 		}
-	}
-	
-	private DecodedJWT decodedToken(String token) {
-		Algorithm alg = Algorithm.HMAC256(secretKey.getBytes());
-		
-		JWTVerifier jwtVerifier = JWT.require(alg).build();
-		
-		DecodedJWT decodedJWT = jwtVerifier.verify(token);
-		
-		return decodedJWT;
 	}
 	
 }

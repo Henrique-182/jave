@@ -1,6 +1,7 @@
 package br.com.conhecimento.model.v2;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -50,7 +52,7 @@ public class User implements Serializable, UserDetails {
 	@Column(name = "ENABLED", nullable = false)
 	private Boolean enabled;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "USER_PERMISSION",
 			joinColumns = @JoinColumn(name = "FK_USER"),
@@ -59,6 +61,14 @@ public class User implements Serializable, UserDetails {
 	private List<Permission> permissions;
 
 	public User() {}
+	
+	public List<String> getRoles() {
+		List<String> roles = new ArrayList<>();
+		
+		for (Permission permission : permissions) roles.add(permission.getDescription());
+		
+		return roles;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -67,12 +77,12 @@ public class User implements Serializable, UserDetails {
 
 	@Override
 	public String getPassword() {
-		return this.getPassword();
+		return this.password;
 	}
 
 	@Override
 	public String getUsername() {
-		return this.getUsername();
+		return this.username;
 	}
 
 	@Override
@@ -158,7 +168,7 @@ public class User implements Serializable, UserDetails {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(accountNonExpired, accountNonLocked, credentialsNonExpired, enabled, fullname, id, password,
