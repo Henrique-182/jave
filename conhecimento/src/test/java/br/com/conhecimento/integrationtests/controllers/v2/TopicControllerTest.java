@@ -1,4 +1,4 @@
-package br.com.conhecimento.integrationtests.controllers.v1;
+package br.com.conhecimento.integrationtests.controllers.v2;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +23,8 @@ import br.com.conhecimento.configs.v1.TestConfig;
 import br.com.conhecimento.integrationtests.mocks.v1.TopicMock;
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
 import br.com.conhecimento.integrationtests.vo.v1.TopicVO;
+import br.com.conhecimento.integrationtests.vo.v2.AccountCredentialsVO;
+import br.com.conhecimento.integrationtests.vo.v2.TokenVO;
 import br.com.conhecimento.integrationtests.vo.wrappers.v1.TopicWrapperVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -47,17 +49,36 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 		
 		mock = new TopicMock();
+	}
+	
+	@Test
+	@Order(0)
+	void testAuthorization() {
 		
+		AccountCredentialsVO user = new AccountCredentialsVO("henrique", "he@01");
+		
+		var tokenVO = given()
+				.basePath("/auth/signin")
+				.port(TestConfig.SERVER_PORT)
+				.contentType(TestConfig.CONTENT_TYPE_JSON)
+				.body(user)
+				.when()
+					.post()
+				.then()
+					.statusCode(200)
+				.extract()	
+					.body()
+					.as(TokenVO.class);
+				
 		specification = new RequestSpecBuilder()
 				.setBasePath("/v1/topic")
 				.setPort(TestConfig.SERVER_PORT)
+				.addHeader(TestConfig.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenVO.getAccessToken())
 				.setContentType(TestConfig.CONTENT_TYPE_JSON)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
 	}
-	
-	
 	
 	@Test
 	@Order(1)

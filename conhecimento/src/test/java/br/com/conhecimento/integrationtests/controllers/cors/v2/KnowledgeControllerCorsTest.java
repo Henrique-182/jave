@@ -1,4 +1,4 @@
-package br.com.conhecimento.integrationtests.controllers.cors.v1;
+package br.com.conhecimento.integrationtests.controllers.cors.v2;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,9 +19,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.conhecimento.configs.v1.TestConfig;
-import br.com.conhecimento.integrationtests.mocks.v1.SoftwareMock;
+import br.com.conhecimento.integrationtests.vo.v2.TokenVO;
+import br.com.conhecimento.integrationtests.mocks.v1.KnowledgeMock;
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
-import br.com.conhecimento.integrationtests.vo.v1.SoftwareVO;
+import br.com.conhecimento.integrationtests.vo.v1.KnowledgeVO;
+import br.com.conhecimento.integrationtests.vo.v2.AccountCredentialsVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -31,24 +33,45 @@ import io.restassured.specification.RequestSpecification;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
 @DirtiesContext
-public class SoftwareControllerCorsTest extends AbstractIntegrationTest {
+public class KnowledgeControllerCorsTest extends AbstractIntegrationTest {
 
 	private static RequestSpecification specification;
 	private static ObjectMapper mapper;
 	
-	private static SoftwareMock mock;
-	private static SoftwareVO software;
+	private static KnowledgeMock mock;
+	private static KnowledgeVO knowledge;
 	
 	@BeforeAll
 	public static void setup() {
 		mapper = new ObjectMapper();
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 		
-		mock = new SoftwareMock();
+		mock = new KnowledgeMock();
+	}
+	
+	@Test
+	@Order(0)
+	void testAuthorization() {
+		
+		AccountCredentialsVO user = new AccountCredentialsVO("henrique", "he@01");
+		
+		var tokenVO = given()
+				.basePath("/auth/signin")
+				.port(TestConfig.SERVER_PORT)
+				.contentType(TestConfig.CONTENT_TYPE_JSON)
+				.body(user)
+				.when()
+					.post()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.as(TokenVO.class);
 		
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/software")
+				.setBasePath("/v1/knowledge")
 				.setPort(TestConfig.SERVER_PORT)
+				.addHeader(TestConfig.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenVO.getAccessToken())
 				.setContentType(TestConfig.CONTENT_TYPE_JSON)
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
@@ -58,11 +81,11 @@ public class SoftwareControllerCorsTest extends AbstractIntegrationTest {
 	@Test
 	@Order(1)
 	void testCreateWithWrongOrigin() {
-		software = mock.vo();
+		knowledge = mock.vo();
 		
 		var content = given().spec(specification)
 				.header(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_ANOTHER_HOST)
-				.body(software)
+				.body(knowledge)
 				.when()
 					.post()
 				.then()
@@ -78,10 +101,11 @@ public class SoftwareControllerCorsTest extends AbstractIntegrationTest {
 	@Test
 	@Order(2)
 	void testCreate() throws JsonMappingException, JsonProcessingException {
-		software = mock.vo();
+		knowledge = mock.vo();
 		
 		var content = given().spec(specification)
-				.body(software)
+				.header(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_LOCALHOST)
+				.body(knowledge)
 				.when()
 					.post()
 				.then()
@@ -90,13 +114,16 @@ public class SoftwareControllerCorsTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		SoftwareVO createdSoftware = mapper.readValue(content, SoftwareVO.class);
-		software = createdSoftware;
+		KnowledgeVO createdKnowledge = mapper.readValue(content, KnowledgeVO.class);
+		knowledge = createdKnowledge;
 		
-		assertTrue(createdSoftware.getKey() > 0);
+		assertTrue(createdKnowledge.getKey() > 0);
 		
-		assertEquals("Name0", createdSoftware.getName());
-		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v1/software?page=0&size=10&sortBy=name&direction=asc\"}"));
+		assertEquals("Title0", createdKnowledge.getTitle());
+		assertEquals("Description0", createdKnowledge.getDescription());
+		assertEquals("Content0", createdKnowledge.getContent());
+		assertEquals("Esti", createdKnowledge.getSoftware().getName());
+		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v1/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
 	}
 	
 	@Test
@@ -104,8 +131,8 @@ public class SoftwareControllerCorsTest extends AbstractIntegrationTest {
 	void testDeleteByIdWithWrongOrigin() {
 		
 		var content = given().spec(specification)
-				.pathParam("id", software.getKey())
 				.header(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_ANOTHER_HOST)
+				.pathParam("id", knowledge.getKey())
 				.when()
 					.delete("{id}")
 				.then()
@@ -123,13 +150,12 @@ public class SoftwareControllerCorsTest extends AbstractIntegrationTest {
 	void testDeleteById() {
 		
 		given().spec(specification)
-			.pathParam("id", software.getKey())
 			.header(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_LOCALHOST)
+			.pathParam("id", knowledge.getKey())
 			.when()
 				.delete("{id}")
 			.then()
 				.statusCode(204);
-		
 	}
 	
 }
