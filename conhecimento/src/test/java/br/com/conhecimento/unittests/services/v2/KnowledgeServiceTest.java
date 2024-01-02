@@ -1,4 +1,4 @@
-package br.com.conhecimento.unittests.services.v1;
+package br.com.conhecimento.unittests.services.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,21 +21,22 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.conhecimento.data.vo.v1.KnowledgeVO;
+import br.com.conhecimento.data.vo.v2.KnowledgeVO;
 import br.com.conhecimento.exceptions.v1.RequiredObjectIsNullException;
 import br.com.conhecimento.exceptions.v1.ResourceNotFoundException;
-import br.com.conhecimento.mappers.v1.KnowledgeMapper;
-import br.com.conhecimento.model.v1.Knowledge;
-import br.com.conhecimento.repositories.v1.KnowledgeRepository;
-import br.com.conhecimento.services.v1.KnowledgeService;
-import br.com.conhecimento.unittests.mocks.v1.KnowledgeMock;
+import br.com.conhecimento.mappers.v2.KnowledgeMapper;
+import br.com.conhecimento.model.v2.Knowledge;
+import br.com.conhecimento.repositories.v2.KnowledgeRepository;
+import br.com.conhecimento.services.v2.KnowledgeService;
+import br.com.conhecimento.unittests.mocks.v2.KnowledgeMock;
+import br.com.conhecimento.unittests.mocks.v2.UserAuditMock;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 public class KnowledgeServiceTest {
 	
 	KnowledgeMock input;
-
+	
 	@Autowired
 	@InjectMocks
 	KnowledgeService service;
@@ -88,7 +92,7 @@ public class KnowledgeServiceTest {
 	}
 	
 	@Test
-	void testCreate() {
+	void testCreate() throws ParseException {
 		
 		Knowledge mockEntity = input.entity();
 		Knowledge persistedEntity = mockEntity;
@@ -98,7 +102,7 @@ public class KnowledgeServiceTest {
 		when(repository.save(mockEntity)).thenReturn(persistedEntity);
 		when(mapper.toVO(persistedEntity)).thenReturn(mockVO);
 		
-		KnowledgeVO createdKnowledge = service.create(mockVO);
+		KnowledgeVO createdKnowledge = service.create(mockVO, UserAuditMock.entity());
 		
 		assertNotNull(createdKnowledge);
 		
@@ -106,16 +110,30 @@ public class KnowledgeServiceTest {
 		assertEquals("Title0", createdKnowledge.getTitle());
 		assertEquals("Description0", createdKnowledge.getDescription());
 		assertEquals("Content0", createdKnowledge.getContent());
+		
 		assertEquals("Esti", createdKnowledge.getSoftware().getName());
+		
+		assertEquals("Username0", createdKnowledge.getUserCreation().getUsername());
+		assertEquals(
+			DateFormat.getDateInstance().format(new Date()), 
+			DateFormat.getDateInstance().format(createdKnowledge.getLastUpdateDatetime())
+		);
+		assertEquals("Username0", createdKnowledge.getUserCreation().getUsername());
+		assertEquals(
+			DateFormat.getDateInstance().format(new Date()), 
+			DateFormat.getDateInstance().format(createdKnowledge.getCreationDatetime())
+		);
+		
 		assertEquals("Name0", createdKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", createdKnowledge.getTopics().get(1).getName());
+		
 		assertTrue(createdKnowledge.getLinks().toString().contains("</v1/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
 	}
 	
 	@Test
 	void testCreateWithRequiredObjectIsNullException() {
 		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
-			service.create(null);
+			service.create(null, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "It is not possible to persist a null object";
@@ -139,7 +157,7 @@ public class KnowledgeServiceTest {
 		when(repository.save(mockEntity)).thenReturn(persistedEntity);
 		when(mapper.toVO(persistedEntity)).thenReturn(mockVO);
 		
-		KnowledgeVO updatedKnowledge = service.updateById(id, mockVO);
+		KnowledgeVO updatedKnowledge = service.updateById(id, mockVO, UserAuditMock.entity());
 		
 		assertNotNull(updatedKnowledge);
 		
@@ -147,9 +165,23 @@ public class KnowledgeServiceTest {
 		assertEquals("2Title", updatedKnowledge.getTitle());
 		assertEquals("2Description", updatedKnowledge.getDescription());
 		assertEquals("2Content", updatedKnowledge.getContent());
+		
 		assertEquals("Esti", updatedKnowledge.getSoftware().getName());
+		
+		assertEquals("Username0", updatedKnowledge.getUserCreation().getUsername());
+		assertEquals(
+			DateFormat.getDateInstance().format(new Date()), 
+			DateFormat.getDateInstance().format(updatedKnowledge.getLastUpdateDatetime())
+		);
+		assertEquals("Username0", updatedKnowledge.getUserCreation().getUsername());
+		assertEquals(
+			DateFormat.getDateInstance().format(new Date()), 
+			DateFormat.getDateInstance().format(updatedKnowledge.getCreationDatetime())
+		);
+		
 		assertEquals("Name0", updatedKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", updatedKnowledge.getTopics().get(1).getName());
+		
 		assertTrue(updatedKnowledge.getLinks().toString().contains("</v1/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
 	}
 	
@@ -159,7 +191,7 @@ public class KnowledgeServiceTest {
 		KnowledgeVO mockVO = input.vo();
 		
 		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-			service.updateById(id, mockVO);
+			service.updateById(id, mockVO, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "No records found for the id (" + id + ") !";
@@ -174,7 +206,7 @@ public class KnowledgeServiceTest {
 		KnowledgeVO mockVO = null;
 		
 		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
-			service.updateById(id, mockVO);
+			service.updateById(id, mockVO, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "It is not possible to persist a null object";

@@ -1,7 +1,9 @@
-package br.com.conhecimento.services.v1;
+package br.com.conhecimento.services.v2;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -10,13 +12,14 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
-import br.com.conhecimento.controllers.v1.KnowledgeController;
-import br.com.conhecimento.data.vo.v1.KnowledgeVO;
+import br.com.conhecimento.controllers.v2.KnowledgeController;
+import br.com.conhecimento.data.vo.v2.KnowledgeVO;
 import br.com.conhecimento.exceptions.v1.RequiredObjectIsNullException;
 import br.com.conhecimento.exceptions.v1.ResourceNotFoundException;
-import br.com.conhecimento.mappers.v1.KnowledgeMapper;
-import br.com.conhecimento.model.v1.Knowledge;
-import br.com.conhecimento.repositories.v1.KnowledgeRepository;
+import br.com.conhecimento.mappers.v2.KnowledgeMapper;
+import br.com.conhecimento.model.v2.Knowledge;
+import br.com.conhecimento.model.v2.UserAudit;
+import br.com.conhecimento.repositories.v2.KnowledgeRepository;
 
 @Service
 public class KnowledgeService {
@@ -55,15 +58,20 @@ public class KnowledgeService {
 		return addLinkVOList(mapper.toVO(persistedEntity));
 	}
 	
-	public KnowledgeVO create(KnowledgeVO data) {
+	public KnowledgeVO create(KnowledgeVO data, UserAudit userAudit) {
 		if (data == null) throw new RequiredObjectIsNullException();
+		
+		data.setUserLastUpdate(userAudit);
+		data.setLastUpdateDatetime(new Date());
+		data.setUserCreation(userAudit);
+		data.setCreationDatetime(new Date());
 		
 		Knowledge createdEntity = repository.save(mapper.toEntity(data));
 		
 		return addLinkVOList(mapper.toVO(createdEntity));
 	}
 	
-	public KnowledgeVO updateById(Integer id, KnowledgeVO data) {
+	public KnowledgeVO updateById(Integer id, KnowledgeVO data, UserAudit userAudit) {
 		if (data == null) throw new RequiredObjectIsNullException();
 		
 		Knowledge entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
@@ -71,6 +79,8 @@ public class KnowledgeService {
 		entity.setDescription(data.getDescription());
 		entity.setSoftware(data.getSoftware());
 		entity.setContent(data.getContent());
+		entity.setUserLastUpdate(userAudit);
+		entity.setLastUpdateDatetime(new Date());
 		entity.setTopics(data.getTopics());
 		
 		Knowledge updatedEntity = repository.save(entity);

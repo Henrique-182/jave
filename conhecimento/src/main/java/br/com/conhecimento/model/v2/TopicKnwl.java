@@ -1,4 +1,4 @@
-package br.com.conhecimento.model.v1;
+package br.com.conhecimento.model.v2;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,8 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "SOFTWARE")
-public class SoftwareKnwl implements Serializable {
+@Table(name = "TOPIC")
+public class TopicKnwl implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,16 +24,11 @@ public class SoftwareKnwl implements Serializable {
 	@Column(name = "NAME", nullable = false)
 	private String name;
 
-	public SoftwareKnwl() {}
+	public TopicKnwl() {}
 	
-	public SoftwareKnwl(Integer id) {
+	public TopicKnwl(Integer id) {
 		this.id = id;
-		this.name = id == 1 
-				? "Esti" 
-				: id == 2
-				? "Stac"
-				: "";
- 	}
+	}
 
 	public Integer getId() {
 		return id;
@@ -64,7 +59,7 @@ public class SoftwareKnwl implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SoftwareKnwl other = (SoftwareKnwl) obj;
+		TopicKnwl other = (TopicKnwl) obj;
 		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
 	}
 

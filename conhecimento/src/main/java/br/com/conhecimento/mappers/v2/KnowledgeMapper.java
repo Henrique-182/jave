@@ -1,16 +1,16 @@
-package br.com.conhecimento.mappers.v1;
+package br.com.conhecimento.mappers.v2;
 
 import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import br.com.conhecimento.data.vo.v1.KnowledgeVO;
-import br.com.conhecimento.model.v1.Knowledge;
+import br.com.conhecimento.data.vo.v2.KnowledgeVO;
+import br.com.conhecimento.model.v2.Knowledge;
 
 @Mapper(componentModel = "spring")
 public interface KnowledgeMapper {
-
+	
 	@Mapping(source = "id", target = "key")
 	KnowledgeVO toVO(Knowledge entity);
 	

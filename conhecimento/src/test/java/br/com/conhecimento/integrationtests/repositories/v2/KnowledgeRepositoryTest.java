@@ -1,8 +1,10 @@
-package br.com.conhecimento.integrationtests.repositories.v1;
+package br.com.conhecimento.integrationtests.repositories.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -22,8 +24,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
-import br.com.conhecimento.model.v1.Knowledge;
-import br.com.conhecimento.repositories.v1.KnowledgeRepository;
+import br.com.conhecimento.model.v2.Knowledge;
+import br.com.conhecimento.repositories.v2.KnowledgeRepository;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -54,6 +56,19 @@ public class KnowledgeRepositoryTest extends AbstractIntegrationTest {
 		assertEquals("TG Config", knowledgeZero.getTitle());
 		assertEquals("TG Config", knowledgeZero.getDescription());
 		assertTrue(knowledgeZero.getContent().toString().contains("<TGAPLICACAO name=\"Arca\" Caption=\"ARCA - Automação de Comércio e Indústria\">"));
+		
 		assertEquals("Stac", knowledgeZero.getSoftware().getName());
+		
+		assertEquals("henrique", knowledgeZero.getUserCreation().getUsername());
+		assertEquals(
+			DateFormat.getDateInstance().format(new Date()), 
+			DateFormat.getDateInstance().format(knowledgeZero.getLastUpdateDatetime())
+		);
+		assertEquals("henrique", knowledgeZero.getUserCreation().getUsername());
+		assertEquals(
+			DateFormat.getDateInstance().format(new Date()), 
+			DateFormat.getDateInstance().format(knowledgeZero.getCreationDatetime())
+		);
 	}
+	
 }

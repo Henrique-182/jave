@@ -1,9 +1,9 @@
-package br.com.conhecimento.unittests.mocks.v1;
+package br.com.conhecimento.unittests.mocks.v2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.conhecimento.model.v1.TopicKnwl;
+import br.com.conhecimento.model.v2.TopicKnwl;
 
 class TopicKnwlMock {
 	

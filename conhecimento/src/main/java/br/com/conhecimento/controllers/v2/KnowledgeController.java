@@ -1,10 +1,11 @@
-package br.com.conhecimento.controllers.v1;
+package br.com.conhecimento.controllers.v2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.conhecimento.data.vo.v1.KnowledgeVO;
-import br.com.conhecimento.services.v1.KnowledgeService;
+import br.com.conhecimento.data.vo.v2.KnowledgeVO;
+import br.com.conhecimento.model.v2.UserAudit;
+import br.com.conhecimento.services.v2.KnowledgeService;
+import br.com.conhecimento.services.v2.UserAuditService;
 import br.com.conhecimento.utils.v1.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -32,6 +35,9 @@ public class KnowledgeController {
 
 	@Autowired
 	private KnowledgeService service;
+	
+	@Autowired
+	private UserAuditService userAuditService;
 	
 	@Operation(
 		summary = "Finds All Knowledges",
@@ -101,7 +107,9 @@ public class KnowledgeController {
 	)
 	@PostMapping
 	public KnowledgeVO create(@RequestBody KnowledgeVO data) {
-		return service.create(data);
+		UserAudit userAudit = userAuditService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		
+		return service.create(data, userAudit);
 	}
 	
 
@@ -120,7 +128,9 @@ public class KnowledgeController {
 	)
 	@PutMapping(path = "/{id}")
 	public KnowledgeVO updateById(@PathVariable("id") Integer id, @RequestBody KnowledgeVO data) {
-		return service.updateById(id, data);
+		UserAudit userAudit = userAuditService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		
+		return service.updateById(id, data, userAudit);
 	}
 	
 	@Operation(

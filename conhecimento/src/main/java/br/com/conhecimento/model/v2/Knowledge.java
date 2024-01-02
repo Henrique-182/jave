@@ -1,6 +1,7 @@
-package br.com.conhecimento.model.v1;
+package br.com.conhecimento.model.v2;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,6 +40,20 @@ public class Knowledge implements Serializable {
 	
 	@Column(name = "CONTENT", nullable = false)
 	private String content;
+	
+	@ManyToOne
+	@JoinColumn(name = "FK_USER_LAST_UPDATE")
+	private UserAudit userLastUpdate;
+	
+	@Column(name = "LAST_UPDATE_DATETIME", nullable = false)
+	private Date lastUpdateDatetime;
+	
+	@ManyToOne
+	@JoinColumn(name = "FK_USER_CREATION")
+	private UserAudit userCreation;
+	
+	@Column(name = "CREATION_DATETIME", nullable = false)
+	private Date creationDatetime;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -90,6 +105,38 @@ public class Knowledge implements Serializable {
 		this.content = content;
 	}
 	
+	public UserAudit getUserLastUpdate() {
+		return userLastUpdate;
+	}
+
+	public void setUserLastUpdate(UserAudit userLastUpdate) {
+		this.userLastUpdate = userLastUpdate;
+	}
+
+	public Date getLastUpdateDatetime() {
+		return lastUpdateDatetime;
+	}
+
+	public void setLastUpdateDatetime(Date lastUpdateDatetime) {
+		this.lastUpdateDatetime = lastUpdateDatetime;
+	}
+
+	public UserAudit getUserCreation() {
+		return userCreation;
+	}
+
+	public void setUserCreation(UserAudit userCreation) {
+		this.userCreation = userCreation;
+	}
+
+	public Date getCreationDatetime() {
+		return creationDatetime;
+	}
+
+	public void setCreationDatetime(Date creationDatetime) {
+		this.creationDatetime = creationDatetime;
+	}
+
 	public List<TopicKnwl> getTopics() {
 		return topics;
 	}
@@ -100,7 +147,8 @@ public class Knowledge implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(content, description, id, software, title, topics);
+		return Objects.hash(content, creationDatetime, description, id, lastUpdateDatetime, software, title, topics,
+				userCreation, userLastUpdate);
 	}
 
 	@Override
@@ -112,9 +160,12 @@ public class Knowledge implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Knowledge other = (Knowledge) obj;
-		return Objects.equals(content, other.content) && Objects.equals(description, other.description)
-				&& Objects.equals(id, other.id) && Objects.equals(software, other.software)
-				&& Objects.equals(title, other.title) && Objects.equals(topics, other.topics);
+		return Objects.equals(content, other.content) && Objects.equals(creationDatetime, other.creationDatetime)
+				&& Objects.equals(description, other.description) && Objects.equals(id, other.id)
+				&& Objects.equals(lastUpdateDatetime, other.lastUpdateDatetime)
+				&& Objects.equals(software, other.software) && Objects.equals(title, other.title)
+				&& Objects.equals(topics, other.topics) && Objects.equals(userCreation, other.userCreation)
+				&& Objects.equals(userLastUpdate, other.userLastUpdate);
 	}
 
 }

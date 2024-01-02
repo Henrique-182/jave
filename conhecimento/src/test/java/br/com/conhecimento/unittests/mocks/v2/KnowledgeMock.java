@@ -1,11 +1,12 @@
-package br.com.conhecimento.unittests.mocks.v1;
+package br.com.conhecimento.unittests.mocks.v2;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import br.com.conhecimento.data.vo.v1.KnowledgeVO;
-import br.com.conhecimento.model.v1.Knowledge;
+import br.com.conhecimento.data.vo.v2.KnowledgeVO;
+import br.com.conhecimento.model.v2.Knowledge;
 
 public class KnowledgeMock {
 
@@ -40,6 +41,10 @@ public class KnowledgeMock {
 		entity.setDescription("Description" + number);
 		entity.setContent("Content" + number);
 		entity.setSoftware(SoftwareKnwlMock.entity(number));
+		entity.setUserLastUpdate(UserAuditMock.entity());
+		entity.setLastUpdateDatetime(new Date());
+		entity.setUserCreation(UserAuditMock.entity());
+		entity.setCreationDatetime(new Date());
 		entity.setTopics(TopicKnwlMock.entityList());
 		
 		return entity;
@@ -52,6 +57,10 @@ public class KnowledgeMock {
 		vo.setDescription("Description" + number);
 		vo.setContent("Content" + number);
 		vo.setSoftware(SoftwareKnwlMock.entity(number));
+		vo.setUserLastUpdate(UserAuditMock.entity());
+		vo.setLastUpdateDatetime(new Date());
+		vo.setUserCreation(UserAuditMock.entity());
+		vo.setCreationDatetime(new Date());
 		vo.setTopics(TopicKnwlMock.entityList());
 		
 		return vo;

@@ -1,4 +1,4 @@
-package br.com.conhecimento.model.v1;
+package br.com.conhecimento.model.v2;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,8 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "TOPIC")
-public class TopicKnwl implements Serializable {
+@Table(name = "USERS")
+public class UserAudit implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,14 +21,13 @@ public class TopicKnwl implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Integer id;
 	
-	@Column(name = "NAME", nullable = false)
-	private String name;
-
-	public TopicKnwl() {}
+	@Column(name = "USER_NAME", nullable = false)
+	private String username;
 	
-	public TopicKnwl(Integer id) {
-		this.id = id;
-	}
+	@Column(name = "FULL_NAME", nullable = false)
+	private String fullname;
+
+	public UserAudit() {}
 
 	public Integer getId() {
 		return id;
@@ -38,17 +37,25 @@ public class TopicKnwl implements Serializable {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name);
+		return Objects.hash(fullname, id, username);
 	}
 
 	@Override
@@ -59,8 +66,9 @@ public class TopicKnwl implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TopicKnwl other = (TopicKnwl) obj;
-		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
+		UserAudit other = (UserAudit) obj;
+		return Objects.equals(fullname, other.fullname) && Objects.equals(id, other.id)
+				&& Objects.equals(username, other.username);
 	}
-
+	
 }
