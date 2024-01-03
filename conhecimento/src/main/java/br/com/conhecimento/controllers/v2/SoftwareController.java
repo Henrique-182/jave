@@ -1,10 +1,11 @@
-package br.com.conhecimento.controllers.v1;
+package br.com.conhecimento.controllers.v2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,9 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.conhecimento.data.vo.v1.SoftwareVO;
-import br.com.conhecimento.services.v1.SoftwareService;
-import br.com.conhecimento.utils.v1.ControllerUtil;
+import br.com.conhecimento.data.vo.v2.SoftwareVO;
+import br.com.conhecimento.model.v2.UserAudit;
+import br.com.conhecimento.services.v2.SoftwareService;
+import br.com.conhecimento.utils.v2.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,11 +29,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Software", description = "Endpoints for Managing Softwares")
 @RestController
-@RequestMapping(path = "/v1/software")
+@RequestMapping(path = "/v2/software")
 public class SoftwareController {
 
 	@Autowired
 	private SoftwareService service;
+	
+	@Autowired
+	private ControllerUtil util;
+	
 	
 	@Operation(
 		summary = "Finds All Softwares",
@@ -61,7 +67,7 @@ public class SoftwareController {
 		@RequestParam(name = "direction", required = false, defaultValue = "asc") String direction,
 		@RequestParam(name = "softwareName", required = false, defaultValue = "") String softwareName
 	) {
-		Pageable pageable = ControllerUtil.pageable(page, size, sortBy, direction);
+		Pageable pageable = util.pageable(page, size, sortBy, direction);
 		
 		return service.findCustomPageable(softwareName, pageable);
 	}
@@ -100,7 +106,9 @@ public class SoftwareController {
 	)
 	@PostMapping
 	public SoftwareVO create(@RequestBody SoftwareVO data) {
-		return service.create(data);
+		UserAudit userAudit = util.getUserByContext(SecurityContextHolder.getContext());
+		
+		return service.create(data, userAudit);
 	}
 	
 	@Operation(
@@ -118,7 +126,9 @@ public class SoftwareController {
 	)
 	@PutMapping(path = "/{id}")
 	public SoftwareVO updateById(@PathVariable("id") Integer id, @RequestBody SoftwareVO data) {
-		return service.updateById(id, data);
+		UserAudit userAudit = util.getUserByContext(SecurityContextHolder.getContext());
+		
+		return service.updateById(id, data, userAudit);
 	}
 	
 	@Operation(

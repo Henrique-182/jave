@@ -1,7 +1,9 @@
-package br.com.conhecimento.services.v1;
+package br.com.conhecimento.services.v2;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -10,12 +12,13 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
-import br.com.conhecimento.controllers.v1.SoftwareController;
-import br.com.conhecimento.data.vo.v1.SoftwareVO;
+import br.com.conhecimento.controllers.v2.SoftwareController;
+import br.com.conhecimento.data.vo.v2.SoftwareVO;
 import br.com.conhecimento.exceptions.v1.RequiredObjectIsNullException;
 import br.com.conhecimento.exceptions.v1.ResourceNotFoundException;
-import br.com.conhecimento.mappers.v1.SoftwareMapper;
-import br.com.conhecimento.model.v1.Software;
+import br.com.conhecimento.mappers.v2.SoftwareMapper;
+import br.com.conhecimento.model.v2.Software;
+import br.com.conhecimento.model.v2.UserAudit;
 import br.com.conhecimento.repositories.v1.SoftwareRepository;
 
 @Service
@@ -45,19 +48,26 @@ public class SoftwareService {
 		return addLinkVOList(mapper.toVO(persistedEntity));
 	}
 	
-	public SoftwareVO create(SoftwareVO data) {
+	public SoftwareVO create(SoftwareVO data, UserAudit userAudit) {
 		if (data == null) throw new RequiredObjectIsNullException();
+		
+		data.setUserLastUpdate(userAudit);
+		data.setLastUpdateDatetime(new Date());
+		data.setUserCreation(userAudit);
+		data.setCreationDatetime(new Date());
 		
 		Software createdEntity = repository.save(mapper.toEntity(data));
 		
 		return addLinkVOList(mapper.toVO(createdEntity));
 	}
 	
-	public SoftwareVO updateById(Integer id, SoftwareVO data) {
+	public SoftwareVO updateById(Integer id, SoftwareVO data, UserAudit userAudit) {
 		if (data == null) throw new RequiredObjectIsNullException();
 		
 		Software entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		entity.setName(data.getName());
+		entity.setUserLastUpdate(userAudit);
+		entity.setLastUpdateDatetime(new Date());
 		
 		Software updatedEntity = repository.save(entity);
 		

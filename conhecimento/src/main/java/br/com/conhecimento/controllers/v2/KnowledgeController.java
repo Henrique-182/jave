@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.conhecimento.data.vo.v2.KnowledgeVO;
 import br.com.conhecimento.model.v2.UserAudit;
 import br.com.conhecimento.services.v2.KnowledgeService;
-import br.com.conhecimento.services.v2.UserAuditService;
-import br.com.conhecimento.utils.v1.ControllerUtil;
+import br.com.conhecimento.utils.v2.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,14 +29,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Knowledge", description = "Endpoints for Managing Knowledges")
 @RestController
-@RequestMapping(path = "/v1/knowledge")
+@RequestMapping(path = "/v2/knowledge")
 public class KnowledgeController {
 
 	@Autowired
 	private KnowledgeService service;
 	
 	@Autowired
-	private UserAuditService userAuditService;
+	private ControllerUtil util;
 	
 	@Operation(
 		summary = "Finds All Knowledges",
@@ -69,7 +68,7 @@ public class KnowledgeController {
 		@RequestParam(name = "knowledgeDescription", required = false, defaultValue = "") String knowledgeDescription,
 		@RequestParam(name = "knowledgeContent", required = false, defaultValue = "") String knowledgeContent
 	) {
-		Pageable pageable = ControllerUtil.pageable(page, size, sortBy, direction);
+		Pageable pageable = util.pageable(page, size, sortBy, direction);
 		
 		return service.findCustomPageable(knowledgeTitle, knowledgeDescription, knowledgeContent, pageable);
 	}
@@ -107,7 +106,7 @@ public class KnowledgeController {
 	)
 	@PostMapping
 	public KnowledgeVO create(@RequestBody KnowledgeVO data) {
-		UserAudit userAudit = userAuditService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		UserAudit userAudit = util.getUserByContext(SecurityContextHolder.getContext());
 		
 		return service.create(data, userAudit);
 	}
@@ -128,7 +127,7 @@ public class KnowledgeController {
 	)
 	@PutMapping(path = "/{id}")
 	public KnowledgeVO updateById(@PathVariable("id") Integer id, @RequestBody KnowledgeVO data) {
-		UserAudit userAudit = userAuditService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		UserAudit userAudit = util.getUserByContext(SecurityContextHolder.getContext());
 		
 		return service.updateById(id, data, userAudit);
 	}

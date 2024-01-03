@@ -1,10 +1,10 @@
-package br.com.conhecimento.unittests.mocks.v1;
+package br.com.conhecimento.unittests.mocks.v2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.conhecimento.data.vo.v1.SoftwareVO;
-import br.com.conhecimento.model.v1.Software;
+import br.com.conhecimento.data.vo.v2.SoftwareVO;
+import br.com.conhecimento.model.v2.Software;
 
 public class SoftwareMock {
 	

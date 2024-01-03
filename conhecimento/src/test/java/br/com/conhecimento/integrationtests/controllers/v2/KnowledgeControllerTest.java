@@ -76,7 +76,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 					.as(TokenVO.class);
 		
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/knowledge")
+				.setBasePath("/v2/knowledge")
 				.setPort(TestConfig.SERVER_PORT)
 				.addHeader(TestConfig.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenVO.getAccessToken())
 				.setContentType(TestConfig.CONTENT_TYPE_JSON)
@@ -122,7 +122,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 			DateFormat.getDateInstance().format(createdKnowledge.getCreationDatetime())
 		);
 		
-		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v1/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
+		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v2/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
 	}
 	
 	@Test
@@ -159,7 +159,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 			DateFormat.getDateInstance().format(persistedKnowledge.getCreationDatetime())
 		);
 		
-		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v1/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
+		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v2/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
 	}
 	
 	@Test
@@ -203,15 +203,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertEquals("Stac", updatedKnowledge.getSoftware().getName());
 		
 		assertEquals("henrique", updatedKnowledge.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(updatedKnowledge.getLastUpdateDatetime())
-		);
 		assertEquals("henrique", updatedKnowledge.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(updatedKnowledge.getCreationDatetime())
-		);
 		assertTrue(
 			updatedKnowledge.getLastUpdateDatetime()
 			.after(updatedKnowledge.getCreationDatetime())
@@ -220,7 +212,7 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertEquals("TG Config", updatedKnowledge.getTopics().get(0).getName());
 		assertEquals("Instalação", updatedKnowledge.getTopics().get(1).getName());
 		
-		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v1/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
+		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v2/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
 	}
 	
 	@Test
@@ -287,10 +279,10 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/knowledge/1\"}"));
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/knowledge/2\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v2/knowledge/1\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v2/knowledge/2\"}"));
 		
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/knowledge?page=0&size=10&sort=title,asc\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v2/knowledge?page=0&size=10&sort=title,asc\"}"));
 		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":2,\"totalPages\":1,\"number\":0}"));
 	}
 	

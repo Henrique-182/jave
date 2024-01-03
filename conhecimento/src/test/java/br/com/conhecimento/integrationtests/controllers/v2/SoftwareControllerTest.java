@@ -4,6 +4,8 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -22,10 +24,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.conhecimento.configs.v1.TestConfig;
 import br.com.conhecimento.integrationtests.mocks.v1.SoftwareMock;
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
-import br.com.conhecimento.integrationtests.vo.v1.SoftwareVO;
 import br.com.conhecimento.integrationtests.vo.v2.AccountCredentialsVO;
+import br.com.conhecimento.integrationtests.vo.v2.SoftwareVO;
 import br.com.conhecimento.integrationtests.vo.v2.TokenVO;
-import br.com.conhecimento.integrationtests.vo.wrappers.v1.SoftwareWrapperVO;
+import br.com.conhecimento.integrationtests.vo.wrappers.v2.SoftwareWrapperVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -71,7 +73,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 					.as(TokenVO.class);
 				
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/software")
+				.setBasePath("/v2/software")
 				.setPort(TestConfig.SERVER_PORT)
 				.addHeader(TestConfig.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenVO.getAccessToken())
 				.setContentType(TestConfig.CONTENT_TYPE_JSON)
@@ -101,7 +103,13 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		assertTrue(createdSoftware.getKey() > 0);
 		
 		assertEquals("Name0", createdSoftware.getName());
-		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v1/software?page=0&size=10&sortBy=name&direction=asc\"}"));
+		
+		assertEquals("henrique", createdSoftware.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdSoftware.getLastUpdateDatetime()));
+		assertEquals("henrique", createdSoftware.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdSoftware.getCreationDatetime()));
+		
+		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v2/software?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -122,7 +130,13 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(software.getKey(), persistedSoftware.getKey());
 		assertEquals("Name0", persistedSoftware.getName());
-		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v1/software?page=0&size=10&sortBy=name&direction=asc\"}"));
+		
+		assertEquals("henrique", persistedSoftware.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedSoftware.getLastUpdateDatetime()));
+		assertEquals("henrique", persistedSoftware.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedSoftware.getCreationDatetime()));
+		
+		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v2/software?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -141,11 +155,16 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		SoftwareVO persistedSoftware = mapper.readValue(content, SoftwareVO.class);
+		SoftwareVO updatedSoftware = mapper.readValue(content, SoftwareVO.class);
 		
-		assertEquals(software.getKey(), persistedSoftware.getKey());
-		assertEquals(software.getKey() + "Name", persistedSoftware.getName());
-		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v1/software?page=0&size=10&sortBy=name&direction=asc\"}"));
+		assertEquals(software.getKey(), updatedSoftware.getKey());
+		assertEquals(software.getKey() + "Name", updatedSoftware.getName());
+		
+		assertEquals("henrique", updatedSoftware.getUserCreation().getUsername());
+		assertEquals("henrique", updatedSoftware.getUserCreation().getUsername());
+		assertTrue(updatedSoftware.getLastUpdateDatetime().after(updatedSoftware.getCreationDatetime()));
+					
+		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v2/software?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -183,10 +202,20 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		assertEquals(1, softwareOne.getKey());
 		assertEquals("Esti", softwareOne.getName());
 		
+		assertEquals("henrique", softwareOne.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareOne.getLastUpdateDatetime()));
+		assertEquals("henrique", softwareOne.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareOne.getCreationDatetime()));
+		
 		SoftwareVO softwareTwo = resultList.get(1);
 		
 		assertEquals(2, softwareTwo.getKey());
 		assertEquals("Stac", softwareTwo.getName());
+		
+		assertEquals("henrique", softwareTwo.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareTwo.getLastUpdateDatetime()));
+		assertEquals("henrique", softwareTwo.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareTwo.getCreationDatetime()));
 	}
 	
 	@Test
@@ -202,10 +231,10 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/software/1\"}"));
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/software/2\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v2/software/1\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v2/software/2\"}"));
 		
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/software?page=0&size=10&sort=name,asc\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v2/software?page=0&size=10&sort=name,asc\"}"));
 		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":2,\"totalPages\":1,\"number\":0}"));
 	}
 	

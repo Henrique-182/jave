@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.conhecimento.data.vo.v2.AccountCredentialsVO;
 import br.com.conhecimento.data.vo.v2.UserVO;
 import br.com.conhecimento.services.v2.UserService;
-import br.com.conhecimento.utils.v1.ControllerUtil;
+import br.com.conhecimento.utils.v2.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,6 +33,9 @@ public class UserController {
 
 	@Autowired
 	private UserService service;
+	
+	@Autowired
+	private ControllerUtil util;
 	
 	@Operation(
 		summary = "Finds All Users",
@@ -65,7 +68,7 @@ public class UserController {
 		@RequestParam(name = "permissionDescription", required = false, defaultValue = "") String permissionDescription
 	) {
 		
-		Pageable pageble = ControllerUtil.pageable(page, size, sortBy, direction);
+		Pageable pageble = util.pageable(page, size, sortBy, direction);
 		
 		return service.findCustomPageable(username, permissionDescription, pageble);
 	}

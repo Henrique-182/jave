@@ -1,4 +1,4 @@
-package br.com.conhecimento.unittests.services.v1;
+package br.com.conhecimento.unittests.services.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,14 +18,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.conhecimento.data.vo.v1.SoftwareVO;
+import br.com.conhecimento.data.vo.v2.SoftwareVO;
 import br.com.conhecimento.exceptions.v1.RequiredObjectIsNullException;
 import br.com.conhecimento.exceptions.v1.ResourceNotFoundException;
-import br.com.conhecimento.mappers.v1.SoftwareMapper;
-import br.com.conhecimento.model.v1.Software;
+import br.com.conhecimento.mappers.v2.SoftwareMapper;
+import br.com.conhecimento.model.v2.Software;
 import br.com.conhecimento.repositories.v1.SoftwareRepository;
-import br.com.conhecimento.services.v1.SoftwareService;
-import br.com.conhecimento.unittests.mocks.v1.SoftwareMock;
+import br.com.conhecimento.services.v2.SoftwareService;
+import br.com.conhecimento.unittests.mocks.v2.SoftwareMock;
+import br.com.conhecimento.unittests.mocks.v2.UserAuditMock;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
@@ -65,7 +66,7 @@ public class SoftwareServiceTest {
 		
 		assertEquals(1, persistedSoftware.getKey());
 		assertEquals("Name1", persistedSoftware.getName());
-		assertTrue(persistedSoftware.getLinks().toString().contains("</v1/software?page=0&size=10&sortBy=name&direction=asc>;rel=\"softwareVOList\""));
+		assertTrue(persistedSoftware.getLinks().toString().contains("</v2/software?page=0&size=10&sortBy=name&direction=asc>;rel=\"softwareVOList\""));
 	}
 	
 	@Test
@@ -93,19 +94,19 @@ public class SoftwareServiceTest {
 		when(repository.save(mockEntity)).thenReturn(persistedEntity);
 		when(mapper.toVO(persistedEntity)).thenReturn(mockVO);
 		
-		SoftwareVO createdSoftware = service.create(mockVO);
+		SoftwareVO createdSoftware = service.create(mockVO, UserAuditMock.entity());
 		
 		assertNotNull(createdSoftware);
 		
 		assertEquals(0, createdSoftware.getKey());
 		assertEquals("Name0", createdSoftware.getName());
-		assertTrue(createdSoftware.getLinks().toString().contains("</v1/software?page=0&size=10&sortBy=name&direction=asc>;rel=\"softwareVOList\""));
+		assertTrue(createdSoftware.getLinks().toString().contains("</v2/software?page=0&size=10&sortBy=name&direction=asc>;rel=\"softwareVOList\""));
 	}
 	
 	@Test
 	void testCreateWithRequiredObjectIsNullException() {
 		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
-			service.create(null);
+			service.create(null, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "It is not possible to persist a null object";
@@ -127,7 +128,7 @@ public class SoftwareServiceTest {
 		when(repository.save(mockEntity)).thenReturn(persistedEntity);
 		when(mapper.toVO(persistedEntity)).thenReturn(mockVO);
 		
-		SoftwareVO updatedSoftware = service.updateById(id, mockVO);
+		SoftwareVO updatedSoftware = service.updateById(id, mockVO, UserAuditMock.entity());
 		
 		assertNotNull(updatedSoftware);
 		
@@ -141,7 +142,7 @@ public class SoftwareServiceTest {
 		SoftwareVO mockVO = input.vo();
 		
 		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-			service.updateById(id, mockVO);
+			service.updateById(id, mockVO, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "No records found for the id (" + id + ") !";
@@ -156,7 +157,7 @@ public class SoftwareServiceTest {
 		SoftwareVO mockVO = null;
 		
 		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
-			service.updateById(id, mockVO);
+			service.updateById(id, mockVO, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "It is not possible to persist a null object";

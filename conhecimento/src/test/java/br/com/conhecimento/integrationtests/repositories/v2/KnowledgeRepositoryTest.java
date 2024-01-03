@@ -60,15 +60,9 @@ public class KnowledgeRepositoryTest extends AbstractIntegrationTest {
 		assertEquals("Stac", knowledgeZero.getSoftware().getName());
 		
 		assertEquals("henrique", knowledgeZero.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(knowledgeZero.getLastUpdateDatetime())
-		);
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(knowledgeZero.getLastUpdateDatetime()));
 		assertEquals("henrique", knowledgeZero.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(knowledgeZero.getCreationDatetime())
-		);
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(knowledgeZero.getCreationDatetime()));
 	}
 	
 }

@@ -1,7 +1,9 @@
-package br.com.conhecimento.integrationtests.repositories.v1;
+package br.com.conhecimento.integrationtests.repositories.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -21,7 +23,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
-import br.com.conhecimento.model.v1.Software;
+import br.com.conhecimento.model.v2.Software;
 import br.com.conhecimento.repositories.v1.SoftwareRepository;
 
 @ExtendWith(SpringExtension.class)
@@ -54,9 +56,19 @@ public class SoftwareRepositoryTest extends AbstractIntegrationTest {
 		assertEquals(1, softwareZero.getId());
 		assertEquals("Esti", softwareZero.getName());
 		
+		assertEquals("henrique", softwareZero.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareZero.getLastUpdateDatetime()));
+		assertEquals("henrique", softwareZero.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareZero.getCreationDatetime()));
+		
 		Software softwareOne = resultList.get(1);
 		
 		assertEquals(2, softwareOne.getId());
 		assertEquals("Stac", softwareOne.getName());
+		
+		assertEquals("henrique", softwareOne.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareOne.getLastUpdateDatetime()));
+		assertEquals("henrique", softwareOne.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareOne.getCreationDatetime()));
 	}
 }

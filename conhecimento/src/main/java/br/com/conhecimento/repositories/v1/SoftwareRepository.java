@@ -7,7 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import br.com.conhecimento.model.v1.Software;
+import br.com.conhecimento.model.v2.Software;
 
 @Repository
 public interface SoftwareRepository extends JpaRepository<Software, Integer>, PagingAndSortingRepository<Software, Integer> {

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.conhecimento.data.vo.v1.TopicVO;
 import br.com.conhecimento.services.v1.TopicService;
-import br.com.conhecimento.utils.v1.ControllerUtil;
+import br.com.conhecimento.utils.v2.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,6 +32,9 @@ public class TopicController {
 	
 	@Autowired
 	private TopicService service;
+	
+	@Autowired
+	private ControllerUtil util;
 	
 	@Operation(
 		summary = "Finds All Topics",
@@ -62,7 +65,7 @@ public class TopicController {
 		@RequestParam(name = "topicName", required = false, defaultValue = "") String topicName
 	) {
 		
-		Pageable pageable = ControllerUtil.pageable(page, size, sortBy, direction);
+		Pageable pageable = util.pageable(page, size, sortBy, direction);
 		
 		return service.findCustomPageable(topicName, pageable);
 	}
