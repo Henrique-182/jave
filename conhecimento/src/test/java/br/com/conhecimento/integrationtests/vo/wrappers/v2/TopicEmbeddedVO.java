@@ -1,4 +1,4 @@
-package br.com.conhecimento.integrationtests.vo.wrappers.v1;
+package br.com.conhecimento.integrationtests.vo.wrappers.v2;
 
 import java.io.Serializable;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.com.conhecimento.integrationtests.vo.v1.TopicVO;
+import br.com.conhecimento.integrationtests.vo.v2.TopicVO;
 
 public class TopicEmbeddedVO implements Serializable {
 

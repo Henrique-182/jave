@@ -1,4 +1,4 @@
-package br.com.conhecimento.unittests.services.v1;
+package br.com.conhecimento.unittests.services.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,14 +20,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.conhecimento.data.vo.v1.TopicVO;
+import br.com.conhecimento.data.vo.v2.TopicVO;
 import br.com.conhecimento.exceptions.v1.RequiredObjectIsNullException;
 import br.com.conhecimento.exceptions.v1.ResourceNotFoundException;
-import br.com.conhecimento.mappers.v1.TopicMapper;
-import br.com.conhecimento.model.v1.Topic;
-import br.com.conhecimento.repositories.v1.TopicRepository;
-import br.com.conhecimento.services.v1.TopicService;
-import br.com.conhecimento.unittests.mocks.v1.TopicMock;
+import br.com.conhecimento.mappers.v2.TopicMapper;
+import br.com.conhecimento.model.v2.Topic;
+import br.com.conhecimento.repositories.v2.TopicRepository;
+import br.com.conhecimento.services.v2.TopicService;
+import br.com.conhecimento.unittests.mocks.v2.TopicMock;
+import br.com.conhecimento.unittests.mocks.v2.UserAuditMock;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
@@ -66,7 +69,13 @@ public class TopicServiceTest {
 		assertNotNull(persistedTopic);
 		assertEquals(1, persistedTopic.getKey());
 		assertEquals("Name1", persistedTopic.getName());
-		assertTrue(persistedTopic.getLinks().toString().contains("</v1/topic?page=0&size=10&sortBy=name&direction=asc>;rel=\"topicVOList\""));
+		
+		assertEquals("Username0", persistedTopic.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedTopic.getLastUpdateDatetime()));
+		assertEquals("Username0", persistedTopic.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedTopic.getCreationDatetime()));
+		
+		assertTrue(persistedTopic.getLinks().toString().contains("</v2/topic?page=0&size=10&sortBy=name&direction=asc>;rel=\"topicVOList\""));
 	}
 	
 	@Test
@@ -94,20 +103,26 @@ public class TopicServiceTest {
 		when(repository.save(mockEntity)).thenReturn(persistedEntity);
 		when(mapper.toVO(persistedEntity)).thenReturn(mockVO);
 		
-		TopicVO createdTopic = service.create(mockVO);
+		TopicVO createdTopic = service.create(mockVO, UserAuditMock.entity());
 		
 		assertNotNull(createdTopic);
 		
 		assertNotNull(createdTopic);
 		assertEquals(0, createdTopic.getKey());
 		assertEquals("Name0", createdTopic.getName());
-		assertTrue(createdTopic.getLinks().toString().contains("</v1/topic?page=0&size=10&sortBy=name&direction=asc>;rel=\"topicVOList\""));
+		
+		assertEquals("Username0", createdTopic.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdTopic.getLastUpdateDatetime()));
+		assertEquals("Username0", createdTopic.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdTopic.getCreationDatetime()));
+		
+		assertTrue(createdTopic.getLinks().toString().contains("</v2/topic?page=0&size=10&sortBy=name&direction=asc>;rel=\"topicVOList\""));
 	}
 	
 	@Test
 	void testCreateWithRequiredObjectIsNullException() {
 		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
-			service.create(null);
+			service.create(null, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "It is not possible to persist a null object";
@@ -129,13 +144,20 @@ public class TopicServiceTest {
 		when(repository.save(mockEntity)).thenReturn(persistedEntity);
 		when(mapper.toVO(persistedEntity)).thenReturn(mockVO);
 		
-		TopicVO updatedTopic = service.updateById(id, mockVO);
+		TopicVO updatedTopic = service.updateById(id, mockVO, UserAuditMock.entity());
 		
 		assertNotNull(updatedTopic);
 		
 		assertNotNull(updatedTopic);
 		assertEquals(2, updatedTopic.getKey());
 		assertEquals("2Name", updatedTopic.getName());
+		
+		assertEquals("Username0", updatedTopic.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(updatedTopic.getLastUpdateDatetime()));
+		assertEquals("Username0", updatedTopic.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(updatedTopic.getCreationDatetime()));
+		
+		assertTrue(updatedTopic.getLinks().toString().contains("</v2/topic?page=0&size=10&sortBy=name&direction=asc>;rel=\"topicVOList\""));
 	}
 	
 	@Test
@@ -144,7 +166,7 @@ public class TopicServiceTest {
 		TopicVO mockVO = input.vo();
 		
 		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-			service.updateById(id, mockVO);
+			service.updateById(id, mockVO, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "No records found for the id (" + id + ") !";
@@ -159,7 +181,7 @@ public class TopicServiceTest {
 		TopicVO mockVO = null;
 		
 		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
-			service.updateById(id, mockVO);
+			service.updateById(id, mockVO, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "It is not possible to persist a null object";

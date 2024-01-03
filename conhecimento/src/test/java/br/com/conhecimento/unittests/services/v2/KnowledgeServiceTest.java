@@ -71,10 +71,18 @@ public class KnowledgeServiceTest {
 		assertEquals("Title1", persistedKnowledge.getTitle());
 		assertEquals("Description1", persistedKnowledge.getDescription());
 		assertEquals("Content1", persistedKnowledge.getContent());
+		
 		assertEquals("Stac", persistedKnowledge.getSoftware().getName());
+		
 		assertEquals("Name0", persistedKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", persistedKnowledge.getTopics().get(1).getName());
-		assertTrue(persistedKnowledge.getLinks().toString().contains("</v1/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
+		
+		assertEquals("Username0", persistedKnowledge.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedKnowledge.getLastUpdateDatetime()));
+		assertEquals("Username0", persistedKnowledge.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedKnowledge.getCreationDatetime()));
+		
+		assertTrue(persistedKnowledge.getLinks().toString().contains("</v2/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
 	}
 	
 	@Test
@@ -114,20 +122,14 @@ public class KnowledgeServiceTest {
 		assertEquals("Esti", createdKnowledge.getSoftware().getName());
 		
 		assertEquals("Username0", createdKnowledge.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(createdKnowledge.getLastUpdateDatetime())
-		);
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdKnowledge.getLastUpdateDatetime()));
 		assertEquals("Username0", createdKnowledge.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(createdKnowledge.getCreationDatetime())
-		);
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdKnowledge.getCreationDatetime()));
 		
 		assertEquals("Name0", createdKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", createdKnowledge.getTopics().get(1).getName());
 		
-		assertTrue(createdKnowledge.getLinks().toString().contains("</v1/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
+		assertTrue(createdKnowledge.getLinks().toString().contains("</v2/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
 	}
 	
 	@Test
@@ -169,20 +171,14 @@ public class KnowledgeServiceTest {
 		assertEquals("Esti", updatedKnowledge.getSoftware().getName());
 		
 		assertEquals("Username0", updatedKnowledge.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(updatedKnowledge.getLastUpdateDatetime())
-		);
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(updatedKnowledge.getLastUpdateDatetime()));
 		assertEquals("Username0", updatedKnowledge.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(updatedKnowledge.getCreationDatetime())
-		);
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(updatedKnowledge.getCreationDatetime()));
 		
 		assertEquals("Name0", updatedKnowledge.getTopics().get(0).getName());
 		assertEquals("Name1", updatedKnowledge.getTopics().get(1).getName());
 		
-		assertTrue(updatedKnowledge.getLinks().toString().contains("</v1/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
+		assertTrue(updatedKnowledge.getLinks().toString().contains("</v2/knowledge?page=0&size=10&sortBy=title&direction=asc>;rel=\"knowledgeVOList\""));
 	}
 	
 	@Test

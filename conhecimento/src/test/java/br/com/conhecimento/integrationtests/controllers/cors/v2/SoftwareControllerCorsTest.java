@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.conhecimento.configs.v1.TestConfig;
-import br.com.conhecimento.integrationtests.mocks.v1.SoftwareMock;
+import br.com.conhecimento.integrationtests.mocks.v2.SoftwareMock;
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
 import br.com.conhecimento.integrationtests.vo.v2.AccountCredentialsVO;
 import br.com.conhecimento.integrationtests.vo.v2.SoftwareVO;

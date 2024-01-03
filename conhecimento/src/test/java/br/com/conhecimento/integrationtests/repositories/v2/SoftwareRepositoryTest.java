@@ -24,7 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
 import br.com.conhecimento.model.v2.Software;
-import br.com.conhecimento.repositories.v1.SoftwareRepository;
+import br.com.conhecimento.repositories.v2.SoftwareRepository;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest

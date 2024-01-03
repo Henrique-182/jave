@@ -1,11 +1,12 @@
-package br.com.conhecimento.unittests.mocks.v1;
+package br.com.conhecimento.unittests.mocks.v2;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import br.com.conhecimento.data.vo.v1.TopicVO;
-import br.com.conhecimento.model.v1.Topic;
+import br.com.conhecimento.data.vo.v2.TopicVO;
+import br.com.conhecimento.model.v2.Topic;
 
 public class TopicMock {
 
@@ -37,6 +38,10 @@ public class TopicMock {
 		Topic topic = new Topic();
 		topic.setId(number);
 		topic.setName("Name" + number);
+		topic.setUserLastUpdate(UserAuditMock.entity());
+		topic.setLastUpdateDatetime(new Date());
+		topic.setUserCreation(UserAuditMock.entity());
+		topic.setCreationDatetime(new Date());
 		
 		return topic;
 	}
@@ -45,6 +50,10 @@ public class TopicMock {
 		TopicVO vo = new TopicVO();
 		vo.setKey(number);
 		vo.setName("Name" + number);
+		vo.setUserLastUpdate(UserAuditMock.entity());
+		vo.setLastUpdateDatetime(new Date());
+		vo.setUserCreation(UserAuditMock.entity());
+		vo.setCreationDatetime(new Date());
 		
 		return vo;
 	}

@@ -1,4 +1,4 @@
-package br.com.conhecimento.integrationtests.mocks.v1;
+package br.com.conhecimento.integrationtests.mocks.v2;
 
 import java.util.ArrayList;
 import java.util.List;

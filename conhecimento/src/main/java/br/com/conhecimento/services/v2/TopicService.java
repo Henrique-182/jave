@@ -1,7 +1,9 @@
-package br.com.conhecimento.services.v1;
+package br.com.conhecimento.services.v2;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -10,13 +12,14 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
-import br.com.conhecimento.controllers.v1.TopicController;
-import br.com.conhecimento.data.vo.v1.TopicVO;
+import br.com.conhecimento.controllers.v2.TopicController;
+import br.com.conhecimento.data.vo.v2.TopicVO;
 import br.com.conhecimento.exceptions.v1.RequiredObjectIsNullException;
 import br.com.conhecimento.exceptions.v1.ResourceNotFoundException;
-import br.com.conhecimento.mappers.v1.TopicMapper;
-import br.com.conhecimento.model.v1.Topic;
-import br.com.conhecimento.repositories.v1.TopicRepository;
+import br.com.conhecimento.mappers.v2.TopicMapper;
+import br.com.conhecimento.model.v2.Topic;
+import br.com.conhecimento.model.v2.UserAudit;
+import br.com.conhecimento.repositories.v2.TopicRepository;
 
 @Service
 public class TopicService {
@@ -33,7 +36,6 @@ public class TopicService {
 	public PagedModel<EntityModel<TopicVO>> findCustomPageable(String topicName, Pageable pageable) {
 		var entityList = repository.findPageableByNameContaining(topicName, pageable);
 		
-		
 		var voList = entityList.map(t -> mapper.toVO(t));
 		voList.map(t -> addLinkSelfRel(t)).toList();
 		
@@ -46,19 +48,26 @@ public class TopicService {
 		return addLinkVOList(mapper.toVO(persistedEntity));
 	}
 	
-	public TopicVO create(TopicVO data) {
+	public TopicVO create(TopicVO data, UserAudit userAudit) {
 		if (data == null) throw new RequiredObjectIsNullException();
+		
+		data.setUserLastUpdate(userAudit);
+		data.setLastUpdateDatetime(new Date());
+		data.setUserCreation(userAudit);
+		data.setCreationDatetime(new Date());
 		
 		Topic createdEntity = repository.save(mapper.toEntity(data));
 		
 		return addLinkVOList(mapper.toVO(createdEntity));
 	}
 	
-	public TopicVO updateById(Integer id, TopicVO data) {
+	public TopicVO updateById(Integer id, TopicVO data, UserAudit userAudit) {
 		if (data == null) throw new RequiredObjectIsNullException();
 		
 		Topic entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		entity.setName(data.getName());
+		entity.setUserLastUpdate(userAudit);
+		entity.setLastUpdateDatetime(new Date());
 		
 		Topic updatedEntity = repository.save(entity);
 		

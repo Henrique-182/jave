@@ -4,6 +4,8 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -20,12 +22,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.conhecimento.configs.v1.TestConfig;
-import br.com.conhecimento.integrationtests.mocks.v1.TopicMock;
+import br.com.conhecimento.integrationtests.mocks.v2.TopicMock;
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
-import br.com.conhecimento.integrationtests.vo.v1.TopicVO;
 import br.com.conhecimento.integrationtests.vo.v2.AccountCredentialsVO;
 import br.com.conhecimento.integrationtests.vo.v2.TokenVO;
-import br.com.conhecimento.integrationtests.vo.wrappers.v1.TopicWrapperVO;
+import br.com.conhecimento.integrationtests.vo.v2.TopicVO;
+import br.com.conhecimento.integrationtests.vo.wrappers.v2.TopicWrapperVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -71,7 +73,7 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 					.as(TokenVO.class);
 				
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/topic")
+				.setBasePath("/v2/topic")
 				.setPort(TestConfig.SERVER_PORT)
 				.addHeader(TestConfig.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenVO.getAccessToken())
 				.setContentType(TestConfig.CONTENT_TYPE_JSON)
@@ -101,7 +103,13 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		assertTrue(createdTopic.getKey() > 0);
 		
 		assertEquals("Name0", createdTopic.getName());
-		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
+		
+		assertEquals("henrique", createdTopic.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdTopic.getLastUpdateDatetime()));
+		assertEquals("henrique", createdTopic.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdTopic.getCreationDatetime()));
+		
+		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v2/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -122,7 +130,13 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(topic.getKey(), persistedTopic.getKey());
 		assertEquals("Name0", persistedTopic.getName());
-		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
+		
+		assertEquals("henrique", persistedTopic.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedTopic.getLastUpdateDatetime()));
+		assertEquals("henrique", persistedTopic.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedTopic.getCreationDatetime()));
+		
+		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v2/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -146,7 +160,12 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals(topic.getKey(), updatedTopic.getKey());
 		assertEquals(topic.getKey() + "Name", updatedTopic.getName());
-		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
+		
+		assertEquals("henrique", updatedTopic.getUserLastUpdate().getUsername());
+		assertEquals("henrique", updatedTopic.getUserCreation().getUsername());
+		assertTrue(updatedTopic.getLastUpdateDatetime().after(updatedTopic.getCreationDatetime()));
+		
+		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v2/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
@@ -184,10 +203,21 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		assertEquals(15, topicOne.getKey());
 		assertEquals("Aviso", topicOne.getName());
 		
+		assertEquals("henrique", topicOne.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(topicOne.getLastUpdateDatetime()));
+		assertEquals("henrique", topicOne.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(topicOne.getCreationDatetime()));
+		
+		
 		TopicVO topicTwo = resultList.get(1);
 		
 		assertEquals(23, topicTwo.getKey());
 		assertEquals("Bat", topicTwo.getName());
+		
+		assertEquals("henrique", topicTwo.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(topicTwo.getLastUpdateDatetime()));
+		assertEquals("henrique", topicTwo.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(topicTwo.getCreationDatetime()));
 	}
 	
 	@Test
@@ -203,13 +233,13 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/topic/15\"}"));
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/topic/23\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v2/topic/15\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v2/topic/23\"}"));
 		
-		assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sort=name,asc\"}"));
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sort=name,asc\"}"));
-		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v1/topic?page=1&size=10&sort=name,asc\"}"));
-		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v1/topic?page=2&size=10&sort=name,asc\"}"));
+		assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/v2/topic?page=0&size=10&sort=name,asc\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v2/topic?page=0&size=10&sort=name,asc\"}"));
+		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v2/topic?page=1&size=10&sort=name,asc\"}"));
+		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v2/topic?page=2&size=10&sort=name,asc\"}"));
 		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":24,\"totalPages\":3,\"number\":0}"));
 	}
 	

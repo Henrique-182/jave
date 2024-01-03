@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +25,7 @@ import br.com.conhecimento.exceptions.v1.RequiredObjectIsNullException;
 import br.com.conhecimento.exceptions.v1.ResourceNotFoundException;
 import br.com.conhecimento.mappers.v2.SoftwareMapper;
 import br.com.conhecimento.model.v2.Software;
-import br.com.conhecimento.repositories.v1.SoftwareRepository;
+import br.com.conhecimento.repositories.v2.SoftwareRepository;
 import br.com.conhecimento.services.v2.SoftwareService;
 import br.com.conhecimento.unittests.mocks.v2.SoftwareMock;
 import br.com.conhecimento.unittests.mocks.v2.UserAuditMock;
@@ -66,6 +68,12 @@ public class SoftwareServiceTest {
 		
 		assertEquals(1, persistedSoftware.getKey());
 		assertEquals("Name1", persistedSoftware.getName());
+		
+		assertEquals("Username0", persistedSoftware.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedSoftware.getLastUpdateDatetime()));
+		assertEquals("Username0", persistedSoftware.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedSoftware.getCreationDatetime()));
+		
 		assertTrue(persistedSoftware.getLinks().toString().contains("</v2/software?page=0&size=10&sortBy=name&direction=asc>;rel=\"softwareVOList\""));
 	}
 	
@@ -100,6 +108,12 @@ public class SoftwareServiceTest {
 		
 		assertEquals(0, createdSoftware.getKey());
 		assertEquals("Name0", createdSoftware.getName());
+		
+		assertEquals("Username0", createdSoftware.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdSoftware.getLastUpdateDatetime()));
+		assertEquals("Username0", createdSoftware.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdSoftware.getCreationDatetime()));
+		
 		assertTrue(createdSoftware.getLinks().toString().contains("</v2/software?page=0&size=10&sortBy=name&direction=asc>;rel=\"softwareVOList\""));
 	}
 	
@@ -134,6 +148,13 @@ public class SoftwareServiceTest {
 		
 		assertEquals(1, updatedSoftware.getKey());
 		assertEquals("Name1", updatedSoftware.getName());
+		
+		assertEquals("Username0", updatedSoftware.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(updatedSoftware.getLastUpdateDatetime()));
+		assertEquals("Username0", updatedSoftware.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(updatedSoftware.getCreationDatetime()));
+		
+		assertTrue(updatedSoftware.getLinks().toString().contains("</v2/software?page=0&size=10&sortBy=name&direction=asc>;rel=\"softwareVOList\""));
 	}
 	
 	@Test

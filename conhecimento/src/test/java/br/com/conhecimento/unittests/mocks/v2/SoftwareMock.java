@@ -1,6 +1,7 @@
 package br.com.conhecimento.unittests.mocks.v2;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.conhecimento.data.vo.v2.SoftwareVO;
@@ -36,6 +37,10 @@ public class SoftwareMock {
 		Software entity = new Software();
 		entity.setId(number);
 		entity.setName("Name" + number);
+		entity.setUserLastUpdate(UserAuditMock.entity());
+		entity.setLastUpdateDatetime(new Date());
+		entity.setUserCreation(UserAuditMock.entity());
+		entity.setCreationDatetime(new Date());
 		
 		return entity;
 	}
@@ -44,6 +49,10 @@ public class SoftwareMock {
 		SoftwareVO vo = new SoftwareVO();
 		vo.setKey(number);
 		vo.setName("Name" + number);
+		vo.setUserLastUpdate(UserAuditMock.entity());
+		vo.setLastUpdateDatetime(new Date());
+		vo.setUserCreation(UserAuditMock.entity());
+		vo.setCreationDatetime(new Date());
 		
 		return vo;
 	}

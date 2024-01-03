@@ -1,7 +1,9 @@
-package br.com.conhecimento.integrationtests.repositories.v1;
+package br.com.conhecimento.integrationtests.repositories.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -21,8 +23,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
-import br.com.conhecimento.model.v1.Topic;
-import br.com.conhecimento.repositories.v1.TopicRepository;
+import br.com.conhecimento.model.v2.Topic;
+import br.com.conhecimento.repositories.v2.TopicRepository;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -54,10 +56,21 @@ public class TopicRepositoryTest extends AbstractIntegrationTest {
 		assertEquals(14, topicOne.getId());
 		assertEquals("Certificado", topicOne.getName());
 		
+		assertEquals("henrique", topicOne.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(topicOne.getLastUpdateDatetime()));
+		assertEquals("henrique", topicOne.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(topicOne.getCreationDatetime()));
+		
 		Topic topicTwo = resultList.get(2);
 		
 		assertEquals(21, topicTwo.getId());
 		assertEquals("CTe", topicTwo.getName());
+		
+		assertEquals("henrique", topicTwo.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(topicTwo.getLastUpdateDatetime()));
+		assertEquals("henrique", topicTwo.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(topicTwo.getCreationDatetime()));
+		
 	}
 	
 }

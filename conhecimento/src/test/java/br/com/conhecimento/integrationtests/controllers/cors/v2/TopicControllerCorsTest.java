@@ -19,11 +19,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.conhecimento.configs.v1.TestConfig;
-import br.com.conhecimento.integrationtests.mocks.v1.TopicMock;
+import br.com.conhecimento.integrationtests.mocks.v2.TopicMock;
 import br.com.conhecimento.integrationtests.testcontainers.v1.AbstractIntegrationTest;
-import br.com.conhecimento.integrationtests.vo.v1.TopicVO;
 import br.com.conhecimento.integrationtests.vo.v2.AccountCredentialsVO;
 import br.com.conhecimento.integrationtests.vo.v2.TokenVO;
+import br.com.conhecimento.integrationtests.vo.v2.TopicVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;

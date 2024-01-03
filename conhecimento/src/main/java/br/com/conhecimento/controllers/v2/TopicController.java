@@ -1,10 +1,11 @@
-package br.com.conhecimento.controllers.v1;
+package br.com.conhecimento.controllers.v2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.conhecimento.data.vo.v1.TopicVO;
-import br.com.conhecimento.services.v1.TopicService;
+import br.com.conhecimento.data.vo.v2.TopicVO;
+import br.com.conhecimento.model.v2.UserAudit;
+import br.com.conhecimento.services.v2.TopicService;
 import br.com.conhecimento.utils.v2.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -27,7 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Topic", description = "Endpoints for Managing Topics")
 @RestController
-@RequestMapping(path = "/v1/topic")
+@RequestMapping(path = "/v2/topic")
 public class TopicController {
 	
 	@Autowired
@@ -103,7 +105,9 @@ public class TopicController {
 	)
 	@PostMapping
 	public TopicVO create(@RequestBody TopicVO data) {
-		return service.create(data);
+		UserAudit userAudit = util.getUserByContext(SecurityContextHolder.getContext());
+		
+		return service.create(data, userAudit);
 	}
 	
 	@Operation(
@@ -121,7 +125,9 @@ public class TopicController {
 	)
 	@PutMapping(path = "/{id}")
 	public TopicVO updateById(@PathVariable("id") Integer id, @RequestBody TopicVO data) {
-		return service.updateById(id, data);
+		UserAudit userAudit = util.getUserByContext(SecurityContextHolder.getContext());
+		
+		return service.updateById(id, data, userAudit);
 	}
 	
 	@Operation(

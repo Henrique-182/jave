@@ -1,4 +1,4 @@
-package br.com.conhecimento.integrationtests.vo.wrappers.v1;
+package br.com.conhecimento.integrationtests.vo.wrappers.v2;
 
 import java.io.Serializable;
 import java.util.Objects;

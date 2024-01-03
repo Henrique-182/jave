@@ -1,12 +1,12 @@
-package br.com.conhecimento.mappers.v1;
+package br.com.conhecimento.mappers.v2;
 
 import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import br.com.conhecimento.data.vo.v1.TopicVO;
-import br.com.conhecimento.model.v1.Topic;
+import br.com.conhecimento.data.vo.v2.TopicVO;
+import br.com.conhecimento.model.v2.Topic;
 
 @Mapper(componentModel = "spring")
 public interface TopicMapper {

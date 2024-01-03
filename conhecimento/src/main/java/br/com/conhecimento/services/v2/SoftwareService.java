@@ -19,7 +19,7 @@ import br.com.conhecimento.exceptions.v1.ResourceNotFoundException;
 import br.com.conhecimento.mappers.v2.SoftwareMapper;
 import br.com.conhecimento.model.v2.Software;
 import br.com.conhecimento.model.v2.UserAudit;
-import br.com.conhecimento.repositories.v1.SoftwareRepository;
+import br.com.conhecimento.repositories.v2.SoftwareRepository;
 
 @Service
 public class SoftwareService {

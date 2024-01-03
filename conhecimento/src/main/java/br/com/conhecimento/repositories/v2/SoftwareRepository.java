@@ -1,4 +1,4 @@
-package br.com.conhecimento.repositories.v1;
+package br.com.conhecimento.repositories.v2;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

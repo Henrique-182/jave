@@ -1,9 +1,9 @@
-package br.com.conhecimento.integrationtests.mocks.v1;
+package br.com.conhecimento.integrationtests.mocks.v2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.conhecimento.integrationtests.vo.v1.TopicVO;
+import br.com.conhecimento.integrationtests.vo.v2.TopicVO;
 
 public class TopicMock {
 
