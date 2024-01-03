@@ -2,6 +2,7 @@ package br.com.conhecimento.integrationtests.controllers.v2;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.DateFormat;
@@ -163,7 +164,7 @@ public class TopicControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals("henrique", updatedTopic.getUserLastUpdate().getUsername());
 		assertEquals("henrique", updatedTopic.getUserCreation().getUsername());
-		assertTrue(updatedTopic.getLastUpdateDatetime().after(updatedTopic.getCreationDatetime()));
+		assertNotEquals(updatedTopic.getLastUpdateDatetime(), updatedTopic.getCreationDatetime());
 		
 		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v2/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}

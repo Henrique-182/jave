@@ -69,7 +69,7 @@ public class KnowledgeControllerCorsTest extends AbstractIntegrationTest {
 					.as(TokenVO.class);
 		
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/knowledge")
+				.setBasePath("/v2/knowledge")
 				.setPort(TestConfig.SERVER_PORT)
 				.addHeader(TestConfig.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenVO.getAccessToken())
 				.setContentType(TestConfig.CONTENT_TYPE_JSON)
@@ -123,7 +123,7 @@ public class KnowledgeControllerCorsTest extends AbstractIntegrationTest {
 		assertEquals("Description0", createdKnowledge.getDescription());
 		assertEquals("Content0", createdKnowledge.getContent());
 		assertEquals("Esti", createdKnowledge.getSoftware().getName());
-		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v1/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
+		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v2/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
 	}
 	
 	@Test

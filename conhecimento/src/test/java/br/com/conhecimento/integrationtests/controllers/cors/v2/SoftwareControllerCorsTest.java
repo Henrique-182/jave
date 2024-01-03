@@ -69,7 +69,7 @@ public class SoftwareControllerCorsTest extends AbstractIntegrationTest {
 					.as(TokenVO.class);
 				
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/software")
+				.setBasePath("/v2/software")
 				.setPort(TestConfig.SERVER_PORT)
 				.addHeader(TestConfig.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenVO.getAccessToken())
 				.setContentType(TestConfig.CONTENT_TYPE_JSON)
@@ -119,7 +119,7 @@ public class SoftwareControllerCorsTest extends AbstractIntegrationTest {
 		assertTrue(createdSoftware.getKey() > 0);
 		
 		assertEquals("Name0", createdSoftware.getName());
-		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v1/software?page=0&size=10&sortBy=name&direction=asc\"}"));
+		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v2/software?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test

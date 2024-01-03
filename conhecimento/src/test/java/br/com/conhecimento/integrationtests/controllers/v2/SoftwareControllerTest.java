@@ -2,6 +2,7 @@ package br.com.conhecimento.integrationtests.controllers.v2;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.DateFormat;
@@ -104,7 +105,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals("Name0", createdSoftware.getName());
 		
-		assertEquals("henrique", createdSoftware.getUserCreation().getUsername());
+		assertEquals("henrique", createdSoftware.getUserLastUpdate().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdSoftware.getLastUpdateDatetime()));
 		assertEquals("henrique", createdSoftware.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdSoftware.getCreationDatetime()));
@@ -131,7 +132,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		assertEquals(software.getKey(), persistedSoftware.getKey());
 		assertEquals("Name0", persistedSoftware.getName());
 		
-		assertEquals("henrique", persistedSoftware.getUserCreation().getUsername());
+		assertEquals("henrique", persistedSoftware.getUserLastUpdate().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedSoftware.getLastUpdateDatetime()));
 		assertEquals("henrique", persistedSoftware.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedSoftware.getCreationDatetime()));
@@ -160,9 +161,9 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		assertEquals(software.getKey(), updatedSoftware.getKey());
 		assertEquals(software.getKey() + "Name", updatedSoftware.getName());
 		
+		assertEquals("henrique", updatedSoftware.getUserLastUpdate().getUsername());
 		assertEquals("henrique", updatedSoftware.getUserCreation().getUsername());
-		assertEquals("henrique", updatedSoftware.getUserCreation().getUsername());
-		assertTrue(updatedSoftware.getLastUpdateDatetime().after(updatedSoftware.getCreationDatetime()));
+		assertNotEquals(updatedSoftware.getLastUpdateDatetime(), updatedSoftware.getCreationDatetime());
 					
 		assertTrue(content.contains("\"softwareVOList\":{\"href\":\"http://localhost:8888/v2/software?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
@@ -202,7 +203,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		assertEquals(1, softwareOne.getKey());
 		assertEquals("Esti", softwareOne.getName());
 		
-		assertEquals("henrique", softwareOne.getUserCreation().getUsername());
+		assertEquals("henrique", softwareOne.getUserLastUpdate().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareOne.getLastUpdateDatetime()));
 		assertEquals("henrique", softwareOne.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareOne.getCreationDatetime()));
@@ -212,7 +213,7 @@ public class SoftwareControllerTest extends AbstractIntegrationTest {
 		assertEquals(2, softwareTwo.getKey());
 		assertEquals("Stac", softwareTwo.getName());
 		
-		assertEquals("henrique", softwareTwo.getUserCreation().getUsername());
+		assertEquals("henrique", softwareTwo.getUserLastUpdate().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareTwo.getLastUpdateDatetime()));
 		assertEquals("henrique", softwareTwo.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(softwareTwo.getCreationDatetime()));

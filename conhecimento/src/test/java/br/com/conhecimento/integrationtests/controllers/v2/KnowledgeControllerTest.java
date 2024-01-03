@@ -2,6 +2,7 @@ package br.com.conhecimento.integrationtests.controllers.v2;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.DateFormat;
@@ -111,16 +112,10 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals("Esti", createdKnowledge.getSoftware().getName());
 		
+		assertEquals("henrique", createdKnowledge.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdKnowledge.getLastUpdateDatetime()));
 		assertEquals("henrique", createdKnowledge.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(createdKnowledge.getLastUpdateDatetime())
-		);
-		assertEquals("henrique", createdKnowledge.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(createdKnowledge.getCreationDatetime())
-		);
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdKnowledge.getCreationDatetime()));
 		
 		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v2/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
 	}
@@ -148,16 +143,10 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		
 		assertEquals("Esti", persistedKnowledge.getSoftware().getName());
 		
+		assertEquals("henrique", persistedKnowledge.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedKnowledge.getLastUpdateDatetime()));
 		assertEquals("henrique", persistedKnowledge.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(persistedKnowledge.getLastUpdateDatetime())
-		);
-		assertEquals("henrique", persistedKnowledge.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(persistedKnowledge.getCreationDatetime())
-		);
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedKnowledge.getCreationDatetime()));
 		
 		assertTrue(content.contains("\"knowledgeVOList\":{\"href\":\"http://localhost:8888/v2/knowledge?page=0&size=10&sortBy=title&direction=asc\"}"));
 	}
@@ -202,12 +191,9 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertEquals(knowledge.getKey() + "Content", updatedKnowledge.getContent());
 		assertEquals("Stac", updatedKnowledge.getSoftware().getName());
 		
+		assertEquals("henrique", updatedKnowledge.getUserLastUpdate().getUsername());
 		assertEquals("henrique", updatedKnowledge.getUserCreation().getUsername());
-		assertEquals("henrique", updatedKnowledge.getUserCreation().getUsername());
-		assertTrue(
-			updatedKnowledge.getLastUpdateDatetime()
-			.after(updatedKnowledge.getCreationDatetime())
-		);
+		assertNotEquals(updatedKnowledge.getLastUpdateDatetime(), updatedKnowledge.getCreationDatetime());
 		
 		assertEquals("TG Config", updatedKnowledge.getTopics().get(0).getName());
 		assertEquals("Instalação", updatedKnowledge.getTopics().get(1).getName());
@@ -251,16 +237,10 @@ public class KnowledgeControllerTest extends AbstractIntegrationTest {
 		assertEquals("TG Config", knowledgeOne.getDescription());
 		assertTrue(knowledgeOne.getContent().contains("<TGAPLICACAO name=\"Arca\" Caption=\"ARCA - Automação de Comércio e Indústria\">"));
 		
+		assertEquals("henrique", knowledgeOne.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(knowledgeOne.getLastUpdateDatetime()));
 		assertEquals("henrique", knowledgeOne.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(knowledgeOne.getLastUpdateDatetime())
-		);
-		assertEquals("henrique", knowledgeOne.getUserCreation().getUsername());
-		assertEquals(
-			DateFormat.getDateInstance().format(new Date()), 
-			DateFormat.getDateInstance().format(knowledgeOne.getCreationDatetime())
-		);
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(knowledgeOne.getCreationDatetime()));
 		
 		assertEquals("TG Config", knowledgeOne.getTopics().get(0).getName());
 		assertEquals("Instalação", knowledgeOne.getTopics().get(1).getName());

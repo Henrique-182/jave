@@ -69,7 +69,7 @@ public class TopicControllerCorsTest extends AbstractIntegrationTest {
 					.as(TokenVO.class);
 				
 		specification = new RequestSpecBuilder()
-				.setBasePath("/v1/topic")
+				.setBasePath("/v2/topic")
 				.setPort(TestConfig.SERVER_PORT)
 				.addHeader(TestConfig.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenVO.getAccessToken())
 				.setContentType(TestConfig.CONTENT_TYPE_JSON)
@@ -120,7 +120,7 @@ public class TopicControllerCorsTest extends AbstractIntegrationTest {
 		assertTrue(createdTopic.getKey() > 0);
 		
 		assertEquals("Name0", createdTopic.getName());
-		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v1/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
+		assertTrue(content.contains("\"topicVOList\":{\"href\":\"http://localhost:8888/v2/topic?page=0&size=10&sortBy=name&direction=asc\"}"));
 	}
 	
 	@Test
