@@ -121,7 +121,7 @@ public class KnowledgeServiceTest {
 		
 		assertEquals("Esti", createdKnowledge.getSoftware().getName());
 		
-		assertEquals("Username0", createdKnowledge.getUserCreation().getUsername());
+		assertEquals("Username0", createdKnowledge.getUserLastUpdate().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdKnowledge.getLastUpdateDatetime()));
 		assertEquals("Username0", createdKnowledge.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdKnowledge.getCreationDatetime()));
@@ -170,7 +170,7 @@ public class KnowledgeServiceTest {
 		
 		assertEquals("Esti", updatedKnowledge.getSoftware().getName());
 		
-		assertEquals("Username0", updatedKnowledge.getUserCreation().getUsername());
+		assertEquals("Username0", updatedKnowledge.getUserLastUpdate().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(updatedKnowledge.getLastUpdateDatetime()));
 		assertEquals("Username0", updatedKnowledge.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(updatedKnowledge.getCreationDatetime()));

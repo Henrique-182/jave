@@ -69,7 +69,7 @@ public class SoftwareServiceTest {
 		assertEquals(1, persistedSoftware.getKey());
 		assertEquals("Name1", persistedSoftware.getName());
 		
-		assertEquals("Username0", persistedSoftware.getUserCreation().getUsername());
+		assertEquals("Username0", persistedSoftware.getUserLastUpdate().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedSoftware.getLastUpdateDatetime()));
 		assertEquals("Username0", persistedSoftware.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(persistedSoftware.getCreationDatetime()));
@@ -109,7 +109,7 @@ public class SoftwareServiceTest {
 		assertEquals(0, createdSoftware.getKey());
 		assertEquals("Name0", createdSoftware.getName());
 		
-		assertEquals("Username0", createdSoftware.getUserCreation().getUsername());
+		assertEquals("Username0", createdSoftware.getUserLastUpdate().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdSoftware.getLastUpdateDatetime()));
 		assertEquals("Username0", createdSoftware.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(createdSoftware.getCreationDatetime()));
@@ -149,7 +149,7 @@ public class SoftwareServiceTest {
 		assertEquals(1, updatedSoftware.getKey());
 		assertEquals("Name1", updatedSoftware.getName());
 		
-		assertEquals("Username0", updatedSoftware.getUserCreation().getUsername());
+		assertEquals("Username0", updatedSoftware.getUserLastUpdate().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(updatedSoftware.getLastUpdateDatetime()));
 		assertEquals("Username0", updatedSoftware.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(updatedSoftware.getCreationDatetime()));
