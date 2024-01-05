@@ -46,29 +46,25 @@ public class CompanyService {
 		Boolean isActive,
 		String softwareName,
 		String softwareType,
-		Integer softwareFkSameDb,
-		String sortBy,
-		String direction
+		Integer softwareFkSameDb
 	) {
 		List<Company> entityList = customRepository.findCustom(
+				pageable,
 				cnpj,
 				name,
 				isActive,
 				softwareName,
 				softwareType,
-				softwareFkSameDb,
-				sortBy,
-				direction
+				softwareFkSameDb
 		);
 		
 		List<CompanyVO> voList = mapper.toVOList(entityList);
 		
 		voList = voList.stream().map(c -> addLinkSelfRel(c)).toList();
 		
-		final int start = (int) pageable.getOffset();
-		final int end = Math.min((start + pageable.getPageSize()), voList.size());
+		long totalElements = repository.count();
 		
-		return assembler.toModel(new PageImpl<>(voList.subList(start, end), pageable, voList.size()));
+		return assembler.toModel(new PageImpl<>(voList, pageable, totalElements));
 	}
 	
 	public CompanyVO findById(Integer id) {

@@ -3,10 +3,8 @@ package br.com.ibpt.repositories.v3;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import br.com.ibpt.model.v2.Company;
@@ -23,14 +21,13 @@ public class CompanyCustomRepository {
 	}
 	
 	public List<Company> findCustom(
+		Pageable pageable,
 		String cnpj,
 		String name,
 		Boolean isActive,
 		String softwareName,
 		String softwareType,
-		Integer softwareFkSameDb,
-		String sortBy,
-		String direction
+		Integer softwareFkSameDb
 	) {
 		String query = "SELECT COMP FROM Company COMP ";
 		String condicao = "WHERE ";
@@ -65,13 +62,19 @@ public class CompanyCustomRepository {
 			condicao = "AND ";
 		}
 		
-		if (sortBy != null) {
-			query += "ORDER BY " + "COMP." + sortBy + " ";
+		if (pageable.getSort() != null) {
 			
-			if (direction != null) {
-				query += direction;
+			Order order = pageable.getSort().get().toList().get(0);
+			
+			query += "ORDER BY " + "COMP." + order.getProperty() + " ";
+			
+			if (order.getDirection() != null) {
+				query += order.getDirection() + " ";
 			}
 		}
+		
+		query += " LIMIT " + pageable.getPageSize() + " ";
+		query += " OFFSET " + pageable.getOffset() + " ";
 		
 		var q = entityManager.createQuery(query, Company.class);
 		

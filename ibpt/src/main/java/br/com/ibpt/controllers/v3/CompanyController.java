@@ -78,7 +78,7 @@ public class CompanyController {
 				: sortBy.equalsIgnoreCase("softwareType") ? "softwares.type"
 				: "tradeName";
 
-		Pageable pageable = util.pageable(page, size);
+		Pageable pageable = util.pageable(page, size, sortBy, direction);
 		
 		return ResponseEntity
 				.ok(
@@ -89,9 +89,7 @@ public class CompanyController {
 						isActive,
 						softwareName,
 						softwareType,
-						softwareFkSameDb,
-						sortBy,
-						direction
+						softwareFkSameDb
 					)
 				);
 	}

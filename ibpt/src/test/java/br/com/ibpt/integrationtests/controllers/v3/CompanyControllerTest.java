@@ -479,11 +479,11 @@ public class CompanyControllerTest extends AbstractIntegrationTest {
 		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/company/112\"}}"));
 		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/company/140\"}}"));
 		
-		assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=0&size=10\"}"));
-		assertTrue(content.contains("\"prev\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=9&size=10\"}"));
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=10&size=10\"}"));
-		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=11&size=10\"}"));
-		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=15&size=10\"}"));
+		assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=0&size=10&sort=tradeName,asc\"}"));
+		assertTrue(content.contains("\"prev\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=9&size=10&sort=tradeName,asc\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=10&size=10&sort=tradeName,asc\"}"));
+		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=11&size=10&sort=tradeName,asc\"}"));
+		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v3/company?direction=asc&page=15&size=10&sort=tradeName,asc\"}"));
 		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":158,\"totalPages\":16,\"number\":10}"));
 	}
 }
