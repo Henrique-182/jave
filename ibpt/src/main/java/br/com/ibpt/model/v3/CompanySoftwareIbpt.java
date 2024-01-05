@@ -1,4 +1,4 @@
-package br.com.ibpt.model.v2;
+package br.com.ibpt.model.v3;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -28,9 +28,6 @@ public class CompanySoftwareIbpt implements Serializable {
 	@JoinColumn(name = "FK_SOFTWARE")
 	private SoftwareIbpt software;
 	
-	@Column(name = "TYPE")
-	private String type;
-	
 	@Column(name = "HAVE_AUTHORIZATION")
 	private Boolean haveAuthorization;
 	
@@ -39,9 +36,6 @@ public class CompanySoftwareIbpt implements Serializable {
 	
 	@Column(name = "OBSERVATION")
 	private String observation;
-	
-	@Column(name = "IS_ACTIVE")
-	private Boolean isActive;
 	
 	@Column(name = "FK_COMPANY_SOFTWARE_SAME_DB")
 	private Integer fkCompanySoftwareSameDb;
@@ -72,14 +66,6 @@ public class CompanySoftwareIbpt implements Serializable {
 		this.software = software;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public Boolean getHaveAuthorization() {
 		return haveAuthorization;
 	}
@@ -104,14 +90,6 @@ public class CompanySoftwareIbpt implements Serializable {
 		this.observation = observation;
 	}
 
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
-
 	public Integer getFkCompanySoftwareSameDb() {
 		return fkCompanySoftwareSameDb;
 	}
@@ -122,8 +100,7 @@ public class CompanySoftwareIbpt implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(company, connection, fkCompanySoftwareSameDb, haveAuthorization, id, isActive, observation,
-				software, type);
+		return Objects.hash(company, connection, fkCompanySoftwareSameDb, haveAuthorization, id, observation, software);
 	}
 
 	@Override
@@ -138,8 +115,7 @@ public class CompanySoftwareIbpt implements Serializable {
 		return Objects.equals(company, other.company) && Objects.equals(connection, other.connection)
 				&& Objects.equals(fkCompanySoftwareSameDb, other.fkCompanySoftwareSameDb)
 				&& Objects.equals(haveAuthorization, other.haveAuthorization) && Objects.equals(id, other.id)
-				&& Objects.equals(isActive, other.isActive) && Objects.equals(observation, other.observation)
-				&& Objects.equals(software, other.software) && Objects.equals(type, other.type);
+				&& Objects.equals(observation, other.observation) && Objects.equals(software, other.software);
 	}
 
 }

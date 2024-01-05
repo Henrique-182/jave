@@ -67,7 +67,7 @@ public class UserController {
 	) {
 		sortBy = sortBy.equalsIgnoreCase("fullname") ? "fullname" : "username";
 		
-		Pageable pageable = util.pageable(page, size, direction, sortBy);
+		Pageable pageable = util.pageable(page, size, sortBy, direction);
 		
 		return ResponseEntity.ok(service.findAllPageable(pageable));
 	}

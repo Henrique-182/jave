@@ -17,7 +17,7 @@ public class ControllerUtil {
 	@Autowired
 	private UserAuditService service;
 
-	public Pageable pageable(Integer page, Integer size, String direction, String sortBy) {
+	public Pageable pageable(Integer page, Integer size, String sortBy, String direction) {
 		
 		var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
 		

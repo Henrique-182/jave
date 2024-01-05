@@ -17,7 +17,7 @@ public interface IbptRepository extends JpaRepository<Ibpt, Integer> {
 	
 	@Procedure("PROC_NEW_IBPT")
 	void callProcNewIbpt(Integer p_id_version);
-
+	
 	@Modifying
 	@Query("UPDATE Ibpt IBPT "
 		 + "   SET IBPT.isUpdated = :value, "

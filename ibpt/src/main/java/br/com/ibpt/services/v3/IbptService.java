@@ -43,33 +43,26 @@ public class IbptService {
 	
 	public PagedModel<EntityModel<IbptVO>> findCustomPaginable(
 		Pageable pageable,
-		Integer id,
 		String versionName,
 		String companyCnpj,
 		String companyName,
-		Boolean isUpdated,
-		String sortBy,
-		String direction
+		Boolean isUpdated
 	) {
 		
 		List<Ibpt> entityList = customRepository.findCustom(
-			id, 
+			pageable,
 			versionName,
 			companyCnpj,
 			companyName,
-			isUpdated,
-			sortBy,
-			direction
+			isUpdated
 		);
-		
 		var voList = mapper.toVOList(entityList);
 		
 		voList = voList.stream().map(i -> addLinkSelfRel(i)).toList();
 		
-		final int start = (int) pageable.getOffset();
-		final int end = Math.min((start + pageable.getPageSize()), voList.size());
+		long totalElements = repository.count();
 		
-		return assembler.toModel(new PageImpl<>(voList.subList(start, end), pageable, voList.size()));
+		return assembler.toModel(new PageImpl<>(voList, pageable, totalElements));
 	}
 	
 	public IbptVO findById(Integer id) {
@@ -106,6 +99,6 @@ public class IbptService {
 	}
 	
 	private IbptVO addLinkVOList(IbptVO vo) {
-		return vo.add(linkTo(methodOn(IbptController.class).findCustomPageable(0, 10, "asc", "id", null, null, null, null, null)).withRel("ibptVOList").expand());
+		return vo.add(linkTo(methodOn(IbptController.class).findCustomPageable(0, 10, "asc", "id", null, null, null, null)).withRel("ibptVOList").expand());
 	}
 }

@@ -1,4 +1,4 @@
-package br.com.ibpt.model.v2;
+package br.com.ibpt.model.v3;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -26,12 +26,6 @@ public class CompanyIbpt implements Serializable {
 	
 	@Column(name = "BUSINESS_NAME")
 	private String businessName;
-	
-	@Column(name = "OBSERVATION")
-	private String observation;
-	
-	@Column(name = "IS_ACTIVE")
-	private Boolean isActive;
 	
 	public CompanyIbpt() {}
 
@@ -67,25 +61,9 @@ public class CompanyIbpt implements Serializable {
 		this.businessName = businessName;
 	}
 
-	public String getObservation() {
-		return observation;
-	}
-
-	public void setObservation(String observation) {
-		this.observation = observation;
-	}
-
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(businessName, cnpj, id, isActive, observation, tradeName);
+		return Objects.hash(businessName, cnpj, id, tradeName);
 	}
 
 	@Override
@@ -98,8 +76,7 @@ public class CompanyIbpt implements Serializable {
 			return false;
 		CompanyIbpt other = (CompanyIbpt) obj;
 		return Objects.equals(businessName, other.businessName) && Objects.equals(cnpj, other.cnpj)
-				&& Objects.equals(id, other.id) && Objects.equals(isActive, other.isActive)
-				&& Objects.equals(observation, other.observation) && Objects.equals(tradeName, other.tradeName);
+				&& Objects.equals(id, other.id) && Objects.equals(tradeName, other.tradeName);
 	}
 
 }

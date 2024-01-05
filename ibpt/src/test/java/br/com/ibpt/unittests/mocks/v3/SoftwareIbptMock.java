@@ -1,24 +1,24 @@
-package br.com.ibpt.unittests.mocks.v2;
+package br.com.ibpt.unittests.mocks.v3;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.ibpt.model.v2.SoftwareIbpt;
+import br.com.ibpt.model.v3.SoftwareIbpt;
 
 public class SoftwareIbptMock {
 
-	public SoftwareIbpt mockEntity() {
-		return mockEntity(0);
+	public static SoftwareIbpt entity() {
+		return entity(0);
 	}
 	
-	public List<SoftwareIbpt> entityList() {
+	public static List<SoftwareIbpt> list() {
 		List<SoftwareIbpt> list = new ArrayList<>();
-		for (int i = 0; i < 14; i++) list.add(mockEntity(i));
+		for (int i = 0; i < 14; i++) list.add(entity(i));
 		
 		return list;
 	}
 	
-	public SoftwareIbpt mockEntity(Integer number) {
+	public static SoftwareIbpt entity(Integer number) {
 		SoftwareIbpt entity = new SoftwareIbpt();
 		entity.setId(number);
 		entity.setName("Name" + number);

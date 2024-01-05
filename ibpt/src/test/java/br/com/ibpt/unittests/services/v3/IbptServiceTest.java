@@ -25,12 +25,12 @@ import br.com.ibpt.data.vo.v3.IbptVO;
 import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 import br.com.ibpt.mappers.v3.IbptMapper;
-import br.com.ibpt.model.v1.Version;
-import br.com.ibpt.model.v2.CompanyIbpt;
-import br.com.ibpt.model.v2.CompanySoftwareIbpt;
-import br.com.ibpt.model.v2.SoftwareIbpt;
+import br.com.ibpt.model.v3.CompanyIbpt;
+import br.com.ibpt.model.v3.CompanySoftwareIbpt;
 import br.com.ibpt.model.v3.Ibpt;
+import br.com.ibpt.model.v3.SoftwareIbpt;
 import br.com.ibpt.model.v3.UserAudit;
+import br.com.ibpt.model.v3.VersionIbpt;
 import br.com.ibpt.repositories.v3.IbptRepository;
 import br.com.ibpt.services.v3.IbptService;
 import br.com.ibpt.unittests.mocks.v3.IbptMock;
@@ -82,20 +82,17 @@ public class IbptServiceTest {
 		assertEquals("Username0", mockVO.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(mockVO.getCreationDatetime()));
 		
-		Version versionIbpt = mockVO.getVersion();
+		VersionIbpt versionIbpt = mockVO.getVersion();
 		
 		assertEquals(2, versionIbpt.getId());
 		assertEquals("Name2", versionIbpt.getName());
-		assertEquals(new Date(2), versionIbpt.getEffectivePeriodUntil());
 		
 		CompanySoftwareIbpt companySoftwareIbpt = mockVO.getCompanySoftware();
 		
 		assertEquals(2, companySoftwareIbpt.getId());
-		assertEquals("Fiscal", companySoftwareIbpt.getType());
 		assertEquals(true, companySoftwareIbpt.getHaveAuthorization());
 		assertEquals("Connection2", companySoftwareIbpt.getConnection());
 		assertEquals("Observation2", companySoftwareIbpt.getObservation());
-		assertEquals(true, companySoftwareIbpt.getIsActive());
 		assertEquals(null, companySoftwareIbpt.getFkCompanySoftwareSameDb());
 		
 		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
@@ -108,8 +105,6 @@ public class IbptServiceTest {
 		assertEquals(2, companyIbpt.getId());
 		assertEquals("Trade Name2", companyIbpt.getTradeName());
 		assertEquals("Business Name2", companyIbpt.getBusinessName());
-		assertEquals("Observation2", companyIbpt.getObservation());
-		assertEquals(true, companyIbpt.getIsActive());
 	}
 	
 	@Test

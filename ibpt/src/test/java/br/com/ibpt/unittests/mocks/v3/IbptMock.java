@@ -6,12 +6,9 @@ import java.util.List;
 
 import br.com.ibpt.data.vo.v3.IbptVO;
 import br.com.ibpt.model.v3.Ibpt;
-import br.com.ibpt.unittests.mocks.v1.VersionMock;
-import br.com.ibpt.unittests.mocks.v2.CompanySoftwareIbptMock;
 
 public class IbptMock {
 	
-	VersionMock versionMock = new VersionMock();
 	CompanySoftwareIbptMock companySoftwareIbptMock = new CompanySoftwareIbptMock();
 	
 	public Ibpt mockEntity() {
@@ -33,7 +30,7 @@ public class IbptMock {
 	public Ibpt mockEntity(Integer number) {
 		Ibpt entity = new Ibpt();
 		entity.setId(number);
-		entity.setVersion(versionMock.mockEntity(number));
+		entity.setVersion(VersionIbptMock.entity(number));
 		entity.setCompanySoftware(companySoftwareIbptMock.mockEntity(number));
 		entity.setIsUpdated(
 			number % 2 == 0
@@ -51,7 +48,7 @@ public class IbptMock {
 	public IbptVO mockVO(Integer number) {
 		IbptVO vo = new IbptVO();
 		vo.setKey(number);
-		vo.setVersion(versionMock.mockEntity(number));
+		vo.setVersion(VersionIbptMock.entity(number));
 		vo.setCompanySoftware(companySoftwareIbptMock.mockEntity(number));
 		vo.setIsUpdated(
 			number % 2 == 0

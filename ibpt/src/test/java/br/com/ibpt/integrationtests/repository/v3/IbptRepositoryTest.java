@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -24,12 +23,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
-import br.com.ibpt.model.v1.Version;
-import br.com.ibpt.model.v2.CompanyIbpt;
-import br.com.ibpt.model.v2.CompanySoftwareIbpt;
-import br.com.ibpt.model.v2.SoftwareIbpt;
+import br.com.ibpt.model.v3.CompanyIbpt;
+import br.com.ibpt.model.v3.CompanySoftwareIbpt;
 import br.com.ibpt.model.v3.Ibpt;
+import br.com.ibpt.model.v3.SoftwareIbpt;
 import br.com.ibpt.model.v3.UserAudit;
+import br.com.ibpt.model.v3.VersionIbpt;
 import br.com.ibpt.repositories.v3.IbptRepository;
 
 @ExtendWith(SpringExtension.class)
@@ -70,20 +69,17 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		assertEquals("henrique", ibpt.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibpt.getCreationDatetime()));
 
-		Version versionIbpt = ibpt.getVersion();
+		VersionIbpt versionIbpt = ibpt.getVersion();
 		
 		assertEquals(5, versionIbpt.getId());
 		assertEquals("23.2.F", versionIbpt.getName());
-		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-31"), versionIbpt.getEffectivePeriodUntil());
 		
 		CompanySoftwareIbpt companySoftwareIbpt = ibpt.getCompanySoftware();
 		
 		assertEquals(1, companySoftwareIbpt.getId());
-		assertEquals("FISCAL", companySoftwareIbpt.getType());
 		assertEquals(true, companySoftwareIbpt.getHaveAuthorization());
 		assertEquals("818998995", companySoftwareIbpt.getConnection());
 		assertEquals("", companySoftwareIbpt.getObservation());
-		assertEquals(true, companySoftwareIbpt.getIsActive());
 		assertEquals(null, companySoftwareIbpt.getFkCompanySoftwareSameDb());
 		
 		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
@@ -96,8 +92,6 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		assertEquals(1, companyIbpt.getId());
 		assertEquals("AGROSOLO", companyIbpt.getTradeName());
 		assertEquals("AGROSOLO SOLUÇÕES AGRÍCOLAS LTDA", companyIbpt.getBusinessName());
-		assertEquals("", companyIbpt.getObservation());
-		assertEquals(true, companyIbpt.getIsActive());
 	}
 	
 	@Test
@@ -128,20 +122,17 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		assertEquals("henrique", ibpt.getUserCreation().getUsername());
 		assertNotEquals(ibpt.getLastUpdateDatetime(), ibpt.getCreationDatetime());
 		
-		Version versionIbpt = ibpt.getVersion();
+		VersionIbpt versionIbpt = ibpt.getVersion();
 		
 		assertEquals(5, versionIbpt.getId());
 		assertEquals("23.2.F", versionIbpt.getName());
-		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-31"), versionIbpt.getEffectivePeriodUntil());
 		
 		CompanySoftwareIbpt companySoftwareIbpt = ibpt.getCompanySoftware();
 		
 		assertEquals(1, companySoftwareIbpt.getId());
-		assertEquals("FISCAL", companySoftwareIbpt.getType());
 		assertEquals(true, companySoftwareIbpt.getHaveAuthorization());
 		assertEquals("818998995", companySoftwareIbpt.getConnection());
 		assertEquals("", companySoftwareIbpt.getObservation());
-		assertEquals(true, companySoftwareIbpt.getIsActive());
 		assertEquals(null, companySoftwareIbpt.getFkCompanySoftwareSameDb());
 		
 		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
@@ -154,8 +145,6 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		assertEquals(1, companyIbpt.getId());
 		assertEquals("AGROSOLO", companyIbpt.getTradeName());
 		assertEquals("AGROSOLO SOLUÇÕES AGRÍCOLAS LTDA", companyIbpt.getBusinessName());
-		assertEquals("", companyIbpt.getObservation());
-		assertEquals(true, companyIbpt.getIsActive());
 		
 	}
 

@@ -6,16 +6,16 @@ import java.util.Objects;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import br.com.ibpt.model.v1.Version;
-import br.com.ibpt.model.v2.CompanySoftwareIbpt;
+import br.com.ibpt.model.v3.CompanySoftwareIbpt;
 import br.com.ibpt.model.v3.UserAudit;
+import br.com.ibpt.model.v3.VersionIbpt;
 
 public class IbptVO extends RepresentationModel<IbptVO> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Integer key;
-	private Version version;
+	private VersionIbpt version;
 	private CompanySoftwareIbpt companySoftware;
 	private Boolean isUpdated;
 	private UserAudit userLastUpdate;
@@ -33,11 +33,11 @@ public class IbptVO extends RepresentationModel<IbptVO> implements Serializable 
 		this.key = key;
 	}
 
-	public Version getVersion() {
+	public VersionIbpt getVersion() {
 		return version;
 	}
 
-	public void setVersion(Version version) {
+	public void setVersion(VersionIbpt version) {
 		this.version = version;
 	}
 

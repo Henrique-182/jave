@@ -64,7 +64,7 @@ public class SoftwareController {
 		@RequestParam(value = "direction", defaultValue = "asc") String direction
 	) {
 		
-		Pageable pageable = util.pageable(page, size, direction, "name");
+		Pageable pageable = util.pageable(page, size, "name", direction);
 		
 		return ResponseEntity.ok(service.findAllPageable(pageable));
 	}

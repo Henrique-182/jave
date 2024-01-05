@@ -36,11 +36,11 @@ import br.com.ibpt.integrationtests.vo.v3.AccountCredentialsVO;
 import br.com.ibpt.integrationtests.vo.v3.IbptVO;
 import br.com.ibpt.integrationtests.vo.v3.TokenVO;
 import br.com.ibpt.integrationtests.vo.wrappers.v3.WrapperIbptVO;
-import br.com.ibpt.model.v1.Version;
-import br.com.ibpt.model.v2.CompanyIbpt;
 import br.com.ibpt.model.v2.CompanySoftware;
-import br.com.ibpt.model.v2.CompanySoftwareIbpt;
-import br.com.ibpt.model.v2.SoftwareIbpt;
+import br.com.ibpt.model.v3.CompanyIbpt;
+import br.com.ibpt.model.v3.CompanySoftwareIbpt;
+import br.com.ibpt.model.v3.SoftwareIbpt;
+import br.com.ibpt.model.v3.VersionIbpt;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -295,20 +295,17 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertEquals("henrique", ibptOne.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibptOne.getCreationDatetime()));
 		
-		Version versionIbpt = ibptOne.getVersion();
+		VersionIbpt versionIbpt = ibptOne.getVersion();
 		
 		assertEquals(version.getKey(), versionIbpt.getId());
 		assertEquals(version.getName(), versionIbpt.getName());
-		assertEquals(version.getEffectivePeriodUntil(), versionIbpt.getEffectivePeriodUntil());
 		
 		CompanySoftwareIbpt companySoftwareIbpt = ibptOne.getCompanySoftware();
 		
 		assertEquals(firstCompany.getSoftwares().get(0).getId(), companySoftwareIbpt.getId());
-		assertEquals(firstCompany.getSoftwares().get(0).getType(), companySoftwareIbpt.getType());
 		assertEquals(firstCompany.getSoftwares().get(0).getHaveAuthorization(), companySoftwareIbpt.getHaveAuthorization());
 		assertEquals(firstCompany.getSoftwares().get(0).getConnection(), companySoftwareIbpt.getConnection());
 		assertEquals(firstCompany.getSoftwares().get(0).getObservation(), companySoftwareIbpt.getObservation());
-		assertEquals(firstCompany.getSoftwares().get(0).getIsActive(), companySoftwareIbpt.getIsActive());
 		assertEquals(firstCompany.getSoftwares().get(0).getFkCompanySoftwareSameDb(), companySoftwareIbpt.getFkCompanySoftwareSameDb());
 		
 		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
@@ -321,8 +318,6 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertEquals(firstCompany.getKey(), companyIbpt.getId());
 		assertEquals(firstCompany.getTradeName(), companyIbpt.getTradeName());
 		assertEquals(firstCompany.getBusinessName(), companyIbpt.getBusinessName());
-		assertEquals(firstCompany.getObservation(), companyIbpt.getObservation());
-		assertEquals(firstCompany.getIsActive(), companyIbpt.getIsActive());
 	}
 	
 	@Test
@@ -365,20 +360,17 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertEquals("henrique", ibptOne.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibptOne.getCreationDatetime()));
 		
-		Version versionIbpt = ibptOne.getVersion();
+		VersionIbpt versionIbpt = ibptOne.getVersion();
 		
 		assertEquals(version.getKey(), versionIbpt.getId());
 		assertEquals(version.getName(), versionIbpt.getName());
-		assertEquals(version.getEffectivePeriodUntil(), versionIbpt.getEffectivePeriodUntil());
 		
 		CompanySoftwareIbpt companySoftwareIbpt = ibptOne.getCompanySoftware();
 		
 		assertEquals(secondCompany.getSoftwares().get(0).getId(), companySoftwareIbpt.getId());
-		assertEquals(secondCompany.getSoftwares().get(0).getType(), companySoftwareIbpt.getType());
 		assertEquals(secondCompany.getSoftwares().get(0).getHaveAuthorization(), companySoftwareIbpt.getHaveAuthorization());
 		assertEquals(secondCompany.getSoftwares().get(0).getConnection(), companySoftwareIbpt.getConnection());
 		assertEquals(secondCompany.getSoftwares().get(0).getObservation(), companySoftwareIbpt.getObservation());
-		assertEquals(secondCompany.getSoftwares().get(0).getIsActive(), companySoftwareIbpt.getIsActive());
 		assertEquals(secondCompany.getSoftwares().get(0).getFkCompanySoftwareSameDb(), companySoftwareIbpt.getFkCompanySoftwareSameDb());
 		
 		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
@@ -391,8 +383,6 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertEquals(secondCompany.getKey(), companyIbpt.getId());
 		assertEquals(secondCompany.getTradeName(), companyIbpt.getTradeName());
 		assertEquals(secondCompany.getBusinessName(), companyIbpt.getBusinessName());
-		assertEquals(secondCompany.getObservation(), companyIbpt.getObservation());
-		assertEquals(secondCompany.getIsActive(), companyIbpt.getIsActive());
 	}
 	
 	@Test
@@ -453,20 +443,17 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertEquals("henrique", ibptOne.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibptOne.getCreationDatetime()));
 		
-		Version versionIbpt = ibptOne.getVersion();
+		VersionIbpt versionIbpt = ibptOne.getVersion();
 		
 		assertEquals(version.getKey(), versionIbpt.getId());
 		assertEquals(version.getName(), versionIbpt.getName());
-		assertEquals(version.getEffectivePeriodUntil(), versionIbpt.getEffectivePeriodUntil());
 		
 		CompanySoftwareIbpt companySoftwareIbpt = ibptOne.getCompanySoftware();
 		
 		assertEquals(firstCompany.getSoftwares().get(0).getId(), companySoftwareIbpt.getId());
-		assertEquals(firstCompany.getSoftwares().get(0).getType(), companySoftwareIbpt.getType());
 		assertEquals(firstCompany.getSoftwares().get(0).getHaveAuthorization(), companySoftwareIbpt.getHaveAuthorization());
 		assertEquals(firstCompany.getSoftwares().get(0).getConnection(), companySoftwareIbpt.getConnection());
 		assertEquals(firstCompany.getSoftwares().get(0).getObservation(), companySoftwareIbpt.getObservation());
-		assertEquals(firstCompany.getSoftwares().get(0).getIsActive(), companySoftwareIbpt.getIsActive());
 		assertEquals(firstCompany.getSoftwares().get(0).getFkCompanySoftwareSameDb(), companySoftwareIbpt.getFkCompanySoftwareSameDb());
 		
 		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
@@ -479,8 +466,6 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertEquals(firstCompany.getKey(), companyIbpt.getId());
 		assertEquals(firstCompany.getTradeName(), companyIbpt.getTradeName());
 		assertEquals(firstCompany.getBusinessName(), companyIbpt.getBusinessName());
-		assertEquals(firstCompany.getObservation(), companyIbpt.getObservation());
-		assertEquals(firstCompany.getIsActive(), companyIbpt.getIsActive());
 	}
 	
 	@Test
@@ -525,20 +510,17 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertEquals("henrique", ibptOne.getUserCreation().getUsername());
 		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibptOne.getCreationDatetime()));
 		
-		Version versionIbpt = ibptOne.getVersion();
+		VersionIbpt versionIbpt = ibptOne.getVersion();
 		
 		assertEquals(version.getKey(), versionIbpt.getId());
 		assertEquals(version.getName(), versionIbpt.getName());
-		assertEquals(version.getEffectivePeriodUntil(), versionIbpt.getEffectivePeriodUntil());
 		
 		CompanySoftwareIbpt companySoftwareIbpt = ibptOne.getCompanySoftware();
 		
 		assertEquals(secondCompany.getSoftwares().get(0).getId(), companySoftwareIbpt.getId());
-		assertEquals(secondCompany.getSoftwares().get(0).getType(), companySoftwareIbpt.getType());
 		assertEquals(secondCompany.getSoftwares().get(0).getHaveAuthorization(), companySoftwareIbpt.getHaveAuthorization());
 		assertEquals(secondCompany.getSoftwares().get(0).getConnection(), companySoftwareIbpt.getConnection());
 		assertEquals(secondCompany.getSoftwares().get(0).getObservation(), companySoftwareIbpt.getObservation());
-		assertEquals(secondCompany.getSoftwares().get(0).getIsActive(), companySoftwareIbpt.getIsActive());
 		assertEquals(secondCompany.getSoftwares().get(0).getFkCompanySoftwareSameDb(), companySoftwareIbpt.getFkCompanySoftwareSameDb());
 		
 		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
@@ -551,8 +533,6 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertEquals(secondCompany.getKey(), companyIbpt.getId());
 		assertEquals(secondCompany.getTradeName(), companyIbpt.getTradeName());
 		assertEquals(secondCompany.getBusinessName(), companyIbpt.getBusinessName());
-		assertEquals(secondCompany.getObservation(), companyIbpt.getObservation());
-		assertEquals(secondCompany.getIsActive(), companyIbpt.getIsActive());
 	}
 	
 	@Test
@@ -650,11 +630,11 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/ibpt/51\"}}"));
 		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/ibpt/52\"}}"));
 		
-		assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=0&size=10\"}"));
-		assertTrue(content.contains("\"prev\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=4&size=10\"}"));
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=5&size=10\"}"));
-		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=6&size=10\"}"));
-		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=94&size=10\"}"));
+		assertTrue(content.contains("\"first\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=0&size=10&sort=id,asc\"}"));
+		assertTrue(content.contains("\"prev\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=4&size=10&sort=id,asc\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=5&size=10&sort=id,asc\"}"));
+		assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=6&size=10&sort=id,asc\"}"));
+		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=94&size=10&sort=id,asc\"}"));
 		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":948,\"totalPages\":95,\"number\":5"));
 	}
 	

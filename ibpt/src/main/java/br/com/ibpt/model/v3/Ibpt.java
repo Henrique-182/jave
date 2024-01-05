@@ -4,12 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-import br.com.ibpt.model.v1.Version;
-import br.com.ibpt.model.v2.CompanySoftwareIbpt;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -22,13 +18,12 @@ public class Ibpt implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Integer id;
 	
 	@ManyToOne
 	@JoinColumn(name = "FK_VERSION")
-	private Version version;
+	private VersionIbpt version;
 	
 	@ManyToOne
 	@JoinColumn(name = "FK_COMPANY_SOFTWARE")
@@ -38,7 +33,7 @@ public class Ibpt implements Serializable {
 	private Boolean isUpdated;
 	
 	@ManyToOne
-	@JoinColumn(name = "FK_USER_LAST_UPDATE")
+	@JoinColumn(name = "FK_USER_LAST_UPDATE", nullable = true)
 	private UserAudit userLastUpdate;
 	
 	@Column(name = "LAST_UPDATE_DATETIME", nullable = true)
@@ -61,11 +56,11 @@ public class Ibpt implements Serializable {
 		this.id = id;
 	}
 
-	public Version getVersion() {
+	public VersionIbpt getVersion() {
 		return version;
 	}
 
-	public void setVersion(Version version) {
+	public void setVersion(VersionIbpt version) {
 		this.version = version;
 	}
 

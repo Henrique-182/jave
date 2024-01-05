@@ -2,6 +2,8 @@ package br.com.ibpt.repositories.v3;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import br.com.ibpt.model.v3.Ibpt;
@@ -9,7 +11,7 @@ import jakarta.persistence.EntityManager;
 
 @Repository
 public class IbptCustomRepository {
-
+	
 	private EntityManager entityManager;
 
 	public IbptCustomRepository(EntityManager entityManager) {
@@ -17,21 +19,14 @@ public class IbptCustomRepository {
 	}
 	
 	public List<Ibpt> findCustom(
-		Integer id,
+		Pageable pageable,
 		String versionName,
 		String companyCnpj,
 		String companyName,
-		Boolean isUpdated,
-		String sortBy,
-		String direction
+		Boolean isUpdated
 	) {
 		String query = "SELECT IBPT FROM Ibpt IBPT ";
 		String condition = "WHERE ";
-		
-		if (id != null) {
-			query += condition + " IBPT.id = :id ";
-			condition = "AND ";
-		}
 		
 		if (versionName != null) {
 			query += condition + " IBPT.version.name LIKE :versionName ";
@@ -53,19 +48,21 @@ public class IbptCustomRepository {
 			condition = "AND ";
 		}
 		
-		if (sortBy != null) {
-			query += "ORDER BY IBPT." + sortBy + " ";
+		if (pageable.getSort() != null) {
 			
-			if (direction != null) {
-				query += direction;
+			Order order = pageable.getSort().get().toList().get(0);
+			
+			query += " ORDER BY IBPT." + order.getProperty() + " ";
+			
+			if (order.getDirection() != null) {
+				query += order.getDirection();
 			}
 		}
 		
-		var q = entityManager.createQuery(query, Ibpt.class);
+		query += " LIMIT " + pageable.getPageSize() + " ";
+		query += " OFFSET " + pageable.getOffset();
 		
-		if (id != null) {
-			q.setParameter("id", id);
-		}
+		var q = entityManager.createQuery(query, Ibpt.class);
 		
 		if (versionName != null) {
 			q.setParameter("versionName", "%" + versionName + "%");

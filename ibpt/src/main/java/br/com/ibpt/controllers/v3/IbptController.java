@@ -65,7 +65,6 @@ public class IbptController {
 		@RequestParam(value = "size", defaultValue = "10", required = false) Integer size,
 		@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction,	
 		@RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-		@RequestParam(value = "id", required = false) Integer id,
 		@RequestParam(value = "versionName", required = false) String versionName,
 		@RequestParam(value = "companyCnpj", required = false) String companyCnpj,
 		@RequestParam(value = "companyName", required = false) String companyName,
@@ -77,22 +76,33 @@ public class IbptController {
 				: sortBy.equalsIgnoreCase("versionName") ? "version.name"
 				: "id";
 		
-		Pageable pageable = util.pageable(page, size);
+		Pageable pageable = util.pageable(page, size, sortBy, direction);
 	
 		return ResponseEntity.ok(
 					service.findCustomPaginable(
 						pageable, 
-						id, 
 						versionName,
 						companyCnpj,
 						companyName,
-						isUpdated,
-						sortBy,
-						direction
+						isUpdated
 					)
 				);
 	}
 	
+	@Operation(
+		summary = "Finds a Ibpt By Id",
+		description = "Finds a Ibpt By Id",
+		tags = {"Ibpt"},
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = IbptVO.class))),
+			@ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+			@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
+			@ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+			@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content),
+		}
+	)
 	@GetMapping(path = "/{id}")
 	public IbptVO findById(@PathVariable("id") Integer id) {
 		return service.findById(id);

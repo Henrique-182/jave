@@ -1,4 +1,4 @@
-package br.com.ibpt.model.v2;
+package br.com.ibpt.model.v3;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -8,21 +8,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-@Entity(name = "SoftwareForIbpt")
-@Table(name = "SOFTWARE")
-public class SoftwareIbpt implements Serializable {
+@Entity
+@Table(name = "VERSION")
+public class VersionIbpt implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
-	@Column(name = "ID")
+	@Column(name = "ID", unique = true, nullable = false)
 	private Integer id;
 	
-	@Column(name = "NAME")
+	@Column(name = "NAME", unique = true, nullable = false)
 	private String name;
-	
-	public SoftwareIbpt() {}
-	
+
+	public VersionIbpt() {}
+
 	public Integer getId() {
 		return id;
 	}
@@ -52,8 +52,8 @@ public class SoftwareIbpt implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SoftwareIbpt other = (SoftwareIbpt) obj;
+		VersionIbpt other = (VersionIbpt) obj;
 		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
 	}
-
+	
 }
