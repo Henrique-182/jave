@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ibpt.data.vo.v2.IbptUpdateVO;
 import br.com.ibpt.data.vo.v3.IbptVO;
+import br.com.ibpt.model.v3.UserAudit;
 import br.com.ibpt.services.v3.IbptService;
-import br.com.ibpt.util.v2.ControllerUtil;
+import br.com.ibpt.util.v3.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,6 +35,9 @@ public class IbptController {
 
 	@Autowired
 	private IbptService service;
+	
+	@Autowired
+	private ControllerUtil util;
 	
 	@Operation(
 		summary = "Finds All Ibpt",
@@ -72,7 +77,7 @@ public class IbptController {
 				: sortBy.equalsIgnoreCase("versionName") ? "version.name"
 				: "id";
 		
-		Pageable pageable = ControllerUtil.pageable(page, size);
+		Pageable pageable = util.pageable(page, size);
 	
 		return ResponseEntity.ok(
 					service.findCustomPaginable(
@@ -98,7 +103,7 @@ public class IbptController {
 		description = "Creates a Ibpt By Version Id",
 		tags = {"Ibpt"},
 		responses = {
-			@ApiResponse(description = "Created", responseCode = "200", content = @Content),
+			@ApiResponse(description = "Created", responseCode = "204", content = @Content),
 			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
 			@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
@@ -126,15 +131,30 @@ public class IbptController {
 	)	
 	@PatchMapping
 	public ResponseEntity<?> updateById(@RequestBody IbptUpdateVO data) {
-		service.updateById(data);
+		UserAudit userAudit = util.findUserByContext(SecurityContextHolder.getContext());
+		
+		service.updateById(data, userAudit);
 		
 		return ResponseEntity.noContent().build();
 	}
 	
+	@Operation(
+		summary = "Deletes a Ibpt",
+		description = "Deletes a Ibpt By Id",
+		tags = {"Ibpt"},
+		responses = {
+			@ApiResponse(description = "Deleted", responseCode = "204", content = @Content),
+			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+			@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
+			@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content),
+		}
+	)
 	@DeleteMapping(path = "/{id}")
 	public ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
 		service.deleteById(id);
 		
 		return ResponseEntity.noContent().build();
 	}
+	
 }

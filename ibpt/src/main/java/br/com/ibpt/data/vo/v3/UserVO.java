@@ -13,8 +13,8 @@ public class UserVO extends RepresentationModel<UserVO> implements Serializable 
 	private static final long serialVersionUID = 1L;
 
 	private Integer key;
-	private String userName;
-	private String fullName;
+	private String username;
+	private String fullname;
 	private Boolean accountNonExpired;
 	private Boolean accountNonLocked;
 	private Boolean credentialsNonExpired;
@@ -31,20 +31,20 @@ public class UserVO extends RepresentationModel<UserVO> implements Serializable 
 		this.key = key;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public String getFullName() {
-		return fullName;
+	public String getFullname() {
+		return fullname;
 	}
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
 
 	public Boolean getAccountNonExpired() {
@@ -89,8 +89,8 @@ public class UserVO extends RepresentationModel<UserVO> implements Serializable 
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(accountNonExpired, accountNonLocked, credentialsNonExpired, enabled, fullName, key,
-				permissions, userName);
+		return Objects.hash(accountNonExpired, accountNonLocked, credentialsNonExpired, enabled, fullname, key,
+				permissions, username);
 	}
 
 	@Override
@@ -105,9 +105,9 @@ public class UserVO extends RepresentationModel<UserVO> implements Serializable 
 		return Objects.equals(accountNonExpired, other.accountNonExpired)
 				&& Objects.equals(accountNonLocked, other.accountNonLocked)
 				&& Objects.equals(credentialsNonExpired, other.credentialsNonExpired)
-				&& Objects.equals(enabled, other.enabled) && Objects.equals(fullName, other.fullName)
+				&& Objects.equals(enabled, other.enabled) && Objects.equals(fullname, other.fullname)
 				&& Objects.equals(key, other.key) && Objects.equals(permissions, other.permissions)
-				&& Objects.equals(userName, other.userName);
+				&& Objects.equals(username, other.username);
 	}
 
 }

@@ -3,6 +3,7 @@ package br.com.ibpt.services.v3;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,11 @@ import br.com.ibpt.data.vo.v2.IbptUpdateVO;
 import br.com.ibpt.data.vo.v3.IbptVO;
 import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
-import br.com.ibpt.mappers.v2.IbptMapper;
-import br.com.ibpt.model.v2.Ibpt;
-import br.com.ibpt.repositories.v2.IbptCustomRepository;
-import br.com.ibpt.repositories.v2.IbptRepository;
+import br.com.ibpt.mappers.v3.IbptMapper;
+import br.com.ibpt.model.v3.Ibpt;
+import br.com.ibpt.model.v3.UserAudit;
+import br.com.ibpt.repositories.v3.IbptCustomRepository;
+import br.com.ibpt.repositories.v3.IbptRepository;
 
 @Service
 public class IbptService {
@@ -81,7 +83,7 @@ public class IbptService {
 	}
 
 	@Transactional
-	public void updateById(IbptUpdateVO data) {
+	public void updateById(IbptUpdateVO data, UserAudit userAudit) {
 		if (data == null) throw new RequiredObjectIsNullException("It is not possible to update a null object");
 		
 		Ibpt persistedEntity = repository.findById(data.getKey()).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + data.getKey() + ") !"));
@@ -89,7 +91,7 @@ public class IbptService {
 		Integer idVersion = persistedEntity.getVersion().getId();
 		Integer idCompanySoftware = persistedEntity.getCompanySoftware().getId();
 		
-		repository.updateByVersionAndCompanySoftware(idVersion, idCompanySoftware, data.getValue());
+		repository.updateByVersionAndCompanySoftware(idVersion, idCompanySoftware, data.getValue(), userAudit, new Date());
 	}
 	
 	public void deleteById(Integer id) {

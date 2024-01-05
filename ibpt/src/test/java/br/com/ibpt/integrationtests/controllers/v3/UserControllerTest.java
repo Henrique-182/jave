@@ -25,8 +25,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import br.com.ibpt.config.TestConfigs;
 import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
-import br.com.ibpt.integrationtests.vo.v1.AccountCredentialsVO;
-import br.com.ibpt.integrationtests.vo.v1.TokenVO;
+import br.com.ibpt.integrationtests.vo.v3.AccountCredentialsVO;
+import br.com.ibpt.integrationtests.vo.v3.TokenVO;
 import br.com.ibpt.integrationtests.vo.v3.UserVO;
 import br.com.ibpt.integrationtests.vo.wrappers.v2.WrapperUserVO;
 import br.com.ibpt.model.v1.Permission;
@@ -84,14 +84,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(createdUser.getKey() > 0);
 		
-		assertEquals("marina", createdUser.getUserName());
-		assertEquals("Marina Lobo", createdUser.getFullName());
+		assertEquals("marina", createdUser.getUsername());
+		assertEquals("Marina Lobo", createdUser.getFullname());
 		assertEquals(true, createdUser.getAccountNonExpired());
 		assertEquals(true, createdUser.getAccountNonLocked());
 		assertEquals(true, createdUser.getCredentialsNonExpired());
 		assertEquals(true, createdUser.getEnabled());
 		assertEquals(3, createdUser.getPermissions().get(0).getId());
-		assertTrue(content.contains("\"_links\":{\"userVOList\":{\"href\":\"http://localhost:8888/v3/user?page=0&size=10&direction=asc&sortBy=userName\"}}"));
+		assertTrue(content.contains("\"_links\":{\"userVOList\":{\"href\":\"http://localhost:8888/v3/user?page=0&size=10&direction=asc&sortBy=username\"}}"));
 	}
 	
 	@Test
@@ -144,22 +144,22 @@ public class UserControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(persistedUser.getKey() > 0);
 		
-		assertEquals("marina", persistedUser.getUserName());
-		assertEquals("Marina Lobo", persistedUser.getFullName());
+		assertEquals("marina", persistedUser.getUsername());
+		assertEquals("Marina Lobo", persistedUser.getFullname());
 		assertEquals(true, persistedUser.getAccountNonExpired());
 		assertEquals(true, persistedUser.getAccountNonLocked());
 		assertEquals(true, persistedUser.getCredentialsNonExpired());
 		assertEquals(true, persistedUser.getEnabled());
 		assertEquals("COMMON_USER", persistedUser.getPermissions().get(0).getDescription());
-		assertTrue(content.contains("\"_links\":{\"userVOList\":{\"href\":\"http://localhost:8888/v3/user?page=0&size=10&direction=asc&sortBy=userName\"}}"));
+		assertTrue(content.contains("\"_links\":{\"userVOList\":{\"href\":\"http://localhost:8888/v3/user?page=0&size=10&direction=asc&sortBy=username\"}}"));
 	}
 	
 	@Test
 	@Order(4)
 	void testUpdateById() throws JsonParseException, JsonMappingException, IOException {
 		UserVO userVO = new UserVO();
-		userVO.setUserName("marina");
-		userVO.setFullName("Marina Pires");
+		userVO.setUsername("marina");
+		userVO.setFullname("Marina Pires");
 		userVO.setAccountNonExpired(true);
 		userVO.setAccountNonLocked(true);;
 		userVO.setCredentialsNonExpired(true);
@@ -188,14 +188,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(updatedUser.getKey() > 0);
 		
-		assertEquals("marina", updatedUser.getUserName());
-		assertEquals("Marina Pires", updatedUser.getFullName());
+		assertEquals("marina", updatedUser.getUsername());
+		assertEquals("Marina Pires", updatedUser.getFullname());
 		assertEquals(true, updatedUser.getAccountNonExpired());
 		assertEquals(true, updatedUser.getAccountNonLocked());
 		assertEquals(true, updatedUser.getCredentialsNonExpired());
 		assertEquals(true, updatedUser.getEnabled());
 		assertEquals("ADMIN", updatedUser.getPermissions().get(0).getDescription());
-		assertTrue(content.contains("\"_links\":{\"userVOList\":{\"href\":\"http://localhost:8888/v3/user?page=0&size=10&direction=asc&sortBy=userName\"}}"));
+		assertTrue(content.contains("\"_links\":{\"userVOList\":{\"href\":\"http://localhost:8888/v3/user?page=0&size=10&direction=asc&sortBy=username\"}}"));
 	}
 	
 	@Test
@@ -227,8 +227,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 		
 		UserVO userOne = resultList.get(0);
 		
-		assertEquals("henrique", userOne.getUserName());
-		assertEquals("Henrique Augusto", userOne.getFullName());
+		assertEquals("henrique", userOne.getUsername());
+		assertEquals("Henrique Augusto", userOne.getFullname());
 		assertEquals(true, userOne.getAccountNonExpired());
 		assertEquals(true, userOne.getAccountNonLocked());
 		assertEquals(true, userOne.getCredentialsNonExpired());
@@ -281,7 +281,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/user/1\"}}"));
 		assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/v3/user/2\"}}"));
 		
-		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/user?direction=asc&sortBy=fullname&page=0&size=10&sort=fullName,asc\"}"));
+		assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/v3/user?direction=asc&sortBy=fullname&page=0&size=10&sort=fullname,asc\"}"));
 		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":3,\"totalPages\":1,\"number\":0}"));
 	}
 	

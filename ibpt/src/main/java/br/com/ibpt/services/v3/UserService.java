@@ -24,14 +24,14 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.Secret
 import org.springframework.stereotype.Service;
 
 import br.com.ibpt.controllers.v3.UserController;
-import br.com.ibpt.data.vo.v1.AccountCredentialsVO;
+import br.com.ibpt.data.vo.v3.AccountCredentialsVO;
 import br.com.ibpt.data.vo.v3.UserVO;
 import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 import br.com.ibpt.mappers.v3.UserMapper;
 import br.com.ibpt.model.v1.Permission;
-import br.com.ibpt.model.v1.User;
-import br.com.ibpt.repositories.v1.UserRepository;
+import br.com.ibpt.model.v3.User;
+import br.com.ibpt.repositories.v3.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -51,7 +51,7 @@ public class UserService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		var user = repository.findByUserName(username);
+		var user = repository.findByUsername(username);
 		
 		if(user != null) {
 			return user;
@@ -81,8 +81,8 @@ public class UserService implements UserDetailsService {
 		if (data == null) throw new RequiredObjectIsNullException();
 		
 		User user = new User();
-		user.setUserName(data.getUserName());
-		user.setFullName(data.getFullname());
+		user.setUsername(data.getUsername());
+		user.setFullname(data.getFullname());
 		
 		String password = createHash(data.getPassword());
 		if (password.startsWith("{pbkdf2}")) password = password.substring("{pbkdf2}".length());
@@ -106,8 +106,8 @@ public class UserService implements UserDetailsService {
 		if (vo == null) throw new RequiredObjectIsNullException();
 		
 		User entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
-		entity.setUserName(vo.getUserName());
-		entity.setFullName(vo.getFullName());
+		entity.setUsername(vo.getUsername());
+		entity.setFullname(vo.getFullname());
 		entity.setAccountNonExpired(vo.getAccountNonExpired());
 		entity.setAccountNonLocked(vo.getAccountNonLocked());
 		entity.setCredentialsNonExpired(vo.getCredentialsNonExpired());
@@ -131,7 +131,7 @@ public class UserService implements UserDetailsService {
 	}
 	
 	private UserVO addLinkVOList(UserVO vo) {
-		return vo.add(linkTo(methodOn(UserController.class).findAllPageable(0, 10, "asc", "userName")).withRel("userVOList").expand());
+		return vo.add(linkTo(methodOn(UserController.class).findAllPageable(0, 10, "asc", "username")).withRel("userVOList").expand());
 	}
 	
 	private static String createHash(String password) {

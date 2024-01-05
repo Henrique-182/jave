@@ -20,13 +20,13 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.ibpt.data.vo.v1.AccountCredentialsVO;
+import br.com.ibpt.data.vo.v3.AccountCredentialsVO;
 import br.com.ibpt.data.vo.v3.UserVO;
 import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
 import br.com.ibpt.mappers.v3.UserMapper;
-import br.com.ibpt.model.v1.User;
-import br.com.ibpt.repositories.v1.UserRepository;
+import br.com.ibpt.model.v3.User;
+import br.com.ibpt.repositories.v3.UserRepository;
 import br.com.ibpt.services.v3.UserService;
 import br.com.ibpt.unittests.mocks.v3.UserMock;
 
@@ -56,7 +56,7 @@ public class UserServiceTest {
 	void testCreate() {
 		User mockEntity = input.mockEntity(1);
 		UserVO mockVO = input.mockVO(1);
-		AccountCredentialsVO user = new AccountCredentialsVO("Username1", "Full Name1", "Password1");
+		AccountCredentialsVO user = new AccountCredentialsVO("Username1", "Fullname1", "Password1");
 		
 		when(repository.save(any(User.class))).thenReturn(mockEntity);
 		when(mapper.toVO(any(User.class))).thenReturn(mockVO);
@@ -66,14 +66,16 @@ public class UserServiceTest {
 		assertNotNull(createdUser);
 		
 		assertEquals(1, createdUser.getKey());
-		assertEquals("Username1", createdUser.getUserName());
-		assertEquals("Full Name1", createdUser.getFullName());
+		assertEquals("Username1", createdUser.getUsername());
+		assertEquals("Fullname1", createdUser.getFullname());
 		assertEquals(false, createdUser.getAccountNonExpired());
 		assertEquals(false, createdUser.getAccountNonLocked());
 		assertEquals(false, createdUser.getCredentialsNonExpired());
 		assertEquals(false, createdUser.getEnabled());
+		
 		assertEquals("Description1", createdUser.getPermissions().get(0).getDescription());
-		assertEquals("</v3/user?page=0&size=10&direction=asc&sortBy=userName>;rel=\"userVOList\"", createdUser.getLinks().toString());
+		
+		assertEquals("</v3/user?page=0&size=10&direction=asc&sortBy=username>;rel=\"userVOList\"", createdUser.getLinks().toString());
 	}
 	
 	@Test
@@ -102,14 +104,16 @@ public class UserServiceTest {
 		assertNotNull(persistedUser);
 		
 		assertEquals(1, persistedUser.getKey());
-		assertEquals("Username1", persistedUser.getUserName());
-		assertEquals("Full Name1", persistedUser.getFullName());
+		assertEquals("Username1", persistedUser.getUsername());
+		assertEquals("Fullname1", persistedUser.getFullname());
 		assertEquals(false, persistedUser.getAccountNonExpired());
 		assertEquals(false, persistedUser.getAccountNonLocked());
 		assertEquals(false, persistedUser.getCredentialsNonExpired());
 		assertEquals(false, persistedUser.getEnabled());
+		
 		assertEquals("Description1", persistedUser.getPermissions().get(0).getDescription());
-		assertEquals("</v3/user?page=0&size=10&direction=asc&sortBy=userName>;rel=\"userVOList\"", persistedUser.getLinks().toString());
+		
+		assertEquals("</v3/user?page=0&size=10&direction=asc&sortBy=username>;rel=\"userVOList\"", persistedUser.getLinks().toString());
 	}
 	
 	@Test
@@ -130,8 +134,8 @@ public class UserServiceTest {
 	void testUpdateById() {
 		Integer id = 2;
 		UserVO mockVO = input.mockVO(id);
-		mockVO.setUserName(id + "Username");
-		mockVO.setFullName(id + "Full Name");
+		mockVO.setUsername(id + "Username");
+		mockVO.setFullname(id + "Fullname");
 		User mockEntity = input.mockEntity(id);
 		
 		when(repository.findById(any(Integer.class))).thenReturn(Optional.of(mockEntity));
@@ -143,14 +147,16 @@ public class UserServiceTest {
 		assertNotNull(updatedUser);
 		
 		assertEquals(2, updatedUser.getKey());
-		assertEquals("2Username", updatedUser.getUserName());
-		assertEquals("2Full Name", updatedUser.getFullName());
+		assertEquals("2Username", updatedUser.getUsername());
+		assertEquals("2Fullname", updatedUser.getFullname());
 		assertEquals(true, updatedUser.getAccountNonExpired());
 		assertEquals(true, updatedUser.getAccountNonLocked());
 		assertEquals(true, updatedUser.getCredentialsNonExpired());
 		assertEquals(true, updatedUser.getEnabled());
+		
 		assertEquals("Description2", updatedUser.getPermissions().get(0).getDescription());
-		assertEquals("</v3/user?page=0&size=10&direction=asc&sortBy=userName>;rel=\"userVOList\"", updatedUser.getLinks().toString());
+		
+		assertEquals("</v3/user?page=0&size=10&direction=asc&sortBy=username>;rel=\"userVOList\"", updatedUser.getLinks().toString());
 	}
 	
 	@Test

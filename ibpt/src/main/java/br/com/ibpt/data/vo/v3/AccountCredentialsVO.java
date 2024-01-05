@@ -1,4 +1,4 @@
-package br.com.ibpt.data.vo.v1;
+package br.com.ibpt.data.vo.v3;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -7,29 +7,29 @@ public class AccountCredentialsVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String userName;
+	private String username;
 	private String fullname;
 	private String password;
 	
 	public AccountCredentialsVO() {}
 
-	public AccountCredentialsVO(String userName, String password) {
-		this.userName = userName;
+	public AccountCredentialsVO(String username, String password) {
+		this.username = username;
 		this.password = password;
 	}
 	
-	public AccountCredentialsVO(String userName, String fullname, String password) {
-		this.userName = userName;
+	public AccountCredentialsVO(String username, String fullname, String password) {
+		this.username = username;
 		this.fullname = fullname;
 		this.password = password;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 	public String getFullname() {
@@ -50,7 +50,7 @@ public class AccountCredentialsVO implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(fullname, password, userName);
+		return Objects.hash(fullname, password, username);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class AccountCredentialsVO implements Serializable {
 			return false;
 		AccountCredentialsVO other = (AccountCredentialsVO) obj;
 		return Objects.equals(fullname, other.fullname) && Objects.equals(password, other.password)
-				&& Objects.equals(userName, other.userName);
+				&& Objects.equals(username, other.username);
 	}
 
 }

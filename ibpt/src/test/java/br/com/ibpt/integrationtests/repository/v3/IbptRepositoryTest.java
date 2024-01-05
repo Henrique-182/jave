@@ -1,11 +1,14 @@
-package br.com.ibpt.integrationtests.repository.v2;
+package br.com.ibpt.integrationtests.repository.v3;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -24,9 +27,10 @@ import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.ibpt.model.v1.Version;
 import br.com.ibpt.model.v2.CompanyIbpt;
 import br.com.ibpt.model.v2.CompanySoftwareIbpt;
-import br.com.ibpt.model.v2.Ibpt;
 import br.com.ibpt.model.v2.SoftwareIbpt;
-import br.com.ibpt.repositories.v2.IbptRepository;
+import br.com.ibpt.model.v3.Ibpt;
+import br.com.ibpt.model.v3.UserAudit;
+import br.com.ibpt.repositories.v3.IbptRepository;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -63,6 +67,9 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		assertTrue(ibpt.getId() > 0);
 		assertFalse(ibpt.getIsUpdated());
 		
+		assertEquals("henrique", ibpt.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibpt.getCreationDatetime()));
+
 		Version versionIbpt = ibpt.getVersion();
 		
 		assertEquals(5, versionIbpt.getId());
@@ -105,7 +112,10 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		
 		repository.callProcNewIbpt(ibpt.getVersion().getId());
 		
-		repository.updateByVersionAndCompanySoftware(ibpt.getVersion().getId(), ibpt.getCompanySoftware().getId(), true);
+		UserAudit userAudit = new UserAudit();
+		userAudit.setId(1);
+		
+		repository.updateByVersionAndCompanySoftware(ibpt.getVersion().getId(), ibpt.getCompanySoftware().getId(), true, userAudit, new Date());
 		
 		List<Ibpt> persistedList = repository.findAll();
 		
@@ -113,6 +123,10 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		
 		assertTrue(ibpt.getId() > 0);
 		assertTrue(ibpt.getIsUpdated());
+		
+		assertEquals("henrique", ibpt.getUserLastUpdate().getUsername());
+		assertEquals("henrique", ibpt.getUserCreation().getUsername());
+		assertNotEquals(ibpt.getLastUpdateDatetime(), ibpt.getCreationDatetime());
 		
 		Version versionIbpt = ibpt.getVersion();
 		

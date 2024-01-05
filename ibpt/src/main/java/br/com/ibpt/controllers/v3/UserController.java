@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ibpt.data.vo.v1.AccountCredentialsVO;
+import br.com.ibpt.data.vo.v3.AccountCredentialsVO;
 import br.com.ibpt.data.vo.v3.UserVO;
 import br.com.ibpt.services.v3.UserService;
-import br.com.ibpt.util.v2.ControllerUtil;
+import br.com.ibpt.util.v3.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,6 +33,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService service;
+	
+	@Autowired
+	private ControllerUtil util;
 	
 	@Operation(
 		summary = "Finds all Users",
@@ -60,11 +63,11 @@ public class UserController {
 		@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
 		@RequestParam(value = "size", defaultValue = "10", required = false) Integer size,
 		@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction,
-		@RequestParam(value = "sortBy", defaultValue = "userName", required = false) String sortBy
+		@RequestParam(value = "sortBy", defaultValue = "username", required = false) String sortBy
 	) {
-		sortBy = sortBy.equalsIgnoreCase("fullName") ? "fullName" : "userName";
+		sortBy = sortBy.equalsIgnoreCase("fullname") ? "fullname" : "username";
 		
-		Pageable pageable = ControllerUtil.pageable(page, size, direction, sortBy);
+		Pageable pageable = util.pageable(page, size, direction, sortBy);
 		
 		return ResponseEntity.ok(service.findAllPageable(pageable));
 	}

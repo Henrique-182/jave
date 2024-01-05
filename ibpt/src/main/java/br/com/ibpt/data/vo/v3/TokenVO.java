@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.vo.v1;
+package br.com.ibpt.data.vo.v3;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -8,7 +8,7 @@ public class TokenVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String userName;
+	private String username;
 	private Boolean authenticated;
 	private Date created;
 	private Date expiration;
@@ -18,14 +18,14 @@ public class TokenVO implements Serializable {
 	public TokenVO() {}
 
 	public TokenVO(
-			String userName, 
+			String username, 
 			Boolean authenticated, 
 			Date created, 
 			Date expiration, 
 			String accessToken,
 			String refreshToken
 	) {
-		this.userName = userName;
+		this.username = username;
 		this.authenticated = authenticated;
 		this.created = created;
 		this.expiration = expiration;
@@ -33,12 +33,12 @@ public class TokenVO implements Serializable {
 		this.refreshToken = refreshToken;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public Boolean getAuthenticated() {
@@ -83,7 +83,7 @@ public class TokenVO implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(accessToken, authenticated, created, expiration, refreshToken, userName);
+		return Objects.hash(accessToken, authenticated, created, expiration, refreshToken, username);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class TokenVO implements Serializable {
 		TokenVO other = (TokenVO) obj;
 		return Objects.equals(accessToken, other.accessToken) && Objects.equals(authenticated, other.authenticated)
 				&& Objects.equals(created, other.created) && Objects.equals(expiration, other.expiration)
-				&& Objects.equals(refreshToken, other.refreshToken) && Objects.equals(userName, other.userName);
+				&& Objects.equals(refreshToken, other.refreshToken) && Objects.equals(username, other.username);
 	}
 	
 }

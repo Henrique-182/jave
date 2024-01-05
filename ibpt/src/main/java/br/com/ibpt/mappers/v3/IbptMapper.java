@@ -1,4 +1,4 @@
-package br.com.ibpt.mappers.v2;
+package br.com.ibpt.mappers.v3;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import br.com.ibpt.data.vo.v3.IbptVO;
-import br.com.ibpt.model.v2.Ibpt;
+import br.com.ibpt.model.v3.Ibpt;
 
 @Mapper(componentModel = "spring")
 public interface IbptMapper {
@@ -22,4 +22,5 @@ public interface IbptMapper {
 	
 	@Mapping(source = "key", target = "id")
 	List<Ibpt> toEntityList(List<IbptVO> voList);
+	
 }

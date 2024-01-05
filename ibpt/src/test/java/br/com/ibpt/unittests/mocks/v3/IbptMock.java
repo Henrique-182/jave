@@ -1,11 +1,13 @@
-package br.com.ibpt.unittests.mocks.v2;
+package br.com.ibpt.unittests.mocks.v3;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.ibpt.data.vo.v3.IbptVO;
-import br.com.ibpt.model.v2.Ibpt;
+import br.com.ibpt.model.v3.Ibpt;
 import br.com.ibpt.unittests.mocks.v1.VersionMock;
+import br.com.ibpt.unittests.mocks.v2.CompanySoftwareIbptMock;
 
 public class IbptMock {
 	
@@ -38,6 +40,10 @@ public class IbptMock {
 			? true
 			: false
 		);
+		entity.setUserLastUpdate(UserAuditMock.entity());
+		entity.setLastUpdateDatetime(new Date());
+		entity.setUserCreation(UserAuditMock.entity());
+		entity.setCreationDatetime(new Date());
 		
 		return entity;
 	}
@@ -52,6 +58,10 @@ public class IbptMock {
 			? true
 			: false
 		);
+		vo.setUserLastUpdate(UserAuditMock.entity());
+		vo.setLastUpdateDatetime(new Date());
+		vo.setUserCreation(UserAuditMock.entity());
+		vo.setCreationDatetime(new Date());
 		
 		return vo;
 	}

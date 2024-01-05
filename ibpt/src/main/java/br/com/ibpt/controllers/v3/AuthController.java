@@ -1,4 +1,4 @@
-package br.com.ibpt.controllers.v1;
+package br.com.ibpt.controllers.v3;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ibpt.data.vo.v1.AccountCredentialsVO;
-import br.com.ibpt.data.vo.v1.TokenVO;
-import br.com.ibpt.services.v1.AuthService;
+import br.com.ibpt.data.vo.v3.AccountCredentialsVO;
+import br.com.ibpt.data.vo.v3.TokenVO;
+import br.com.ibpt.services.v3.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -65,16 +65,16 @@ public class AuthController {
 			@ApiResponse(description = "Interval Server Error", responseCode = "500", content = @Content)
 		}
 	)
-	@PutMapping("/refresh/{userName}")
+	@PutMapping("/refresh/{username}")
 	public ResponseEntity refreshToken(
-		@PathVariable("userName") String userName,
+		@PathVariable("username") String username,
 		@RequestHeader("Authorization") String refreshToken
 	) {
-		if (checkIsParamsIsNotNull(userName, refreshToken)) {
+		if (checkIsParamsIsNotNull(username, refreshToken)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
 		}
 		
-		var token = authService.refreshToken(userName, refreshToken);
+		var token = authService.refreshToken(username, refreshToken);
 		
 		if (token == null) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
@@ -83,17 +83,17 @@ public class AuthController {
 		return token;
 	}
 
-	private boolean checkIsParamsIsNotNull(String userName, String refreshToken) {
+	private boolean checkIsParamsIsNotNull(String username, String refreshToken) {
 		return refreshToken == null 
 			|| refreshToken.isBlank()
-			|| userName == null
-			|| userName.isBlank();
+			|| username == null
+			|| username.isBlank();
 	}
 
 	private boolean checkIfParamsIsNotNull(AccountCredentialsVO data) {
 		return data == null 
-			|| data.getUserName() == null 
-			|| data.getUserName().isBlank() 
+			|| data.getUsername() == null 
+			|| data.getUsername().isBlank() 
 			|| data.getPassword() == null 
 			|| data.getPassword().isBlank();
 	}

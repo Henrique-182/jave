@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ibpt.data.vo.v3.VersionVO;
 import br.com.ibpt.services.v3.VersionService;
-import br.com.ibpt.util.v2.ControllerUtil;
+import br.com.ibpt.util.v3.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,6 +32,9 @@ public class VersionController {
 
 	@Autowired
 	private VersionService service;
+	
+	@Autowired
+	private ControllerUtil util;
 	
 	@Operation(
 		summary = "Finds All Versions",
@@ -66,7 +69,7 @@ public class VersionController {
 		
 		sortBy = "effectivePeriodUntil".equalsIgnoreCase(sortBy) ? "effectivePeriodUntil" : "name";
 		
-		Pageable pageable = ControllerUtil.pageable(page, size);
+		Pageable pageable = util.pageable(page, size);
 		
 		return ResponseEntity.ok(
 				   service.findCustomPaginable(

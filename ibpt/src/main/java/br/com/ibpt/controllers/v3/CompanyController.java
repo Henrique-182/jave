@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.ibpt.data.vo.v2.CompanyActiveVO;
 import br.com.ibpt.data.vo.v3.CompanyVO;
 import br.com.ibpt.services.v3.CompanyService;
-import br.com.ibpt.util.v2.ControllerUtil;
+import br.com.ibpt.util.v3.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +34,9 @@ public class CompanyController {
 
 	@Autowired
 	private CompanyService service;
+	
+	@Autowired
+	private ControllerUtil util;
 	
 	@Operation(
 		summary = "Finds All Companies",
@@ -75,7 +78,7 @@ public class CompanyController {
 				: sortBy.equalsIgnoreCase("softwareType") ? "softwares.type"
 				: "tradeName";
 
-		Pageable pageable = ControllerUtil.pageable(page, size);
+		Pageable pageable = util.pageable(page, size);
 		
 		return ResponseEntity
 				.ok(

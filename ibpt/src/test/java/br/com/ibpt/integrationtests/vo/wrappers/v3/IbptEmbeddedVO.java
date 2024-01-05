@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.vo.wrappers.v2;
+package br.com.ibpt.integrationtests.vo.wrappers.v3;
 
 import java.io.Serializable;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.com.ibpt.integrationtests.vo.v2.IbptVO;
+import br.com.ibpt.integrationtests.vo.v3.IbptVO;
 
 public class IbptEmbeddedVO implements Serializable {
 

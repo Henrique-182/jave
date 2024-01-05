@@ -1,36 +1,64 @@
-package br.com.ibpt.data.vo.v3;
+package br.com.ibpt.model.v3;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import br.com.ibpt.model.v1.Version;
 import br.com.ibpt.model.v2.CompanySoftwareIbpt;
-import br.com.ibpt.model.v3.UserAudit;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-public class IbptVO extends RepresentationModel<IbptVO> implements Serializable {
+@Entity
+@Table(name = "IBPT")
+public class Ibpt implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer key;
-	private Version version;
-	private CompanySoftwareIbpt companySoftware;
-	private Boolean isUpdated;
-	private UserAudit userLastUpdate;
-	private Date lastUpdateDatetime;
-	private UserAudit userCreation;
-	private Date creationDatetime;	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID")
+	private Integer id;
 	
-	public IbptVO() {}
+	@ManyToOne
+	@JoinColumn(name = "FK_VERSION")
+	private Version version;
+	
+	@ManyToOne
+	@JoinColumn(name = "FK_COMPANY_SOFTWARE")
+	private CompanySoftwareIbpt companySoftware;
+	
+	@Column(name = "IS_UPDATED")
+	private Boolean isUpdated;
+	
+	@ManyToOne
+	@JoinColumn(name = "FK_USER_LAST_UPDATE")
+	private UserAudit userLastUpdate;
+	
+	@Column(name = "LAST_UPDATE_DATETIME", nullable = true)
+	private Date lastUpdateDatetime;
+	
+	@ManyToOne
+	@JoinColumn(name = "FK_USER_CREATION")
+	private UserAudit userCreation;
+	
+	@Column(name = "CREATION_DATETIME")
+	private Date creationDatetime;
 
-	public Integer getKey() {
-		return key;
+	public Ibpt() {}
+
+	public Integer getId() {
+		return id;
 	}
 
-	public void setKey(Integer key) {
-		this.key = key;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public Version getVersion() {
@@ -72,7 +100,7 @@ public class IbptVO extends RepresentationModel<IbptVO> implements Serializable 
 	public void setLastUpdateDatetime(Date lastUpdateDatetime) {
 		this.lastUpdateDatetime = lastUpdateDatetime;
 	}
-
+	
 	public UserAudit getUserCreation() {
 		return userCreation;
 	}
@@ -91,25 +119,22 @@ public class IbptVO extends RepresentationModel<IbptVO> implements Serializable 
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Objects.hash(companySoftware, creationDatetime, isUpdated, key, lastUpdateDatetime,
-				userCreation, userLastUpdate, version);
-		return result;
+		return Objects.hash(companySoftware, creationDatetime, id, isUpdated, lastUpdateDatetime, userCreation,
+				userLastUpdate, version);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		IbptVO other = (IbptVO) obj;
+		Ibpt other = (Ibpt) obj;
 		return Objects.equals(companySoftware, other.companySoftware)
-				&& Objects.equals(creationDatetime, other.creationDatetime)
-				&& Objects.equals(isUpdated, other.isUpdated) && Objects.equals(key, other.key)
+				&& Objects.equals(creationDatetime, other.creationDatetime) && Objects.equals(id, other.id)
+				&& Objects.equals(isUpdated, other.isUpdated)
 				&& Objects.equals(lastUpdateDatetime, other.lastUpdateDatetime)
 				&& Objects.equals(userCreation, other.userCreation)
 				&& Objects.equals(userLastUpdate, other.userLastUpdate) && Objects.equals(version, other.version);

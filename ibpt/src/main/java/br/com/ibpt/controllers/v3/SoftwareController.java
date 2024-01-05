@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ibpt.data.vo.v3.SoftwareVO;
 import br.com.ibpt.services.v3.SoftwareService;
-import br.com.ibpt.util.v2.ControllerUtil;
+import br.com.ibpt.util.v3.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,6 +32,9 @@ public class SoftwareController {
 
 	@Autowired
 	private SoftwareService service;
+	
+	@Autowired
+	private ControllerUtil util;
 	
 	@Operation(
 		summary = "Finds All Softwares",
@@ -61,7 +64,7 @@ public class SoftwareController {
 		@RequestParam(value = "direction", defaultValue = "asc") String direction
 	) {
 		
-		Pageable pageable = ControllerUtil.pageable(page, size, direction, "name");
+		Pageable pageable = util.pageable(page, size, direction, "name");
 		
 		return ResponseEntity.ok(service.findAllPageable(pageable));
 	}

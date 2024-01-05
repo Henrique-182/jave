@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.vo.wrappers.v2;
+package br.com.ibpt.integrationtests.vo.wrappers.v3;
 
 import java.io.Serializable;
 import java.util.Objects;

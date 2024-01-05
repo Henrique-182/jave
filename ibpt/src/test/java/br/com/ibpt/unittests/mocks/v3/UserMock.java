@@ -5,7 +5,7 @@ import java.util.List;
 
 import br.com.ibpt.data.vo.v3.UserVO;
 import br.com.ibpt.model.v1.Permission;
-import br.com.ibpt.model.v1.User;
+import br.com.ibpt.model.v3.User;
 
 public class UserMock {
 
@@ -36,8 +36,8 @@ public class UserMock {
 	public UserVO mockVO(Integer number) {
 		UserVO vo = new UserVO();
 		vo.setKey(number);
-		vo.setUserName("Username" + number);
-		vo.setFullName("Full Name" + number);
+		vo.setUsername("Username" + number);
+		vo.setFullname("Fullname" + number);
 		vo.setAccountNonExpired(
 			number % 2 == 0
 			? true
@@ -72,8 +72,8 @@ public class UserMock {
 	public User mockEntity(Integer number) {
 		User entity = new User();
 		entity.setId(number);
-		entity.setUserName("Username" + number);
-		entity.setFullName("Full Name" + number);
+		entity.setUsername("Username" + number);
+		entity.setFullname("Fullname" + number);
 		entity.setPassword("Password" + number);
 		entity.setAccountNonExpired(
 			number % 2 == 0

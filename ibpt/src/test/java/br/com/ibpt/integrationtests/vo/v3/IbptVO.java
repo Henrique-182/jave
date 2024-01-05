@@ -1,16 +1,14 @@
-package br.com.ibpt.data.vo.v3;
+package br.com.ibpt.integrationtests.vo.v3;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import br.com.ibpt.model.v1.Version;
 import br.com.ibpt.model.v2.CompanySoftwareIbpt;
 import br.com.ibpt.model.v3.UserAudit;
 
-public class IbptVO extends RepresentationModel<IbptVO> implements Serializable {
+public class IbptVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,7 +19,7 @@ public class IbptVO extends RepresentationModel<IbptVO> implements Serializable 
 	private UserAudit userLastUpdate;
 	private Date lastUpdateDatetime;
 	private UserAudit userCreation;
-	private Date creationDatetime;	
+	private Date creationDatetime;
 	
 	public IbptVO() {}
 
@@ -91,18 +89,15 @@ public class IbptVO extends RepresentationModel<IbptVO> implements Serializable 
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Objects.hash(companySoftware, creationDatetime, isUpdated, key, lastUpdateDatetime,
-				userCreation, userLastUpdate, version);
-		return result;
+		return Objects.hash(companySoftware, creationDatetime, isUpdated, key, lastUpdateDatetime, userCreation,
+				userLastUpdate, version);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;

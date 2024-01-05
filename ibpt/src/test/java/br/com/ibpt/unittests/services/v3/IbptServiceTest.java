@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.Optional;
 
@@ -23,15 +24,17 @@ import br.com.ibpt.data.vo.v2.IbptUpdateVO;
 import br.com.ibpt.data.vo.v3.IbptVO;
 import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
-import br.com.ibpt.mappers.v2.IbptMapper;
+import br.com.ibpt.mappers.v3.IbptMapper;
 import br.com.ibpt.model.v1.Version;
 import br.com.ibpt.model.v2.CompanyIbpt;
 import br.com.ibpt.model.v2.CompanySoftwareIbpt;
-import br.com.ibpt.model.v2.Ibpt;
 import br.com.ibpt.model.v2.SoftwareIbpt;
-import br.com.ibpt.repositories.v2.IbptRepository;
+import br.com.ibpt.model.v3.Ibpt;
+import br.com.ibpt.model.v3.UserAudit;
+import br.com.ibpt.repositories.v3.IbptRepository;
 import br.com.ibpt.services.v3.IbptService;
-import br.com.ibpt.unittests.mocks.v2.IbptMock;
+import br.com.ibpt.unittests.mocks.v3.IbptMock;
+import br.com.ibpt.unittests.mocks.v3.UserAuditMock;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
@@ -66,13 +69,18 @@ public class IbptServiceTest {
 		Ibpt mockEntity = input.mockEntity(id);
 		IbptVO mockVO = input.mockVO(id);
 		
-		when(repository.findById(any(Integer.class))).thenReturn(Optional.of(mockEntity));
-		repository.updateByVersionAndCompanySoftware(any(Integer.class), any(Integer.class), any(Boolean.class));
+		when(repository.findById(data.getKey())).thenReturn(Optional.of(mockEntity));
+		repository.updateByVersionAndCompanySoftware(any(Integer.class), any(Integer.class), any(Boolean.class), any(UserAudit.class), any(Date.class));
 		
-		service.updateById(data);
+		service.updateById(data, UserAuditMock.entity());
 		
 		assertEquals(2, mockVO.getKey());
 		assertEquals(true, mockVO.getIsUpdated());
+		
+		assertEquals("Username0", mockVO.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(mockVO.getLastUpdateDatetime()));
+		assertEquals("Username0", mockVO.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(mockVO.getCreationDatetime()));
 		
 		Version versionIbpt = mockVO.getVersion();
 		
@@ -110,7 +118,7 @@ public class IbptServiceTest {
 		data.setKey(1000);
 		
 		Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-			service.updateById(data);
+			service.updateById(data, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "No records found for the id (" + data.getKey() + ") !";
@@ -124,7 +132,7 @@ public class IbptServiceTest {
 		IbptUpdateVO data = null;
 		
 		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
-			service.updateById(data);
+			service.updateById(data, UserAuditMock.entity());
 		});
 		
 		String expectedMessage = "It is not possible to update a null object";

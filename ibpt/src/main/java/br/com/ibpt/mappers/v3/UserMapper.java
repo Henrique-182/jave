@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import br.com.ibpt.data.vo.v3.UserVO;
-import br.com.ibpt.model.v1.User;
+import br.com.ibpt.model.v3.User;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

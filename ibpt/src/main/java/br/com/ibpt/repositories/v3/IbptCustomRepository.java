@@ -1,10 +1,10 @@
-package br.com.ibpt.repositories.v2;
+package br.com.ibpt.repositories.v3;
 
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import br.com.ibpt.model.v2.Ibpt;
+import br.com.ibpt.model.v3.Ibpt;
 import jakarta.persistence.EntityManager;
 
 @Repository

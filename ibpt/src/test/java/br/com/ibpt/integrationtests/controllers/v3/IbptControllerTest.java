@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -26,14 +28,14 @@ import br.com.ibpt.config.TestConfigs;
 import br.com.ibpt.integrationtests.mocks.v1.VersionMock;
 import br.com.ibpt.integrationtests.mocks.v2.CompanyMock;
 import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
-import br.com.ibpt.integrationtests.vo.v1.AccountCredentialsVO;
-import br.com.ibpt.integrationtests.vo.v1.TokenVO;
 import br.com.ibpt.integrationtests.vo.v1.VersionVO;
 import br.com.ibpt.integrationtests.vo.v2.CompanyActiveVO;
 import br.com.ibpt.integrationtests.vo.v2.CompanyVO;
 import br.com.ibpt.integrationtests.vo.v2.IbptUpdateVO;
-import br.com.ibpt.integrationtests.vo.v2.IbptVO;
-import br.com.ibpt.integrationtests.vo.wrappers.v2.WrapperIbptVO;
+import br.com.ibpt.integrationtests.vo.v3.AccountCredentialsVO;
+import br.com.ibpt.integrationtests.vo.v3.IbptVO;
+import br.com.ibpt.integrationtests.vo.v3.TokenVO;
+import br.com.ibpt.integrationtests.vo.wrappers.v3.WrapperIbptVO;
 import br.com.ibpt.model.v1.Version;
 import br.com.ibpt.model.v2.CompanyIbpt;
 import br.com.ibpt.model.v2.CompanySoftware;
@@ -290,6 +292,9 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertTrue(ibptOne.getKey() > 0);
 		assertFalse(ibptOne.getIsUpdated());
 		
+		assertEquals("henrique", ibptOne.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibptOne.getCreationDatetime()));
+		
 		Version versionIbpt = ibptOne.getVersion();
 		
 		assertEquals(version.getKey(), versionIbpt.getId());
@@ -356,6 +361,9 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(ibptOne.getKey() > 0);
 		assertFalse(ibptOne.getIsUpdated());
+		
+		assertEquals("henrique", ibptOne.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibptOne.getCreationDatetime()));
 		
 		Version versionIbpt = ibptOne.getVersion();
 		
@@ -440,6 +448,11 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertTrue(ibptOne.getKey() > 0);
 		assertTrue(ibptOne.getIsUpdated());
 		
+		assertEquals("henrique", ibptOne.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibptOne.getLastUpdateDatetime()));
+		assertEquals("henrique", ibptOne.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibptOne.getCreationDatetime()));
+		
 		Version versionIbpt = ibptOne.getVersion();
 		
 		assertEquals(version.getKey(), versionIbpt.getId());
@@ -506,6 +519,11 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(ibptOne.getKey() > 0);
 		assertTrue(ibptOne.getIsUpdated());
+		
+		assertEquals("henrique", ibptOne.getUserLastUpdate().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibptOne.getLastUpdateDatetime()));
+		assertEquals("henrique", ibptOne.getUserCreation().getUsername());
+		assertEquals(DateFormat.getDateInstance().format(new Date()), DateFormat.getDateInstance().format(ibptOne.getCreationDatetime()));
 		
 		Version versionIbpt = ibptOne.getVersion();
 		
@@ -639,6 +657,5 @@ public class IbptControllerTest extends AbstractIntegrationTest {
 		assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/v3/ibpt?direction=asc&page=94&size=10\"}"));
 		assertTrue(content.contains("\"page\":{\"size\":10,\"totalElements\":948,\"totalPages\":95,\"number\":5"));
 	}
-	
 	
 }

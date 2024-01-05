@@ -1,4 +1,4 @@
-package br.com.ibpt.model.v1;
+package br.com.ibpt.model.v3;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +9,7 @@ import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.ibpt.model.v1.Permission;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,10 +33,10 @@ public class User implements UserDetails, Serializable {
 	private Integer id;
 	
 	@Column(name = "USER_NAME", unique = true)
-	private String userName;
+	private String username;
 	
 	@Column(name = "FULL_NAME")
-	private String fullName;
+	private String fullname;
 	
 	@Column(name = "PASSWORD")
 	private String password;
@@ -80,7 +81,7 @@ public class User implements UserDetails, Serializable {
 
 	@Override
 	public String getUsername() {
-		return this.userName;
+		return this.username;
 	}
 
 	@Override
@@ -111,20 +112,16 @@ public class User implements UserDetails, Serializable {
 		this.id = id;
 	}
 
-	public String getUserName() {
-		return userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public String getFullname() {
+		return fullname;
 	}
 
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
 
 	public Boolean getAccountNonExpired() {
@@ -173,8 +170,8 @@ public class User implements UserDetails, Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(accountNonExpired, accountNonLocked, credentialsNonExpired, enabled, fullName, id, password,
-				permissions, userName);
+		return Objects.hash(accountNonExpired, accountNonLocked, credentialsNonExpired, enabled, fullname, id, password,
+				permissions, username);
 	}
 
 	@Override
@@ -189,9 +186,9 @@ public class User implements UserDetails, Serializable {
 		return Objects.equals(accountNonExpired, other.accountNonExpired)
 				&& Objects.equals(accountNonLocked, other.accountNonLocked)
 				&& Objects.equals(credentialsNonExpired, other.credentialsNonExpired)
-				&& Objects.equals(enabled, other.enabled) && Objects.equals(fullName, other.fullName)
+				&& Objects.equals(enabled, other.enabled) && Objects.equals(fullname, other.fullname)
 				&& Objects.equals(id, other.id) && Objects.equals(password, other.password)
-				&& Objects.equals(permissions, other.permissions) && Objects.equals(userName, other.userName);
+				&& Objects.equals(permissions, other.permissions) && Objects.equals(username, other.username);
 	}
 	
 }

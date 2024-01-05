@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.repository.v2;
+package br.com.ibpt.integrationtests.repository.v3;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,9 +24,9 @@ import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.ibpt.model.v1.Version;
 import br.com.ibpt.model.v2.CompanyIbpt;
 import br.com.ibpt.model.v2.CompanySoftwareIbpt;
-import br.com.ibpt.model.v2.Ibpt;
 import br.com.ibpt.model.v2.SoftwareIbpt;
-import br.com.ibpt.repositories.v2.IbptCustomRepository;
+import br.com.ibpt.model.v3.Ibpt;
+import br.com.ibpt.repositories.v3.IbptCustomRepository;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest

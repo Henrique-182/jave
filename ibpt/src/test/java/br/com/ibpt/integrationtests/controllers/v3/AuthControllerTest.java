@@ -1,4 +1,4 @@
-package br.com.ibpt.integrationtests.controllers.v1;
+package br.com.ibpt.integrationtests.controllers.v3;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,8 +12,8 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import br.com.ibpt.config.TestConfigs;
 import br.com.ibpt.integrationtests.testcontainers.AbstractIntegrationTest;
-import br.com.ibpt.integrationtests.vo.v1.AccountCredentialsVO;
-import br.com.ibpt.integrationtests.vo.v1.TokenVO;
+import br.com.ibpt.integrationtests.vo.v3.AccountCredentialsVO;
+import br.com.ibpt.integrationtests.vo.v3.TokenVO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
@@ -41,7 +41,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
 					.as(TokenVO.class);
 		
 		assertNotNull(tokenVO);
-		assertNotNull(tokenVO.getUserName());
+		assertNotNull(tokenVO.getUsername());
 		assertNotNull(tokenVO.getAuthenticated());
 		assertNotNull(tokenVO.getCreated());
 		assertNotNull(tokenVO.getExpiration());
@@ -57,7 +57,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
 				.basePath("/auth/refresh")
 				.port(TestConfigs.SERVER_PORT)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.pathParam("userName", tokenVO.getUserName())
+				.pathParam("userName", tokenVO.getUsername())
 				.header("Authorization", "Bearer " + tokenVO.getRefreshToken())
 				.when()
 					.put("{userName}")
@@ -68,7 +68,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
 					.as(TokenVO.class);
 		
 		assertNotNull(tokenVO);
-		assertNotNull(tokenVO.getUserName());
+		assertNotNull(tokenVO.getUsername());
 		assertNotNull(tokenVO.getAuthenticated());
 		assertNotNull(tokenVO.getCreated());
 		assertNotNull(tokenVO.getExpiration());
