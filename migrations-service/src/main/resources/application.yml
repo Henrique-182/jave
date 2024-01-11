@@ -1,0 +1,14 @@
+spring:
+  jackson:
+    time-zone: America/Sao_Paulo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jave
+    username: ${JAVE_PG_USERNAME}
+    password: ${JAVE_PG_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  flyway:
+    baselineOnMigrate: true
