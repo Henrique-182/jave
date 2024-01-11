@@ -1,7 +1,10 @@
 server:
+  port: 8181
   servlet:
     context-path: /systems
 spring:
+  application:
+    name: sistemas-service
   jackson:
     time-zone: America/Sao_Paulo
   datasource:

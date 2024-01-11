@@ -1,4 +1,8 @@
+server: 
+  port: 8080
 spring:
+  application:
+    name: migrations-service
   jackson:
     time-zone: America/Sao_Paulo
   datasource:
