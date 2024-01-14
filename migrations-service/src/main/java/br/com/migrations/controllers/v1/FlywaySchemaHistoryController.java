@@ -11,7 +11,7 @@ import br.com.migrations.model.v1.FlywaySchemaHistory;
 import br.com.migrations.services.v1.FlywaySchemaHistoryService;
 
 @RestController
-@RequestMapping(path = "/v1/flyway/migrations")
+@RequestMapping(path = "/v1/flyway/migration")
 public class FlywaySchemaHistoryController {
 
 	@Autowired
