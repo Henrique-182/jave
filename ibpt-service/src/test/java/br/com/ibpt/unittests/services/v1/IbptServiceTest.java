@@ -22,9 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.ibpt.data.vo.v1.IbptUpdateVO;
 import br.com.ibpt.data.vo.v1.IbptVO;
-import br.com.ibpt.exceptions.mappers.v1.IbptMapper;
 import br.com.ibpt.exceptions.v1.RequiredObjectIsNullException;
 import br.com.ibpt.exceptions.v1.ResourceNotFoundException;
+import br.com.ibpt.mappers.v1.IbptMapper;
 import br.com.ibpt.model.v1.CompanyIbpt;
 import br.com.ibpt.model.v1.CompanySoftwareIbpt;
 import br.com.ibpt.model.v1.Ibpt;

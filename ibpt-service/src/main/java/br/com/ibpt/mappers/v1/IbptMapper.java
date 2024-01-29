@@ -1,4 +1,4 @@
-package br.com.ibpt.exceptions.mappers.v1;
+package br.com.ibpt.mappers.v1;
 
 import java.util.List;
 
