@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FileServiceUtil {
+public class ServiceUtil {
 	
 	public static void createDirectories(Path path) {
 		try {

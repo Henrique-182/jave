@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.ini.configs.v1.FileStorageConfig;
 import br.com.ini.exceptions.v1.FileStorageException;
 import br.com.ini.exceptions.v1.MyFileNotFoundException;
-import br.com.ini.utils.v1.FileServiceUtil;
+import br.com.ini.utils.v1.ServiceUtil;
 
 @Service
 public class FileStorageService {
@@ -29,14 +29,14 @@ public class FileStorageService {
 		
 		this.fileStorageLocation = path;
 		
-		FileServiceUtil.createDirectories(this.fileStorageLocation);
+		ServiceUtil.createDirectories(this.fileStorageLocation);
 	}
 	
 	public String storeFile(String folder, MultipartFile file) {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
 		
 		try {
-			FileServiceUtil.createDirectories(fileStorageLocation.resolve(folder));
+			ServiceUtil.createDirectories(fileStorageLocation.resolve(folder));
 			
 			Path targetLocation = this.fileStorageLocation.resolve(folder).resolve(filename);
 

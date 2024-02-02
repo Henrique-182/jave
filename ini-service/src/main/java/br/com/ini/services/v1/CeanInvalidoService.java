@@ -11,7 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.ini.exceptions.v1.FileStorageException;
-import br.com.ini.utils.v1.FileServiceUtil;
+import br.com.ini.utils.v1.ServiceUtil;
 
 @Service
 public class CeanInvalidoService {
@@ -22,14 +22,14 @@ public class CeanInvalidoService {
 	public String storeFile(String folder, MultipartFile file) {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
 		
-		if (FileServiceUtil.checkIfFilenameIsInvalid(filename)) throw new FileStorageException("Sorry! Filename contains invalid path sequence (" + filename + ")");
+		if (ServiceUtil.checkIfFilenameIsInvalid(filename)) throw new FileStorageException("Sorry! Filename contains invalid path sequence (" + filename + ")");
 		
 		return service.storeFile(folder, file);
 	}
 	
 	public Resource downloadFile(String folder, String filename) {
 		
-		if (FileServiceUtil.checkIfFilenameIsInvalid(filename)) throw new FileStorageException("Sorry! Filename contains invalid path sequence (" + filename + ")");
+		if (ServiceUtil.checkIfFilenameIsInvalid(filename)) throw new FileStorageException("Sorry! Filename contains invalid path sequence (" + filename + ")");
 		
 		return service.loadFileAsResource(folder, filename);
 	}
@@ -41,7 +41,7 @@ public class CeanInvalidoService {
 		try {
 			String processedFolder = originalFileResource.getFile().getParent() + "\\Processed\\";
 
-			FileServiceUtil.createDirectories(Path.of(processedFolder));
+			ServiceUtil.createDirectories(Path.of(processedFolder));
 			File newFile = new File(processedFolder + filename);
 			
 			if (newFile.exists()) newFile.delete();
@@ -60,10 +60,12 @@ public class CeanInvalidoService {
 					writeLine = originalLine;
 				}
 				
-				FileServiceUtil.writeToFile(newFile, writeLine);
+				ServiceUtil.writeToFile(newFile, writeLine);
 			}
+			
+			scanner.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			new FileStorageException("It was not possible to correct the file!", e);
 		} 
 	}
 	
