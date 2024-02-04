@@ -1,7 +1,6 @@
 package br.com.ini.services.v1;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +38,10 @@ public class CeanInvalidoService {
 		Resource originalFileResource = service.loadFileAsResource(folder, filename);
 		
 		try {
-			String processedFolder = originalFileResource.getFile().getParent() + "\\Processed\\";
+			String baseFolder = originalFileResource.getFile().getParent();
+			
+			File newFile = ServiceUtil.createProcessedFile(baseFolder, filename);
 
-			ServiceUtil.createDirectories(Path.of(processedFolder));
-			File newFile = new File(processedFolder + filename);
-			
-			if (newFile.exists()) newFile.delete();
-			newFile.createNewFile();
-			
 			Scanner scanner = new Scanner(originalFileResource.getInputStream());
 			
 			while(scanner.hasNextLine()) {

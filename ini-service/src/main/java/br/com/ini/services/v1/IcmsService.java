@@ -2,7 +2,6 @@ package br.com.ini.services.v1;
 
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -66,13 +65,9 @@ public class IcmsService {
 		Resource originalFileResource = service.loadFileAsResource(folder, data.getFilename());
 		
 		try {
-			String processedFolder = originalFileResource.getFile().getParent() + "\\Processed\\";
-
-			ServiceUtil.createDirectories(Path.of(processedFolder));
-			File newFile = new File(processedFolder + data.getFilename());
+			String baseFolder = originalFileResource.getFile().getParent();
 			
-			if (newFile.exists()) newFile.delete();
-			newFile.createNewFile();
+			File newFile = ServiceUtil.createProcessedFile(baseFolder, data.getFilename());
 			
 			addSectionsToFile(newFile, data);
 			

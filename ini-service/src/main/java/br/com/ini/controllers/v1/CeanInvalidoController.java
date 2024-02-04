@@ -16,7 +16,7 @@ import br.com.ini.services.v1.CeanInvalidoService;
 import br.com.ini.utils.v1.ControllerUtil;
 
 @RestController
-@RequestMapping(path = "/v1/cean-invalido")
+@RequestMapping(path = "/v1/cean")
 public class CeanInvalidoController {
 
 	@Autowired
@@ -30,7 +30,7 @@ public class CeanInvalidoController {
 		
 		String fileDownloadUri = ServletUriComponentsBuilder
 				.fromCurrentContextPath()
-				.path("/v1/cean-invalido/download/")
+				.path("/v1/cean/download/")
 				.path(cnpj + "/")
 				.path(filename)
 				.toUriString();
