@@ -1,6 +1,7 @@
 package br.com.ibpt.repositories.v1;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -29,5 +30,7 @@ public interface IbptRepository extends JpaRepository<Ibpt, Integer> {
 			@Param("value") Boolean value,
 			@Param("datetime") Date datetime
 		);
+	
+	List<Ibpt> findByVersionName(@Param("versionName") String versionName);
 	
 }
