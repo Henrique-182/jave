@@ -1,5 +1,7 @@
 package br.com.jave.utils.v1;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -20,6 +22,17 @@ public class ServiceUtil {
 	
 	public static Boolean checkIfFilenameIsInvalid(String filename) {
 		return filename.contains("..");
+	}
+	
+	public static void writeToFile(File file, String text) {
+		try {
+			FileWriter fw = new FileWriter(file, true);
+			fw.write(text);
+			fw.write("\n");
+			fw.close();
+		} catch (Exception e) {
+			new FileStorageException("It was not possible to write (" + text + ") into file (" + file.getName() + ")!", e);
+		}
 	}
 	
 }
