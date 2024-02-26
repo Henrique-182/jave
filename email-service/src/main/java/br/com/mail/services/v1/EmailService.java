@@ -1,5 +1,6 @@
 package br.com.mail.services.v1;
 
+import java.io.File;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,8 @@ public class EmailService {
 			helper.setFrom(email.getEmailFrom());
 			helper.setTo(email.getEmailTo());
 			helper.setText(email.getContent(), isHtml);
+			helper.addAttachment("processad", new File("C:\\Server\\Files\\Ini\\CEAN\\09436953000333\\Processed\\NE000659.INI"));
+			helper.addAttachment("nao", new File("C:\\Server\\Files\\Ini\\CEAN\\09436953000333\\NE000659.INI"));
 			
 			mailSender.send(message);
 			
