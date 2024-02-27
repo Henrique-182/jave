@@ -42,7 +42,7 @@ public class EmailService {
 		proxy.sendEmail(data, isHtml);
 	}
 	
-	public void sendAllIbpts(String emailTo, Boolean isHtml, String versionName) {
+	public void sendAllIbptsbyVersion(String emailTo, Boolean isHtml, String versionName) {
 		EmailVO data = new EmailVO();
 		
 		data.setEmailTo(emailTo);

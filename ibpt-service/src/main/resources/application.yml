@@ -1,7 +1,5 @@
 server:
   port: 8383
-file:
-  upload-dir: /Server/Files/Ibpt
 spring:
   application:
     name: ibpt-service

@@ -26,9 +26,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Ibpt", description = "Endpoints for Managing Ibpt")
 @RestController
 @RequestMapping(path = "/v1/ibpt")
-@Tag(name = "Ibpt", description = "Endpoints for Managing Ibpt")
 public class IbptController {
 
 	@Autowired

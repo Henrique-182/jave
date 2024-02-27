@@ -25,9 +25,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Version", description = "Endpoints For Managing Version")
 @RestController
 @RequestMapping(path = "/v1/version")
-@Tag(name = "Version", description = "Endpoints For Managing Version")
 public class VersionController {
 
 	@Autowired

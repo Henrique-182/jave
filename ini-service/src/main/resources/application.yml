@@ -1,7 +1,5 @@
 server:
   port: 8484
-files:
-  upload-dir: /Server/Files/Ini
 spring:
   application:
     name: ini-service
