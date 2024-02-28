@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import br.com.sistemas.data.vo.v1.EmailVO;
 import br.com.sistemas.model.v1.Email;
 
-@FeignClient(name = "email-service", url = "localhost:8585")
+@FeignClient(name = "email-service", url = "localhost:8500")
 public interface EmailProxy {
 
 	@PostMapping(path = "/v1/email/send")

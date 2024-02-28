@@ -1,5 +1,7 @@
 server:
-  port: 8282
+  port: 8200
+cors:
+  originPatterns: http://127.0.0.1:9090
 spring:
   application:
     name: conhecimento-service

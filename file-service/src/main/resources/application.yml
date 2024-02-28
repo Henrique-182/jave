@@ -1,5 +1,7 @@
 server:
-  port: 8686
+  port: 8600
+cors:
+  originPatterns: http://127.0.0.1:9090,http://localhost:8300,http://localhost:8400,http://localhost:8500
 files:
   upload-dir: /Server/Files
 spring:

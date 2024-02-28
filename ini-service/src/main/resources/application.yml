@@ -1,5 +1,7 @@
 server:
-  port: 8484
+  port: 8400
+cors:
+  originPatterns: http://127.0.0.1:9090
 spring:
   application:
     name: ini-service

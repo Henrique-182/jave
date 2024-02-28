@@ -129,7 +129,7 @@ public class TopicController {
 		description = "Deletes a Topic",
 		tags = {"Topic"},
 		responses = {
-			@ApiResponse(description = "Deleted", responseCode = "200", content = @Content(schema = @Schema(implementation = TopicVO.class))),
+			@ApiResponse(description = "Deleted", responseCode = "204", content = @Content(schema = @Schema(implementation = TopicVO.class))),
 			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
 			@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),

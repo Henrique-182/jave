@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import br.com.mail.configuration.v1.EmailConfig;
+import br.com.mail.configs.v1.EmailConfig;
 import br.com.mail.data.vo.v1.EmailVO;
 import br.com.mail.mappers.v1.EmailMapper;
 import br.com.mail.model.v1.Email;

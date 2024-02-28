@@ -1,5 +1,7 @@
 server:
-  port: 8181
+  port: 8100
+cors:
+  originPatterns: http://127.0.0.1:9090
 spring:
   application:
     name: sistemas-service
