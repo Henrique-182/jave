@@ -1,0 +1,60 @@
+server:
+  port: 8765
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      enabled: false
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: migrations-service
+          uri: lb://migrations-service
+          predicates: 
+            - Path=/migrations-service/**
+          filters: 
+            - RewritePath=/migrations-service/(?<remaining>.*), /$\{remaining}
+        - id: sistemas-service
+          uri: lb://sistemas-service
+          predicates: 
+            - Path=/sistemas-service/**
+          filters: 
+            - RewritePath=/sistemas-service/(?<remaining>.*), /$\{remaining}
+        - id: conhecimento-service
+          uri: lb://conhecimento-service
+          predicates: 
+            - Path=/conhecimento-service/**
+          filters: 
+            - RewritePath=/conhecimento-service/(?<remaining>.*), /$\{remaining}
+        - id: ibpt-service
+          uri: lb://ibpt-service
+          predicates: 
+            - Path=/ibpt-service/**
+          filters: 
+            - RewritePath=/ibpt-service/(?<remaining>.*), /$\{remaining}
+        - id: ini-service
+          uri: lb://ini-service
+          predicates: 
+            - Path=/ini-service/**
+          filters: 
+            - RewritePath=/ini-service/(?<remaining>.*), /$\{remaining}
+        - id: email-service
+          uri: lb://email-service
+          predicates: 
+            - Path=/email-service/**
+          filters: 
+            - RewritePath=/email-service/(?<remaining>.*), /$\{remaining}
+        - id: file-service
+          uri: lb://file-service
+          predicates: 
+            - Path=/file-service/**
+          filters: 
+            - RewritePath=/file-service/(?<remaining>.*), /$\{remaining}
+
