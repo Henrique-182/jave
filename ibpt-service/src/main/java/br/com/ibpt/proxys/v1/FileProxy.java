@@ -13,7 +13,7 @@ import br.com.ibpt.data.vo.v1.FileStorageResponseVO;
 import br.com.ibpt.model.v1.ProjectName;
 import br.com.ibpt.model.v1.ServiceName;
 
-@FeignClient(name = "file-service", url = "localhost:8600")
+@FeignClient(name = "file-service")
 public interface FileProxy {
 
 	@PostMapping(

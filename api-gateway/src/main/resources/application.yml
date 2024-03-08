@@ -57,4 +57,15 @@ spring:
             - Path=/file-service/**
           filters: 
             - RewritePath=/file-service/(?<remaining>.*), /$\{remaining}
-
+        - id: migrations-service
+          uri: lb://migrations-service
+          predicates: 
+            - Path=/migrations-service/**
+          filters: 
+            - RewritePath=/migrations-service/(?<remaining>.*), /$\{remaining}
+        - id: openapi
+          uri: lb://api-gateway
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs

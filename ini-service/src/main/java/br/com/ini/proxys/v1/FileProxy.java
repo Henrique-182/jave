@@ -15,7 +15,7 @@ import br.com.ini.data.vo.v1.FileVO;
 import br.com.ini.models.v1.ProjectName;
 import br.com.ini.models.v1.ServiceName;
 
-@FeignClient(name = "file-service", url = "localhost:8600")
+@FeignClient(name = "file-service")
 public interface FileProxy {
 
 	@PostMapping(

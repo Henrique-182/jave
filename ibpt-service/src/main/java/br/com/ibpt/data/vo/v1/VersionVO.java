@@ -12,6 +12,7 @@ public class VersionVO extends RepresentationModel<VersionVO> implements Seriali
 	
 	private Integer key;
 	private String name;
+	private Date effectivePeriodFrom;
 	private Date effectivePeriodUntil;
 	
 	public VersionVO() {}
@@ -31,6 +32,14 @@ public class VersionVO extends RepresentationModel<VersionVO> implements Seriali
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public Date getEffectivePeriodFrom() {
+		return effectivePeriodFrom;
+	}
+
+	public void setEffectivePeriodFrom(Date effectivePeriodFrom) {
+		this.effectivePeriodFrom = effectivePeriodFrom;
+	}
 
 	public Date getEffectivePeriodUntil() {
 		return effectivePeriodUntil;
@@ -42,19 +51,23 @@ public class VersionVO extends RepresentationModel<VersionVO> implements Seriali
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(effectivePeriodUntil, key, name);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(effectivePeriodFrom, effectivePeriodUntil, key, name);
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		VersionVO other = (VersionVO) obj;
-		return Objects.equals(effectivePeriodUntil, other.effectivePeriodUntil) && Objects.equals(key, other.key)
+		return Objects.equals(effectivePeriodFrom, other.effectivePeriodFrom)
+				&& Objects.equals(effectivePeriodUntil, other.effectivePeriodUntil) && Objects.equals(key, other.key)
 				&& Objects.equals(name, other.name);
 	}
 

@@ -83,6 +83,7 @@ public class VersionService {
 		
 		Version entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		entity.setName(data.getName());
+		entity.setEffectivePeriodFrom(data.getEffectivePeriodFrom());
 		entity.setEffectivePeriodUntil(data.getEffectivePeriodUntil());
 		
 		Version updatedEntity = repository.save(entity);
