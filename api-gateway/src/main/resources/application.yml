@@ -63,6 +63,12 @@ spring:
             - Path=/migrations-service/**
           filters: 
             - RewritePath=/migrations-service/(?<remaining>.*), /$\{remaining}
+        - id: auth-service
+          uri: lb://auth-service
+          predicates: 
+            - Path=/auth-service/**
+          filters: 
+            - RewritePath=/auth-service/(?<remaining>.*), /$\{remaining}
         - id: openapi
           uri: lb://api-gateway
           predicates:

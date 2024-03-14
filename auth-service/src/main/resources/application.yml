@@ -1,0 +1,27 @@
+server:
+  port: 8700
+cors:
+  originPatterns: http://127.0.0.1:9090,http://127.0.0.1:8765
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+security:
+  jwt:
+    token:
+      secret-key: ${JAVE_JWT_SECRET_KEY}
+      expire-length: 3600000
+spring:
+  application:
+    name: auth-service
+  jackson:
+    time-zone: America/Sao_Paulo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jave
+    username: ${JAVE_PG_USERNAME}
+    password: ${JAVE_PG_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
