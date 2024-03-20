@@ -20,54 +20,63 @@ spring:
           predicates: 
             - Path=/migrations-service/**
           filters: 
-            - RewritePath=/migrations-service/(?<remaining>.*), /$\{remaining}
+            - AuthenticationFilter
+            - RewritePath=/auth-service/(?<remaining>.*), /$\{remaining}
         - id: sistemas-service
           uri: lb://sistemas-service
           predicates: 
             - Path=/sistemas-service/**
           filters: 
+            - AuthenticationFilter
             - RewritePath=/sistemas-service/(?<remaining>.*), /$\{remaining}
         - id: conhecimento-service
           uri: lb://conhecimento-service
           predicates: 
             - Path=/conhecimento-service/**
           filters: 
+            - AuthenticationFilter
             - RewritePath=/conhecimento-service/(?<remaining>.*), /$\{remaining}
         - id: ibpt-service
           uri: lb://ibpt-service
           predicates: 
             - Path=/ibpt-service/**
           filters: 
+            - AuthenticationFilter
             - RewritePath=/ibpt-service/(?<remaining>.*), /$\{remaining}
         - id: ini-service
           uri: lb://ini-service
           predicates: 
             - Path=/ini-service/**
           filters: 
+            - AuthenticationFilter
             - RewritePath=/ini-service/(?<remaining>.*), /$\{remaining}
         - id: email-service
           uri: lb://email-service
           predicates: 
             - Path=/email-service/**
           filters: 
+            - AuthenticationFilter
             - RewritePath=/email-service/(?<remaining>.*), /$\{remaining}
         - id: file-service
           uri: lb://file-service
           predicates: 
             - Path=/file-service/**
           filters: 
+            - AuthenticationFilter
             - RewritePath=/file-service/(?<remaining>.*), /$\{remaining}
         - id: migrations-service
           uri: lb://migrations-service
           predicates: 
             - Path=/migrations-service/**
           filters: 
+            - AuthenticationFilter
             - RewritePath=/migrations-service/(?<remaining>.*), /$\{remaining}
         - id: auth-service
           uri: lb://auth-service
           predicates: 
             - Path=/auth-service/**
           filters: 
+            - AuthenticationFilter
             - RewritePath=/auth-service/(?<remaining>.*), /$\{remaining}
         - id: openapi
           uri: lb://api-gateway

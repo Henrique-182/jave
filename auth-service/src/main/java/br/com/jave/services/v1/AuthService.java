@@ -12,6 +12,7 @@ import br.com.jave.data.vo.v1.AccountCredentialsVO;
 import br.com.jave.data.vo.v1.TokenVO;
 import br.com.jave.repositories.v1.UserRepository;
 import br.com.jave.security.jwt.v1.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class AuthService {
@@ -45,6 +46,23 @@ public class AuthService {
 		} catch (Exception e) {
 			throw new BadCredentialsException("Invalid username/password supplied!");
 		}
+	}
+	
+	public ResponseEntity<?> refresh(String username, String refreshToken) {
+		var user = repository.findByUsername(username);
+		
+		var tokenResponse = new TokenVO();
+		
+		if (user != null) tokenResponse = tokenProvider.refreshToken(refreshToken);
+		else throw new UsernameNotFoundException("Username (" + username + ") not found!");
+		
+		return ResponseEntity.ok(tokenResponse);
+	}
+	
+	public Boolean validate(HttpServletRequest req) {
+		String token = tokenProvider.resolveToken(req);
+		
+		return tokenProvider.validateToken(token);
 	}
 
 }
