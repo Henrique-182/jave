@@ -21,7 +21,7 @@ spring:
             - Path=/migrations-service/**
           filters: 
             - AuthenticationFilter
-            - RewritePath=/auth-service/(?<remaining>.*), /$\{remaining}
+            - RewritePath=/migrations-service/(?<remaining>.*), /$\{remaining}
         - id: sistemas-service
           uri: lb://sistemas-service
           predicates: 
@@ -64,13 +64,6 @@ spring:
           filters: 
             - AuthenticationFilter
             - RewritePath=/file-service/(?<remaining>.*), /$\{remaining}
-        - id: migrations-service
-          uri: lb://migrations-service
-          predicates: 
-            - Path=/migrations-service/**
-          filters: 
-            - AuthenticationFilter
-            - RewritePath=/migrations-service/(?<remaining>.*), /$\{remaining}
         - id: auth-service
           uri: lb://auth-service
           predicates: 
