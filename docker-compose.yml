@@ -1,40 +1,38 @@
 version: '3.9'
+
 services:
-  db-knowledge: 
-    image: mysql:8.0.29
-    command: mysqld --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      TZ: America/Sao_Paulo
-      MYSQL_ROOT_PASSWORD: 12345678
-      MYSQL_USER: docker
-      MYSQL_PASSWORD: 12345678
-      MYSQL_DATABASE: jave_conhecimento
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_TCP_PORT: 3308
-    ports: 
-      - 3308:3308
-    expose:
-      - 3308
-    networks:
-      - jave-network
-  conhecimento:
-    image: henrick182/conhecimento
-    restart: always
-    build: ./conhecimento
-    working_dir: /conhecimento
-    environment:
-      TZ: America/Sao_Paulo
-      SPRING.DATASOURCE.URL: jdbc:mysql://db-knowledge:3308/jave_conhecimento?useTimezone=true&serverTimezone=UTC
-      SPRING.DATASOURCE.USERNAME: root
-      SPRING.DATASOURCE.PASSWORD: 12345678
+
+  # ZIPKIN
+  zipkin-server:
+    image: openzipkin/zipkin:2.23.8
     ports:
-      - 80:80
-    command: mvn spring-boot:run
-    depends_on: 
-      - db-knowledge
+      - 9411:9411
+    restart: always
     networks:
       - jave-network
+
+  # NAMING SERVER
+  naming-server:
+    image: henrick182/jave-naming-server:0.0.1-SNAPSHOT
+    ports:
+      - 8761:8761
+    networks:
+      - jave-network
+      
+  # API GATEWAY
+  api-gateway:
+    image: henrick182/jave-api-gateway:0.0.1-SNAPSHOT
+    ports:
+      - 8765:8765
+    depends_on:
+      - naming-server
+    environment:
+      EUREKA.CLIENT.SERVICE-URL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.TRACING.SAMPLING.PROBABILITY: 1.0
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+    networks:
+      - jave-network
+
 networks:
   jave-network:
     driver: bridge
