@@ -9,16 +9,14 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class AuthenticationConfig {
-
-	private final String AUTH_SERVICE_BASE_URL = "http://localhost:8700/v1/auth/validate";
-
-	public ResponseEntity<String> validateTokenRequest(HttpHeaders originalRequestHeader) {
+	
+	public ResponseEntity<String> validateTokenRequest(String defaultZone, HttpHeaders originalRequestHeader) {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.AUTHORIZATION, originalRequestHeader.getFirst(HttpHeaders.AUTHORIZATION));
 
 		return new RestTemplate()
-				.exchange(AUTH_SERVICE_BASE_URL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+				.exchange(defaultZone, HttpMethod.GET, new HttpEntity<>(headers), String.class);
 	}
 	
 	public ResponseEntity<String> refreshTokenRequest() {

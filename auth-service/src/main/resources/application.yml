@@ -1,11 +1,13 @@
 server:
   port: 8700
 cors:
-  originPatterns: http://127.0.0.1:9090,http://127.0.0.1:8765
+  originPatterns: http://127.0.0.1:9090,http://127.0.0.1:8765,http://api-gateway:8765
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
 management:
   tracing:
     sampling:

@@ -30,6 +30,76 @@ services:
       EUREKA.CLIENT.SERVICE-URL.DEFAULTZONE: http://naming-server:8761/eureka
       MANAGEMENT.TRACING.SAMPLING.PROBABILITY: 1.0
       MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      SECURITY.DEFAULTZONE: http://auth-service:8700/v1/auth/validate 
+    networks:
+      - jave-network
+      
+  # POSTGRES DB
+  postgres-db:
+    image: postgres:16
+    restart: always
+    ports:
+      - 5433:5433
+    expose:
+      - 5433
+    environment:
+      TZ: America/Sao_Paulo
+      POSTGRES_USER: ${JAVE_PG_USERNAME}
+      POSTGRES_PASSWORD: ${JAVE_PG_PASSWORD}
+      POSTGRES_DB: jave
+      PGPORT: 5433
+    networks:
+      - jave-network
+  
+  # MIGRATIONS SERVICE
+  migrations-service:
+    image: henrick182/migrations-service
+    restart: always
+    build:
+      context: .
+      dockerfile: migrations-service/Dockerfile
+    ports:
+      - 8000:8000
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA.CLIENT.SERVICE-URL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.TRACING.SAMPLING.PROBABILITY: 1.0
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      SPRING.DATASOURCE.URL: jdbc:postgresql://postgres-db:5433/jave?useSSL=false&enabledTLSProtocols=TLSv1.2
+      SPRING.DATASOURCE.USERNAME: ${JAVE_PG_USERNAME}
+      SPRING.DATASOURCE.PASSWORD: ${JAVE_PG_PASSWORD}
+      SPRING.FLYWAY.URL: jdbc:postgresql://postgres-db:5433/jave?useSSL=false&enabledTLSProtocols=TLSv1.2
+      SPRING.FLYWAY.USER: ${JAVE_PG_USERNAME}
+      SPRING.FLYWAY.PASSWORD: ${JAVE_PG_PASSWORD}
+    depends_on:
+      - naming-server
+      - postgres-db
+    networks:
+      - jave-network
+    
+  # AUTH SERVICE
+  auth-service:
+    image: henrick182/auth-service
+    restart: always
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    ports:
+      - 8700:8700
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA.CLIENT.SERVICE-URL.DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT.TRACING.SAMPLING.PROBABILITY: 1.0
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      SPRING.DATASOURCE.URL: jdbc:postgresql://postgres-db:5433/jave?useSSL=false&enabledTLSProtocols=TLSv1.2
+      SPRING.DATASOURCE.USERNAME: ${JAVE_PG_USERNAME}
+      SPRING.DATASOURCE.PASSWORD: ${JAVE_PG_PASSWORD}
+      SECURITY.JWT.TOKEN.SECRET-KEY: ${JAVE_JWT_SECRET_KEY}
+      SECURITY.JWT.TOKEN.EXPIRE-LENGTH: 3600000
+    depends_on:
+      - naming-server
+      - postgres-db
+      - migrations-service
     networks:
       - jave-network
 

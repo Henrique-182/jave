@@ -1,6 +1,7 @@
 package br.com.jave.filters.v1;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -16,6 +17,9 @@ public class AuthenticationFilter implements GatewayFilterFactory<Authentication
 	@Autowired
 	private RouteValidator validator;
 	
+	@Value("${security.defaultZone}")
+	private String defaultZone;
+	
 	public AuthenticationFilter() {
 		super();
 	}
@@ -26,7 +30,7 @@ public class AuthenticationFilter implements GatewayFilterFactory<Authentication
     }
 
 	public GatewayFilter apply(AuthenticationConfig config) {
-		
+
 		return ((exchange, chain) -> {
 			 
 			ServerHttpRequest request = exchange.getRequest();
@@ -37,8 +41,9 @@ public class AuthenticationFilter implements GatewayFilterFactory<Authentication
 				}
 				
 				try {
-					config.validateTokenRequest(request.getHeaders());
+					config.validateTokenRequest(defaultZone, request.getHeaders());
 				} catch (Exception e) {
+					System.out.println(e.getLocalizedMessage());
 					throw new InvalidJwtAuthenticationException("Supplied Token is Invalid!");
 				}
 		        
