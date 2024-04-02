@@ -1,11 +1,13 @@
 server:
   port: 8500
 cors:
-  originPatterns: http://127.0.0.1:9090,http://localhost:8000,http://localhost:8100,http://localhost:8300,http://127.0.0.1:8765
+  originPatterns: http://127.0.0.1:9090,http://localhost:8000,http://localhost:8100,http://localhost:8300,http://127.0.0.1:8765,http://migrations-service:8000,http://api-gateway:8765
 eureka:
   client:
     service-url: 
       defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
 spring:
   application:
     name: email-service
