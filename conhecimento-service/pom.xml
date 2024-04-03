@@ -14,7 +14,7 @@
 	<name>conhecimento-service</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<java.version>19</java.version>
+		<java.version>21</java.version>
 		<maven.compiler.target>16</maven.compiler.target>
 		<maven.compiler.source>16</maven.compiler.source>
 		<spring-cloud.version>2023.0.0</spring-cloud.version>
