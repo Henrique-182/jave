@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.1</version>
+		<version>3.2.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.ibpt</groupId>
@@ -16,7 +16,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-cloud.version>2023.0.0</spring-cloud.version>
-		<springdoc.version>2.0.2</springdoc.version>
+		<springdoc.version>2.5.0</springdoc.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
 		<maven.compiler.target>16</maven.compiler.target>
 		<maven.compiler.source>16</maven.compiler.source>
@@ -106,6 +106,19 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>${rest-assured.version}</version><!--$NO-MVN-MAN-VER$-->
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.testcontainers</groupId>
+    		<artifactId>postgresql</artifactId>
+    		<scope>test</scope>
 		</dependency>
 	</dependencies>
 	

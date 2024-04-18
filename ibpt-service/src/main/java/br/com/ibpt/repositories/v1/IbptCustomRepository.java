@@ -29,17 +29,17 @@ public class IbptCustomRepository {
 		String condition = "WHERE ";
 		
 		if (versionName != null) {
-			query += condition + " IBPT.version.name LIKE :versionName ";
+			query += condition + " IBPT.version.name ILIKE :versionName ";
 			condition = "AND ";
 		}
 		
 		if (companyCnpj != null) {
-			query += condition + " IBPT.companySoftware.company.cnpj LIKE :companyCnpj ";
+			query += condition + " IBPT.companySoftware.company.cnpj ILIKE :companyCnpj ";
 			condition = "AND ";
 		}
 		
 		if (companyName != null) {
-			query += condition + " (IBPT.companySoftware.company.tradeName LIKE :companyName OR IBPT.companySoftware.company.businessName LIKE :companyName) ";
+			query += condition + " (IBPT.companySoftware.company.tradeName ILIKE :companyName OR IBPT.companySoftware.company.businessName LIKE :companyName) ";
 			condition = "AND ";
 		}
 		

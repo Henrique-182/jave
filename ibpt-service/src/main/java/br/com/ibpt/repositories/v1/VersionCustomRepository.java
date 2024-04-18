@@ -27,7 +27,7 @@ public class VersionCustomRepository {
 		String condicao = "WHERE ";
 		
 		if (name != null) {
-			query += condicao + "VERS.name LIKE :name ";
+			query += condicao + "VERS.name ILIKE :name ";
 			condicao = "AND ";
 		}
 		
