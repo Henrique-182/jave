@@ -13,9 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jave.data.vo.v1.AccountCredentialsVO;
+import br.com.jave.data.vo.v1.TokenVO;
 import br.com.jave.services.v1.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 
+@Tag(name = "Auth", description = "Endpoints for Managing Auth")
 @RestController
 @RequestMapping(path = "/v1/auth")
 public class AuthController {
@@ -23,6 +30,16 @@ public class AuthController {
 	@Autowired
 	private AuthService service;
 	
+	@Operation(
+		summary = "Authenticates a User",
+		description = "Authenticates a User and returns a token",
+		tags = "Auth",
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = TokenVO.class))),
+			@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
+			@ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
+		}
+	)
 	@PostMapping(path = "/signin")
 	@SuppressWarnings("rawtypes")
 	public ResponseEntity signin(@RequestBody AccountCredentialsVO data) {
@@ -35,6 +52,16 @@ public class AuthController {
 		return token;
 	}
 	
+	@Operation(
+		summary = "Refresh Token",
+		description = "Refresh Token for Authenticated User and Returns a Token",
+		tags = "Auth",
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = TokenVO.class))),
+			@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
+			@ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
+		}
+	)
 	@PutMapping(path = "/refresh/{username}")
 	public ResponseEntity<?> refresh(@PathVariable("username") String username, @RequestHeader("Authorization") String refreshToken) {
 		if (checkIfParamsIsNotNull(username, refreshToken)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid cliente request!");
@@ -46,6 +73,16 @@ public class AuthController {
 		return token;
 	}
 
+	@Operation(
+		summary = "Validates a Token",
+		description = "Validates a Token",
+		tags = "Auth",
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200", content = @Content),
+			@ApiResponse(description = "Forbidden", responseCode = "403", content = @Content),
+			@ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
+		}
+	)
 	@GetMapping(path = "/validate")
 	public ResponseEntity<?> validate(HttpServletRequest request) {
 		return service.validate(request) 
