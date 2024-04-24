@@ -20,7 +20,7 @@ public class SoftwareIbptMock {
 	
 	public static SoftwareIbpt entity(Integer number) {
 		SoftwareIbpt entity = new SoftwareIbpt();
-		entity.setId(number);
+		entity.setKey(number);
 		entity.setName("Name" + number);
 		
 		return entity;

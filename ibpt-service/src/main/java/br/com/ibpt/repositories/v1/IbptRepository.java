@@ -33,4 +33,11 @@ public interface IbptRepository extends JpaRepository<Ibpt, Integer> {
 	
 	List<Ibpt> findByVersionName(@Param("versionName") String versionName);
 	
+	@Modifying
+	@Query("DELETE "
+		 + "  FROM Ibpt IBPT "
+		 + " WHERE IBPT.version.id = :id"
+		 )
+	void deleteByVersionId(@Param("id") Integer id);
+	
 }

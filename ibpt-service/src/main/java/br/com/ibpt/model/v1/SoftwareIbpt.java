@@ -16,19 +16,19 @@ public class SoftwareIbpt implements Serializable {
 
 	@Id
 	@Column(name = "ID")
-	private Integer id;
+	private Integer key;
 	
 	@Column(name = "NAME")
 	private String name;
 	
 	public SoftwareIbpt() {}
-	
-	public Integer getId() {
-		return id;
+
+	public Integer getKey() {
+		return key;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setKey(Integer key) {
+		this.key = key;
 	}
 
 	public String getName() {
@@ -41,7 +41,7 @@ public class SoftwareIbpt implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name);
+		return Objects.hash(key, name);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class SoftwareIbpt implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		SoftwareIbpt other = (SoftwareIbpt) obj;
-		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
+		return Objects.equals(key, other.key) && Objects.equals(name, other.name);
 	}
-
+	
 }

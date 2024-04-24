@@ -84,7 +84,7 @@ public class IbptServiceTest {
 		
 		CompanySoftwareIbpt companySoftwareIbpt = mockVO.getCompanySoftware();
 		
-		assertEquals(2, companySoftwareIbpt.getId());
+		assertEquals(2, companySoftwareIbpt.getKey());
 		assertEquals(true, companySoftwareIbpt.getHaveAuthorization());
 		assertEquals("Connection2", companySoftwareIbpt.getConnection());
 		assertEquals("Observation2", companySoftwareIbpt.getObservation());
@@ -92,7 +92,7 @@ public class IbptServiceTest {
 		
 		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
 		
-		assertEquals(2, softwareIbpt.getId());
+		assertEquals(2, softwareIbpt.getKey());
 		assertEquals("Name2", softwareIbpt.getName());
 		
 		CompanyIbpt companyIbpt = companySoftwareIbpt.getCompany();

@@ -7,7 +7,7 @@ public class CompanySoftwareIbptMock {
 	public CompanySoftwareIbpt mockEntity(Integer number) {
 
 		CompanySoftwareIbpt entity = new CompanySoftwareIbpt();
-		entity.setId(number);
+		entity.setKey(number);
 		entity.setSoftware(SoftwareIbptMock.entity(number));
 		entity.setCompany(CompanyIbptMock.entity(number));
 		entity.setHaveAuthorization(

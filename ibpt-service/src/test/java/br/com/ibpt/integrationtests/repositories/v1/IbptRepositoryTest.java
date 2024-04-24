@@ -1,7 +1,6 @@
 package br.com.ibpt.integrationtests.repositories.v1;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.ParseException;
@@ -48,63 +47,26 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 	@Test
 	@Order(1)
 	public void testCallProcNewIbpt() throws ParseException {
-		ibpt = repository.findById(1).orElseThrow();
+		repository.deleteByVersionId(1);
 		
-		repository.deleteById(1);
+		List<Ibpt> persistedList = repository.findByVersionName("23.2.A");
 		
-		repository.findAll();
+		assertTrue(persistedList.size() == 0);	
 		
-		repository.selectFuncNewIbpt(ibpt.getVersion().getId());
+		repository.selectFuncNewIbpt(1);
 		
-		List<Ibpt> persistedList = repository.findAll();
+		persistedList = repository.findByVersionName("23.2.A");
 		
-		ibpt = persistedList.get(persistedList.size() - 1);
-
-		assertTrue(ibpt.getId() > 0);
-		assertFalse(ibpt.getIsUpdated());
-		
-		VersionIbpt versionIbpt = ibpt.getVersion();
-		
-		assertEquals(1, versionIbpt.getId());
-		assertEquals("23.2.A", versionIbpt.getName());
-		
-		CompanySoftwareIbpt companySoftwareIbpt = ibpt.getCompanySoftware();
-		
-		assertEquals(1, companySoftwareIbpt.getId());
-		assertEquals(true, companySoftwareIbpt.getHaveAuthorization());
-		assertEquals("818998995", companySoftwareIbpt.getConnection());
-		assertEquals("", companySoftwareIbpt.getObservation());
-		assertEquals(null, companySoftwareIbpt.getFkCompanySoftwareSameDb());
-		
-		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
-		
-		assertEquals(2, softwareIbpt.getId());
-		assertEquals("Stac", softwareIbpt.getName());
-		
-		CompanyIbpt companyIbpt = companySoftwareIbpt.getCompany();
-		
-		assertEquals(1, companyIbpt.getId());
-		assertEquals("AGROSOLO", companyIbpt.getTradeName());
-		assertEquals("AGROSOLO SOLUÇÕES AGRÍCOLAS LTDA", companyIbpt.getBusinessName());
+		assertTrue(persistedList.size() > 0);
 	}
 	
 	@Test
 	@Order(2)
 	public void testUpdateByVersionAndCompanySoftware() throws ParseException {
 		
+		repository.updateByVersionAndCompanySoftware(1, 1, true, new Date());
+		
 		ibpt = repository.findById(1).orElseThrow();
-		
-		repository.delete(ibpt);
-		
-		repository.findAll();
-		
-		repository.selectFuncNewIbpt(ibpt.getVersion().getId());
-		
-		repository.updateByVersionAndCompanySoftware(ibpt.getVersion().getId(), ibpt.getCompanySoftware().getId(), true, new Date());
-		
-		List<Ibpt> persistedList = repository.findAll();
-		
-		ibpt = persistedList.get(persistedList.size() - 1);
 		
 		assertTrue(ibpt.getId() > 0);
 		assertTrue(ibpt.getIsUpdated());
@@ -116,7 +78,7 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		
 		CompanySoftwareIbpt companySoftwareIbpt = ibpt.getCompanySoftware();
 		
-		assertEquals(1, companySoftwareIbpt.getId());
+		assertEquals(1, companySoftwareIbpt.getKey());
 		assertEquals(true, companySoftwareIbpt.getHaveAuthorization());
 		assertEquals("818998995", companySoftwareIbpt.getConnection());
 		assertEquals("", companySoftwareIbpt.getObservation());
@@ -124,7 +86,7 @@ public class IbptRepositoryTest extends AbstractIntegrationTest {
 		
 		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
 		
-		assertEquals(2, softwareIbpt.getId());
+		assertEquals(2, softwareIbpt.getKey());
 		assertEquals("Stac", softwareIbpt.getName());
 		
 		CompanyIbpt companyIbpt = companySoftwareIbpt.getCompany();

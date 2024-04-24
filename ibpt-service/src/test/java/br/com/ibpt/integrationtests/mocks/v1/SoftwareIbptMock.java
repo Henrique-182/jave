@@ -7,7 +7,7 @@ public class SoftwareIbptMock {
 	
 	public SoftwareIbpt mockEntity(Integer number) {
 		SoftwareIbpt entity = new SoftwareIbpt();
-		entity.setId(
+		entity.setKey(
 			number % 2 == 0
 			? 2
 			: 1
@@ -23,6 +23,11 @@ public class SoftwareIbptMock {
 	
 	public SoftwareVO mockVO(Integer number) {
 		SoftwareVO vo = new SoftwareVO();
+		vo.setKey(
+			number % 2 == 0
+			? 2
+			: 1
+		);
 		vo.setName("Name" + number);
 		
 		return vo;

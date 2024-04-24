@@ -89,7 +89,7 @@ public class VersionControllerTest extends AbstractIntegrationTest {
 		
 		assertTrue(createdVersion.getKey() > 0);
 		
-		assertEquals("Name2", createdVersion.getName());
+		assertEquals("Name2 ", createdVersion.getName());
 		assertEquals(dateFrom, createdVersion.getEffectivePeriodFrom());
 		assertEquals(dateUntil, createdVersion.getEffectivePeriodUntil());
 		assertTrue(content.contains("\"_links\":{\"versionVOList\":{\"href\":\"http://localhost:8388/v1/version?page=0&size=10&direction=asc&sortBy=name\"}}}"));

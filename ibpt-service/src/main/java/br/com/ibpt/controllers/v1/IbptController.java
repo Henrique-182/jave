@@ -163,4 +163,11 @@ public class IbptController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@DeleteMapping(path = "/version/{versionId}")
+	public ResponseEntity<?> deleteByVersionId(@PathVariable("versionId") Integer id) {
+		service.deleteByVersionId(id);
+		
+		return ResponseEntity.noContent().build();
+	}
+	
 }

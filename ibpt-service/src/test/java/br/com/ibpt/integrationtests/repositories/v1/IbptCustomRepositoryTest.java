@@ -72,7 +72,7 @@ public class IbptCustomRepositoryTest extends AbstractIntegrationTest {
 		
 		CompanySoftwareIbpt companySoftwareIbpt = ibpt.getCompanySoftware();
 		
-		assertEquals(89, companySoftwareIbpt.getId());
+		assertEquals(89, companySoftwareIbpt.getKey());
 		assertEquals(true, companySoftwareIbpt.getHaveAuthorization());
 		assertEquals("", companySoftwareIbpt.getConnection());
 		assertEquals("", companySoftwareIbpt.getObservation());
@@ -80,7 +80,7 @@ public class IbptCustomRepositoryTest extends AbstractIntegrationTest {
 		
 		SoftwareIbpt softwareIbpt = companySoftwareIbpt.getSoftware();
 		
-		assertEquals(2, softwareIbpt.getId());
+		assertEquals(2, softwareIbpt.getKey());
 		assertEquals("Stac", softwareIbpt.getName());
 		
 		CompanyIbpt companyIbpt = companySoftwareIbpt.getCompany();

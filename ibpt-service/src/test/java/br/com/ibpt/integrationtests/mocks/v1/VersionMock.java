@@ -26,7 +26,7 @@ public class VersionMock {
 	
 	public VersionVO mockVO(Integer number) {
 		VersionVO vo = new VersionVO();
-		vo.setName("Name" + number);
+		vo.setName("Name" + number + " ");
 		vo.setEffectivePeriodFrom(new Date(number));
 		vo.setEffectivePeriodUntil(new Date(number));
 		

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.ibpt.model.v1.CompanySoftwareIbpt;
+import br.com.ibpt.model.v1.SoftwareType;
 
 public class CompanySoftwareIbptMock {
 	
@@ -13,16 +14,9 @@ public class CompanySoftwareIbptMock {
 
 		List<CompanySoftwareIbpt> entityList = new ArrayList<>();
 		
-		entityList.add(mockByType(number, "Fiscal"));
-		
-		if (number % 2 == 0) entityList.add(mockByType(number, "Geral"));
-		
-		return entityList;
-	}
-	
-	private CompanySoftwareIbpt mockByType(Integer number, String type) {
 		CompanySoftwareIbpt entity = new CompanySoftwareIbpt();
 		entity.setSoftware(mock.mockEntity(number));
+		entity.setType(SoftwareType.Fiscal);
 		entity.setHaveAuthorization(
 				number % 2 == 0
 				? true
@@ -30,8 +24,12 @@ public class CompanySoftwareIbptMock {
 		);
 		entity.setConnection("Connection" + number);
 		entity.setObservation("Observation" + number);
+		entity.setIsActive(true);
 		entity.setFkCompanySoftwareSameDb(null);
 		
-		return entity;
+		entityList.add(entity);
+		
+		return entityList;
 	}
+	
 }

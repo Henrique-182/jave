@@ -81,7 +81,7 @@ public class IbptService {
 		Ibpt persistedEntity = repository.findById(data.getKey()).orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + data.getKey() + ") !"));
 		
 		Integer idVersion = persistedEntity.getVersion().getId();
-		Integer idCompanySoftware = persistedEntity.getCompanySoftware().getId();
+		Integer idCompanySoftware = persistedEntity.getCompanySoftware().getKey();
 		
 		repository.updateByVersionAndCompanySoftware(idVersion, idCompanySoftware, data.getValue(), new Date());
 	}
@@ -91,6 +91,11 @@ public class IbptService {
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for the id (" + id + ") !"));
 		
 		repository.delete(entity);
+	}
+	
+	@Transactional
+	public void deleteByVersionId(Integer id) {
+		repository.deleteByVersionId(id);
 	}
 	
 	private IbptVO addLinkSelfRel(IbptVO vo) {
