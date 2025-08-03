@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: chat-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jave
+    username: ${JAVE_PG_USERNAME}
+    password: ${JAVE_PG_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  data:
+    mongodb:
+      username: alibou
+      password: alibou
+      host: localhost
+      port: 27017
+      database: chat_app
+      authentication-database: admin
+
+server:
+  port: 8800
